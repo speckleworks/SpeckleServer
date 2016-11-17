@@ -1,0 +1,13 @@
+{
+  "name": "speckle.streams.server",
+  "version": "0.0.1",
+  "description": "speckle streams backend server api",
+  "main": "server.js",
+  "scripts": {},
+  "author": "Dimitrie A. Stefanescu / UCL The Bartlett School of Architecture / InnoChain",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "express": "^4.14.0",
+    "uws": "^0.11.0"
+  }
+}
