@@ -1,2 +1,3 @@
+.secrets/
 node_modules/
-.conf/
+frontend/
