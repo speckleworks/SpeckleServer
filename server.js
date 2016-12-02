@@ -8,10 +8,19 @@ var path                = require('path')
 var chalk               = require('chalk')
 var winston             = require('winston')
 var expressWinston      = require('express-winston')
-
+var url                 = require('url')
 
 var mongoose            = require('mongoose')
+var bluebird            = require('bluebird')
+
 var deets               = require('./.secrets/database')
+
+var messageParser       = require('./app/ws/MessageParser')
+var clientStore         = require('./app/ws/ClientStore')
+
+winston.level = 'debug'
+
+mongoose.Promise = bluebird
 mongoose.connect( deets.url , ( err ) => {
   if( err ) throw err
   else winston.info('connected to mongoose at ' + deets.url )
@@ -35,21 +44,42 @@ app.use( '/admin', express.static( './frontend/admin' ) )
 var http = require('http')
 var server = http.createServer( app )
 var WebSocketServer = require('ws').Server
-var wss = new WebSocketServer( { server: server } )
 
-wss.on('connection', ( ws ) => {
+var wss = new WebSocketServer( { 
+  server: server, 
+  verifyClient: function (info, cb) { 
+    // TODO: cb ( flase, 200, 'error' )
+    var location = url.parse(info.req.url, true);
+    winston.info( chalk.red.underline( 'WS: Access token: ' + location.query.access_token ) ) 
+    var status = true, code = 400, msg = ''    
+    cb( status, code, msg )
+  }, 
+} )
+
+var clients = []
+
+wss.on( 'headers', ( headers ) => {
+})
+
+wss.on( 'connection', ( ws ) => {  
+  clientStore.add( ws )
+
   ws.on( 'message', message => {
-    console.log(message)
+    messageParser( message, ws )
   } )
+
+  ws.on( 'close', () => {
+    clientStore.remove( ws )
+  })
 })
 
 app.get('/', function(req, res) {
   res.send('Hello there. Move along now.')
 })
 
+require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
+
 var PORT = 8080
 server.listen( PORT, () => {
   winston.info( chalk.red.underline( 'Starting up @ ' + PORT ) )
 })
-
-
