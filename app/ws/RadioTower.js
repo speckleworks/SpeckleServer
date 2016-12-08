@@ -1,29 +1,46 @@
+'use strict'
+const winston     = require('winston')
+const chalk       = require('chalk')
 
-var winston = require('winston')
-var chalk =  require('chalk')
-// essentially this can be 
+// essentially this can be an uncompleted comment
 
 module.exports = {
   rooms: {},
   
   send( ws, message ) {
-    
+    // send message directly to ws? dis is stoopid yo dawgs, uai not use ws.send directly? as proper?
   },
   
   broadcast( room, message, senderSessionId ) {
-    console.log( message )
-    console.log( senderSessionId )
+    winston.debug( 'RadioTower broadcast to', room, 'from', senderSessionId, 'event:', message.eventName )
+    if( ! this.rooms.hasOwnProperty( room ) ) return winston.error('Room not found: ', room)
+    winston.debug( 'There are ', this.rooms[room].length, 'clients in this room  ')
+    for( let myWs of this.rooms[room] ) {
+      if( myWs.sessionId != senderSessionId ) 
+        myWs.send( JSON.stringify( message ) )
+    }
   },
   
   join( room, ws ) {
-    if( this.rooms.hasOwnProperty( room ) )
-      this.rooms.room.push( ws )
+    winston.debug( 'RadioTower room', room, 'joined by', ws.sessionId )
+    if( ws.room ) 
+      this.eject( ws.room, ws )
+    if( this.rooms.hasOwnProperty( room ) ) 
+      this.rooms[room].push( ws )
     else 
-      this.rooms.room = [ ws ]
-    winston.debug( chalk.cyan.underline('Added ws ' + ws.sessionId + ' to room ' + room + '. There are now ' + this.rooms.room.length + ' clients there.') )
+      this.rooms[room] = [ ws ]
+    ws.room = room
+    winston.debug( chalk.cyan.underline('Added ws ' + ws.sessionId + ' to room ' + room + '. There are now ' + this.rooms[room].length + ' clients there.') )
   },
   
-  leave( room, ws ) {
-
+  eject( room, ws ) {
+    this.rooms[room].splice( this.rooms[room].indexOf( ws ), 1 )
+    if( this.rooms[room].length === 0 )
+      delete this.rooms[room]
+  },
+  purge( ws ) {
+    for( let room in this.rooms )
+      if( this.rooms.hasOwnProperty(room) )
+        this.rooms[room].splice(room.indexOf(ws), 1)
   }
 }

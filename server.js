@@ -1,22 +1,19 @@
-var express             = require('express')
-var compression         = require('compression')
-var cors                = require('cors')
-var cookieParser        = require('cookie-parser')
-var bodyParser          = require('body-parser')
-var passport            = require('passport')
-var path                = require('path')
-var chalk               = require('chalk')
-var winston             = require('winston')
-var expressWinston      = require('express-winston')
-var url                 = require('url')
+const express             = require('express')
+const compression         = require('compression')
+const cors                = require('cors')
+const cookieParser        = require('cookie-parser')
+const bodyParser          = require('body-parser')
+const passport            = require('passport')
+const path                = require('path')
+const chalk               = require('chalk')
+const winston             = require('winston')
+const expressWinston      = require('express-winston')
+const url                 = require('url')
 
-var mongoose            = require('mongoose')
-var bluebird            = require('bluebird')
+const mongoose            = require('mongoose')
+const bluebird            = require('bluebird')
 
-var deets               = require('./.secrets/database')
-
-var messageParser       = require('./app/ws/MessageParser')
-var clientStore         = require('./app/ws/ClientStore')
+const deets               = require('./.secrets/database')
 
 winston.level = 'debug'
 
@@ -56,22 +53,7 @@ var wss = new WebSocketServer( {
   }, 
 } )
 
-var clients = []
-
-wss.on( 'headers', ( headers ) => {
-})
-
-wss.on( 'connection', ( ws ) => {  
-  clientStore.add( ws )
-
-  ws.on( 'message', message => {
-    messageParser( message, ws )
-  } )
-
-  ws.on( 'close', () => {
-    clientStore.remove( ws )
-  })
-})
+require('./app/ws/SpeckleSockets') ( wss )
 
 app.get('/', function(req, res) {
   res.send('Hello there. Move along now.')

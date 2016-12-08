@@ -1,8 +1,8 @@
-var winston   = require('winston')
-var chalk     = require('chalk')
+const winston   = require('winston')
+const chalk     = require('chalk')
 
-var crypto    = require('crypto')
-// essentially this can be 
+const crypto    = require('crypto')
+// essentially this can be ???
 
 module.exports = {
   clients: [],
