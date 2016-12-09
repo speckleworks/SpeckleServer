@@ -1,10 +1,10 @@
 'use strict'
-const winston     = require('winston')
-const chalk       = require('chalk')
+const winston         = require('winston')
+const chalk           = require('chalk')
 
-const clientStore = require('./ClientStore')
-const radioTower = require('./RadioTower')
-const events      = require('./SpeckleEvents')
+const clientStore     = require('./ClientStore')
+const radioTower      = require('./RadioTower')
+const events          = require('./SpeckleEvents')
 
 module.exports = function( wss ) {
 

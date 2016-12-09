@@ -1,5 +1,4 @@
 'use strict'
-
 const winston           = require('winston')
 const chalk             = require('chalk')
 const shortId           = require('shortid')
@@ -19,7 +18,7 @@ module.exports = function( app, express, broadcaster ) {
   var routes = new express.Router()
 
   routes.post( '/handshake', tokenCheck, ( req, res ) => {
-    winston.debug( chalk.bgCyan( 'Identity check passed...' ) )
+    winston.debug( chalk.black.bgCyan( 'Identity check passed...' ) )
     res.send( { success: true, message: 'This server does exist, and you do seem to have an api token registered with it.'})
   })
 
@@ -50,7 +49,7 @@ module.exports = function( app, express, broadcaster ) {
   })
 
   // Role: Updates stream name and metadata for live history instance of stream & emits metadata update event to room
-  routes.post( '/metadata', tokenCheck, ( req, res ) => {
+  routes.post( '/metadata', tokenCheck, streamIdCheck, ( req, res ) => {
     winston.debug( chalk.bgCyan( 'Updating live history instance metadata (structure and or name).' ) )
     let streamId = req.get( 'speckle-stream-id' )
     let wsId = req.get( 'speckle-ws-id' )
@@ -169,4 +168,12 @@ function tokenCheck( req, res, next ) {
     winston.debug( chalk.bgRed( 'token check failed: ' + token ) )
     return res.send( { success: false, message:'Token check failed.' } ) 
   }  
+}
+function streamIdCheck( req, res, next ) {
+  let streamId = req.get( 'speckle-stream-id' )
+  if( !streamId ) {
+    winston.debug( chalk.bgRed( 'No streamId provided. This route requires a streamId to work.' ) )
+    return res.send( {success: false, message: 'No streamId provided. Did you set up your headers right?' } )
+  }
+  next()
 }

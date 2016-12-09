@@ -1,8 +1,8 @@
+'use strict'
 const winston   = require('winston')
 const chalk     = require('chalk')
 
 const crypto    = require('crypto')
-// essentially this can be ???
 
 module.exports = {
   clients: [],
