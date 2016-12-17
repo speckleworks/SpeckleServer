@@ -64,5 +64,5 @@ require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
 
 var PORT = 8080
 server.listen( PORT, () => {
-  winston.info( chalk.red.underline( 'Starting up @ ' + PORT ) )
+  winston.info( chalk.bgBlue( '>>>>>>>> Starting up @ ' + PORT + ' <<<<<<<<<<<') )
 })

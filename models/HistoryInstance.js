@@ -4,7 +4,8 @@ var historyInstanceSchema = mongoose.Schema( {
   name: { type: String },
   structure: { type: Array, default: [] }, 
   controllers: { type: Array, default: [] }, // gh specific
-  objects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'DataObject' } ],
+  // this is (might be) an antipattern
+  objects: { type: Array, default: [] },
 }, { timestamps: true } )
 
 module.exports = mongoose.model('HistoryInstance', historyInstanceSchema)

@@ -17,7 +17,11 @@ module.exports = {
     winston.debug( 'There are ', this.rooms[room].length, 'clients in this room  ')
     for( let myWs of this.rooms[room] ) {
       if( myWs.sessionId != senderSessionId ) 
-        myWs.send( JSON.stringify( message ) )
+        myWs.send( JSON.stringify( message ), error => {
+          winston.error(error)
+          console.log(message)
+          winston.error('Error sending message to socket', myWs.sessionId )
+        })
     }
   },
   
@@ -40,7 +44,7 @@ module.exports = {
   },
   purge( ws ) {
     for( let room in this.rooms )
-      if( this.rooms.hasOwnProperty(room) )
-        this.rooms[room].splice(room.indexOf(ws), 1)
+      if( this.rooms.hasOwnProperty( room ) )
+        this.rooms[room].splice( room.indexOf( ws ), 1)
   }
 }
