@@ -46,5 +46,15 @@ module.exports = {
     for( let room in this.rooms )
       if( this.rooms.hasOwnProperty( room ) )
         this.rooms[room].splice( room.indexOf( ws ), 1)
+  },
+  getRooms() {
+    let r = []
+    for( let room in this.rooms ) {
+      let cls = []
+      for( let myWs of this.rooms[room] ) 
+        cls.push( myWs.sessionId )
+      r.push( { roomName: room + '', numclients: this.rooms[room].length, clients: cls })
+    }
+    return r;
   }
 }

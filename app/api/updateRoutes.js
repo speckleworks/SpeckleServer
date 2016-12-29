@@ -53,7 +53,7 @@ module.exports = function( app, express, broadcaster ) {
 
   // Role: Updates stream name and metadata for live history instance of stream & emits metadata update event to room
   routes.post( '/metadata', tokenCheck, streamIdCheck, ( req, res ) => {
-    winston.debug( ( 'Updating live history instance metadata (structure and or name).' ) )
+    winston.debug( chalk.red( 'Updating live history instance metadata (structure and or name).' ) )
     let streamId = req.get( 'speckle-stream-id' )
     let wsId = req.get( 'speckle-ws-id' )
     
@@ -67,6 +67,7 @@ module.exports = function( app, express, broadcaster ) {
     DataStream.findOne( { streamId: streamId })
     .then( stream => { 
       if( !stream || !stream.liveInstance ) throw new Error( 'Stream not found or malformed.' )
+      if( stream.locked ) { /* TODO */ }
       stream.name = req.body.streamName
       stream.save()
       return HistoryInstance.findById( stream.liveInstance ) // TODO: exclude object field
@@ -230,7 +231,7 @@ module.exports = function( app, express, broadcaster ) {
     winston.debug( chalk.bgGreen( 'Getting stream history instance.' ) )
     res.send({ success: false, message: 'Not yet implemented.' }) 
   })
-
+  
   // possibly most heavily used call (yet simplest too), considering splitting into standalone app?
   routes.get( '/object', ( req, res ) => {
     winston.debug( chalk.bgGreen( 'Getting object from store.' ), req.query.hash )
@@ -240,8 +241,16 @@ module.exports = function( app, express, broadcaster ) {
         return res.send( { success: true, obj: obj })
       })
       .catch( err => {
-        return res.send( { success: false, message: 'Failed to find object.' } )
+        return res.send( { success: false, message: 'Failed to find object.', objectHash: req.query.hash } )
       })
+  })
+
+  routes.get( '/object/encoded', (req, res) => {
+    // returns the encoded value of the object
+  })
+
+  routes.get( '/object/speckle', (req, res) => {
+    // returns the speckle value (value) of the object
   })
 
   routes.get( '/objects', ( req, res ) => { 

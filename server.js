@@ -60,6 +60,13 @@ app.get('/', function(req, res) {
   res.send('Hello there. Move along now.')
 })
 
+const RT = require('./app/ws/RadioTower')
+const CS = require('./app/ws/ClientStore')
+
+app.get('/stats', ( req, res ) => {
+  res.json( { numclients: CS.clients.length, rooms: RT.getRooms() } )
+} )
+
 require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
 
 var PORT = 8080

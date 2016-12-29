@@ -25,7 +25,7 @@ module.exports = {
       } 
       ws.alive = false
       ws.ping()
-    }, 1000 * 30, ws )
+    }, 1000 * 10, ws )
 
     // push to my amazing datastore
     this.clients.push( ws )
