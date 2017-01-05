@@ -24,7 +24,9 @@ module.exports = {
           winston.error( chalk.bgRed( 'TODO: kicking socket, missed too many pings: ' + ws.missedPingsCount ), ws.sessionId )
       } 
       ws.alive = false
-      ws.ping()
+      // ws.ping killed because browser clients can't handle this shit XD
+      // ws.ping() // .net & nodejs client is ok to respond to ping()
+      ws.send('ping') // browser client needs a little shove
     }, 1000 * 10, ws )
 
     // push to my amazing datastore

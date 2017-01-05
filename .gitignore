@@ -1,4 +1,4 @@
-.secrets/
+.secrets/database.js
 node_modules/
 frontend/
 *.sublime-project

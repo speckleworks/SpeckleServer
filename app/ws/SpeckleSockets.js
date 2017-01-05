@@ -8,9 +8,6 @@ const events          = require('./SpeckleEvents')
 
 module.exports = function( wss ) {
 
-  wss.on( 'headers', headers => {
-  })
-
   wss.on ( 'connection', ws => {
     ws.events = events( ws );
     clientStore.add( ws )
