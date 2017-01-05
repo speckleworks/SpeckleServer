@@ -1,4 +1,4 @@
-### [JS] Speckle Server
+## [JS] Speckle Server
 This is the Speckle Server. It coordinates **everything**. WS used for realtime event notifications, everything else is a standard REST api. 
 
 **NOTE: This is work in progress. API is not stable, authentication & user management are not yet implemented, and there's probably some glaring problems that have yet to be identified.**
