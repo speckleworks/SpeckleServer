@@ -22,9 +22,10 @@ module.exports = {
         winston.error( chalk.bgBlue( 'socket missed pings: ' + ws.missedPingsCount ), ws.sessionId )
         if( ws.missedPingsCount > 10 ) 
           winston.error( chalk.bgRed( 'TODO: kicking socket, missed too many pings: ' + ws.missedPingsCount ), ws.sessionId )
+          ws.alive = false
       } 
-      ws.alive = false
-      ws.ping()
+      // ws.alive = false
+      ws.send( 'ping' )
     }, 1000 * 30, ws )
 
     // push to my amazing datastore

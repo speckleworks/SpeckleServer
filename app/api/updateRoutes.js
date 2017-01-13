@@ -12,6 +12,7 @@ const User              = require('../../models/User')
 
 // const nonHashedTypes    = 'Number Point Vector Boolean String Line Plane'
 const nonHashedTypes       = [ '404', 'Number', 'Boolean', 'String', 'Point', 'Vector', 'Line']
+
 ////////////////////////////////////////////////////////////////////////
 /// this file will need some splitting up later on.               /////.
 ////////////////////////////////////////////////////////////////////////
@@ -53,7 +54,7 @@ module.exports = function( app, express, broadcaster ) {
 
   // Role: Updates stream name and metadata for live history instance of stream & emits metadata update event to room
   routes.post( '/metadata', tokenCheck, streamIdCheck, ( req, res ) => {
-    winston.debug( ( 'Updating live history instance metadata (structure and or name).' ) )
+    winston.debug( chalk.red( 'Updating live history instance metadata (structure and or name).' ) )
     let streamId = req.get( 'speckle-stream-id' )
     let wsId = req.get( 'speckle-ws-id' )
     
