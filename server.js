@@ -41,7 +41,7 @@ app.use( '/admin', express.static( './frontend/admin' ) )
 
 var http = require('http')
 var server = http.createServer( app )
-var WebSocketServer = require('ws').Server
+var WebSocketServer = require('uws').Server
 
 var wss = new WebSocketServer( { 
   server: server, 
