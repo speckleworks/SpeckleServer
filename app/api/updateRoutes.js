@@ -68,6 +68,7 @@ module.exports = function( app, express, broadcaster ) {
     DataStream.findOne( { streamId: streamId })
     .then( stream => { 
       if( !stream || !stream.liveInstance ) throw new Error( 'Stream not found or malformed.' )
+      if( stream.locked ) { /* TODO */ }
       stream.name = req.body.streamName
       stream.save()
       return HistoryInstance.findById( stream.liveInstance ) // TODO: exclude object field
@@ -231,7 +232,7 @@ module.exports = function( app, express, broadcaster ) {
     winston.debug( chalk.bgGreen( 'Getting stream history instance.' ) )
     res.send({ success: false, message: 'Not yet implemented.' }) 
   })
-
+  
   // possibly most heavily used call (yet simplest too), considering splitting into standalone app?
   routes.get( '/object', ( req, res ) => {
     winston.debug( chalk.bgGreen( 'Getting object from store.' ), req.query.hash )
@@ -241,8 +242,16 @@ module.exports = function( app, express, broadcaster ) {
         return res.send( { success: true, obj: obj })
       })
       .catch( err => {
-        return res.send( { success: false, message: 'Failed to find object.' } )
+        return res.send( { success: false, message: 'Failed to find object.', objectHash: req.query.hash } )
       })
+  })
+
+  routes.get( '/object/encoded', (req, res) => {
+    // returns the encoded value of the object
+  })
+
+  routes.get( '/object/speckle', (req, res) => {
+    // returns the speckle value (value) of the object
   })
 
   routes.get( '/objects', ( req, res ) => { 

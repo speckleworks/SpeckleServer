@@ -8,9 +8,6 @@ const events          = require('./SpeckleEvents')
 
 module.exports = function( wss ) {
 
-  wss.on( 'headers', headers => {
-  })
-
   wss.on ( 'connection', ws => {
     ws.events = events( ws );
     clientStore.add( ws )
@@ -35,8 +32,7 @@ module.exports = function( wss ) {
     let eventName, args = {}
     return new Promise( (resolve, reject) => {
       if( !message ) return reject('No message provided.')
-      if( message === 'alive' ) return resolve( { eventName:'alive', args: null } )
-      
+      if( message === 'alive' ) return resolve( { eventName:'alive', args: null } )    
       let parsedMessage = JSON.parse( message )
       if( !parsedMessage.eventName) return reject('Malformed message: no eventName.')
       return resolve( parsedMessage )

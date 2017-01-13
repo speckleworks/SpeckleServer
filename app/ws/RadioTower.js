@@ -2,8 +2,6 @@
 const winston     = require('winston')
 const chalk       = require('chalk')
 
-// essentially this can be an uncompleted comment
-
 module.exports = {
   rooms: {},
   
