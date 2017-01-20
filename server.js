@@ -60,6 +60,18 @@ app.get('/', function(req, res) {
   res.send('Hello there. Move along now.')
 })
 
+app.get('/serverinfo', (req, res) => {
+  res.send( {
+    restEndpoint: 'https://5th.one',
+    wsEndpoint: 'wss://5th.one',
+    maintainer: {
+      name: 'Dimitrie Stefanescu',
+      company: 'UCL The Bartlett',
+      contact: 'hi@dimitrie.org'
+    }
+  })
+})
+
 const RT = require('./app/ws/RadioTower')
 const CS = require('./app/ws/ClientStore')
 

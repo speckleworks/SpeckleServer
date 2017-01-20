@@ -2,6 +2,8 @@
 const winston     = require('winston')
 const chalk       = require('chalk')
 
+var ClientStore   = require('./ClientStore')
+
 module.exports = {
   rooms: {},
   
@@ -11,48 +13,35 @@ module.exports = {
   
   broadcast( room, message, senderSessionId ) {
     winston.debug( 'RadioTower broadcast to', room, 'from', senderSessionId, 'event:', message.eventName )
-    if( ! this.rooms.hasOwnProperty( room ) ) return winston.error('Room not found: ', room)
-    winston.debug( 'There are ', this.rooms[room].length, 'clients in this room  ')
-    for( let myWs of this.rooms[room] ) {
-      if( myWs.sessionId != senderSessionId ) 
-        myWs.send( JSON.stringify( message ), error => {
-          winston.error(error)
-          console.log(message)
-          winston.error('Error sending message to socket', myWs.sessionId )
-        })
+    for( let ws of ClientStore.clients ) {
+      if( ws.sessionId != senderSessionId && ws.room === room ) 
+        ws.send( JSON.stringify( message ) , error => {
+          if( !error ) return
+          winston.error( 'Something bad happened: ')
+          winston.error( error )
+        } )
     }
   },
   
   join( room, ws ) {
     winston.debug( 'RadioTower room', room, 'joined by', ws.sessionId )
-    if( ws.room ) 
-      this.eject( ws.room, ws )
-    if( this.rooms.hasOwnProperty( room ) ) 
-      this.rooms[room].push( ws )
-    else 
-      this.rooms[room] = [ ws ]
     ws.room = room
-    winston.debug( chalk.cyan.underline('Added ws ' + ws.sessionId + ' to room ' + room + '. There are now ' + this.rooms[room].length + ' clients there.') )
   },
-  
-  eject( room, ws ) {
-    this.rooms[room].splice( this.rooms[room].indexOf( ws ), 1 )
-    if( this.rooms[room].length === 0 )
-      delete this.rooms[room]
-  },
-  purge( ws ) {
-    for( let room in this.rooms )
-      if( this.rooms.hasOwnProperty( room ) )
-        this.rooms[room].splice( room.indexOf( ws ), 1)
-  },
+
   getRooms() {
-    let r = []
-    for( let room in this.rooms ) {
-      let cls = []
-      for( let myWs of this.rooms[room] ) 
-        cls.push( myWs.sessionId )
-      r.push( { roomName: room + '', numclients: this.rooms[room].length, clients: cls })
+    let r = {}
+    for(let ws of ClientStore.clients ) {
+      if( r.hasOwnProperty( ws.room ) ) { 
+        r[ws.room].num++
+        r[ws.room].clients.push( { sessionId: ws.sessionId, role: ws.role } )
+      }
+      else {
+        r[ws.room] = {
+          num: 1, 
+          clients: [ { sessionId: ws.sessionId, role: ws.role } ]
+        }
+      }
     }
-    return r;
+    return r
   }
 }

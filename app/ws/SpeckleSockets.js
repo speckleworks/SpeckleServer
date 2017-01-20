@@ -24,7 +24,6 @@ module.exports = function( wss ) {
 
     ws.on( 'close', () => {
       clientStore.remove( ws )
-      radioTower.purge( ws )
     })
   })
 

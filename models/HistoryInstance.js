@@ -3,7 +3,7 @@ var mongoose = require('mongoose')
 var historyInstanceSchema = mongoose.Schema( {
   name: { type: String },
   structure: { type: Array, default: [] }, 
-  controllers: { type: Array, default: [] }, // gh specific
+  layers: { type: Array, default: [] },
   properties: { type: Array, default: [] },
   // this is (might be) an antipattern
   objects: { type: Array, default: [] },

@@ -23,7 +23,7 @@ module.exports = {
         if( ws.missedPingsCount > 10 ) 
           winston.error( chalk.bgRed( 'TODO: kicking socket, missed too many pings: ' + ws.missedPingsCount ), ws.sessionId )
           ws.alive = false
-      } 
+      }
       ws.alive = false
       // ws.ping killed because browser clients can't handle this shit XD
       // ws.ping() // .net & nodejs client is ok to respond to ping()

@@ -7,13 +7,14 @@ module.exports = function ( ws ) {
   let parent = ws
   return { 
     'alive'() {
-      winston.debug('received alive message from socket', parent.sessionId)
+      winston.debug('received alive message from socket', parent.sessionId, Date.now() )
       parent.alive = true
       parent.missedPingsCount = 0
     },
     'join-stream'( args ) {
       // console.log(args)
-      radioTower.join( args, parent )
+      parent.role = args.role
+      radioTower.join( args.streamid, parent )
     },
     'volatile-message' ( args ) {
       // console.log(args)
