@@ -19,6 +19,7 @@ module.exports = function ( ws ) {
     'volatile-message' ( args ) {
       // console.log(args)
       winston.debug('received volatile message from socket', parent.sessionId)
+      console.log( args )
       let message = { eventName: 'volatile-message', args: args }
       radioTower.broadcast( ws.room, message, ws.sessionId )
     }
