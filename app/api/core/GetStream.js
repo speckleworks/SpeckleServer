@@ -15,6 +15,7 @@ module.exports = ( req, res ) => {
         name: stream.liveInstance.name,
         layers: stream.liveInstance.layers,
         objects: stream.liveInstance.objects,
+        objectProperties: stream.liveInstance.objectProperties, 
         history: stream.liveInstance.history
       }
       res.send( response )

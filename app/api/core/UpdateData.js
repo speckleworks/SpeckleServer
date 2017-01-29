@@ -14,12 +14,12 @@ const nonHashedTypes       = [ '404', "Number", "Boolean", "String", "Point", "V
 
 module.exports = ( req, res ) => {
   winston.debug( chalk.red( 'Updating stream live history instance data.' ) )
-  
+  console.log(req.body.objectProperties)
   let streamId = req.get( 'speckle-stream-id' )
   let wsId = req.get( 'speckle-ws-id' )
 
   let toInsertInDb = []
-  
+
   req.body.objects.forEach( obj => {
     if( obj.hasOwnProperty('value') && obj.value != null && nonHashedTypes.indexOf( obj.type ) < 0 )
       toInsertInDb.push( obj )
@@ -50,10 +50,13 @@ module.exports = ( req, res ) => {
       req.body.objects.forEach( obj => {
         liveInstance.objects.push( nonHashedTypes.indexOf( obj.type ) < 0 ? { type: obj.type, hash: obj.hash } : obj ) 
       } )
+      // save them custom props dude
+      liveInstance.objectProperties = req.body.objectProperties
 
       wsArgs.name = liveInstance.name
       wsArgs.layers = liveInstance.layers
       wsArgs.objects = liveInstance.objects
+      wsArgs.objectProperties = liveInstance.objectProperties
 
       return liveInstance.save()
     })
