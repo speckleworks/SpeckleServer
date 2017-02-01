@@ -16,12 +16,16 @@ module.exports = function ( ws ) {
       parent.role = args.role
       radioTower.join( args.streamid, parent )
     },
+    'volatile-broadcast' ( args ) {
+      winston.debug(chalk.blue('Volatile Broadcast from socket'), parent.sessionId, 'in room', parent.room)
+      let message = { eventName: 'volatile-broadcast', args: args }
+      radioTower.broadcast( parent.room, message, parent.sessionId )
+    },
     'volatile-message' ( args ) {
-      // console.log(args)
-      winston.debug('received volatile message from socket', parent.sessionId)
       console.log( args )
-      let message = { eventName: 'volatile-message', args: args }
-      radioTower.broadcast( ws.room, message, ws.sessionId )
+      winston.debug(chalk.cyan('Volatile message from socket'), parent.sessionId, 'in room', parent.room)
+      let message = { eventName: 'volatile-message', args: args.message }
+      radioTower.send( args.recipient, message )
     }
   }
 }

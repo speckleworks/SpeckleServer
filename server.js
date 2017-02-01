@@ -80,6 +80,7 @@ app.get('/stats', ( req, res ) => {
 } )
 
 require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
+require( './app/api/userRoutes' ) ( app, express )
 
 var PORT = 8080
 server.listen( PORT, () => {

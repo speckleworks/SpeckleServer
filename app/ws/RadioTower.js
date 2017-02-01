@@ -6,9 +6,21 @@ var ClientStore   = require('./ClientStore')
 
 module.exports = {
   rooms: {},
-  
-  send( ws, message ) {
-    // send message directly to ws? dis is stoopid yo dawgs, uai not use ws.send directly? as proper?
+  announce( message ) {
+    winston.debug( chalk.bgRed('Server sending message to all clients') )
+    for( let ws of ClientStore.clients ) {
+      ws.send( JSON.stringify( message ) )
+    }
+  },
+
+  send( wsSessionId, message ) {
+    if( !wsSessionId ) 
+      return winston.error('No wsSessionId provided [RadioTower.send]')
+    let recipient = ClientStore.clients.find( client => client.sessionId === wsSessionId )
+    if( !recipient )
+      return winston.error('No ws with that session id found [RadioTower.send]', wsSessionId )
+
+    recipient.send( JSON.stringify( message ) )
   },
   
   broadcast( room, message, senderSessionId ) {
