@@ -9,7 +9,7 @@ const HistoryInstance   = require('../../../models/HistoryInstance')
 module.exports = ( req, res ) => {
   winston.debug( chalk.bgCyan( 'Creating a new stream, sending streamid back.' ) )
 
-  var liveInstance = new HistoryInstance({ name: 'Anonymous Stream Live Instance'})
+  var liveInstance = new HistoryInstance({ name: 'A1'})
   liveInstance.save() 
     .then( instance => {
       var myStream = new DataStream( {
