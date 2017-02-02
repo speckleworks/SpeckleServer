@@ -24,9 +24,12 @@ mongoose.connect( deets.url , ( err ) => {
   else winston.info('connected to mongoose at ' + deets.url )
 })
 
-var app = express() 
-app.use( cors() )
-app.use( compression() )
+////////////////////////////////////////////////////////////////////////
+/// Various Express inits                                         /////.
+////////////////////////////////////////////////////////////////////////
+var app = express()  
+app.use( cors() ) // allow cors
+app.use( compression() ) // allow compression
 
 app.use( expressWinston.logger( {
   transports: [ new winston.transports.Console( { json: false, colorize: true } ) ],
@@ -36,9 +39,12 @@ app.use( expressWinston.logger( {
 
 app.use( cookieParser() )
 app.use( bodyParser.json( { limit: '50mb' } ) )
+app.use( passport.initialize() )
+require('./.config/passport' ) ( passport )
 
-app.use( '/admin', express.static( './frontend/admin' ) )
-
+////////////////////////////////////////////////////////////////////////
+/// Websockets & HTTP Servers                                     /////.
+////////////////////////////////////////////////////////////////////////
 var http = require('http')
 var server = http.createServer( app )
 var WebSocketServer = require('ws').Server
@@ -60,17 +66,9 @@ app.get('/', function(req, res) {
   res.send('Hello there. Move along now.')
 })
 
-app.get('/serverinfo', (req, res) => {
-  res.send( {
-    restEndpoint: 'https://5th.one',
-    wsEndpoint: 'wss://5th.one',
-    maintainer: {
-      name: 'Dimitrie Stefanescu',
-      company: 'UCL The Bartlett',
-      contact: 'hi@dimitrie.org'
-    }
-  })
-})
+////////////////////////////////////////////////////////////////////////
+/// Temp Routes(debug)                                            /////.
+////////////////////////////////////////////////////////////////////////
 
 const RT = require('./app/ws/RadioTower')
 const CS = require('./app/ws/ClientStore')
@@ -79,8 +77,23 @@ app.get('/stats', ( req, res ) => {
   res.json( { numclients: CS.clients.length, rooms: RT.getRooms() } )
 } )
 
+app.get('/serverinfo', (req, res) => {
+  res.send( {
+    restEndpoint: 'https://5th.one',
+    wsEndpoint: 'wss://5th.one'
+  })
+})
+
+////////////////////////////////////////////////////////////////////////
+/// Routes                                                        /////.
+////////////////////////////////////////////////////////////////////////
+
 require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
 require( './app/api/userRoutes' ) ( app, express )
+
+////////////////////////////////////////////////////////////////////////
+/// LAUNCH                                                         /////.
+////////////////////////////////////////////////////////////////////////
 
 var PORT = 8080
 server.listen( PORT, () => {

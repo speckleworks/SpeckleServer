@@ -11,7 +11,7 @@ const DataObject        = require('../../models/DataObject')
 const User              = require('../../models/User')
 
 var streamIdCheck       = require('./middleware/StreamIdCheck')
-var tokenCheck       = require('./middleware/TokenCheck')
+var tokenCheck          = require('./middleware/TokenCheck')
 ////////////////////////////////////////////////////////////////////////
 /// this file will need some splitting up later on.               /////.
 ////////////////////////////////////////////////////////////////////////
