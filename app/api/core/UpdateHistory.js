@@ -18,7 +18,7 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId : streamId } ).populate('liveInstance').populate('history', 'name _id createdAt')
     .then( stream => { 
       if( !stream ) return res.send({ success: false, message: 'Stream not found.' }) 
-      historyUpdateMsg = stream.history
+      historyUpdateMsg = stream.history.slice( 0 ) // important: do not keep track of the ref, make a clone
       newHistoryInstance = new HistoryInstance( {
         name: stream.liveInstance.name,
         properties: stream.liveInstance.properties,
@@ -26,7 +26,7 @@ module.exports = ( req, res ) => {
         objects: stream.liveInstance.objects,
         objectProperties: stream.liveInstance.objectProperties
       })
-      
+      historyUpdateMsg.push(  { name: newHistoryInstance.name, _id: newHistoryInstance._id, createdAt: newHistoryInstance.createdAt } )
       stream.history.push( newHistoryInstance._id )
       return stream.save() 
     })

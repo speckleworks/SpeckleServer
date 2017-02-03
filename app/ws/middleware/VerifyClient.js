@@ -12,10 +12,10 @@ module.exports = function( info, cb ) {
   User.findOne( { apitoken: token } )
   .then( user => {
     if( !user ) throw new Error('WS Auth: User not found. ' + token)
-    return cb( true, 400, null)
+    return cb( true, 400, 'Unauthorized')
   })
   .catch( err => {
     winston.error( err )
-    return cb( false, 200, 'WS Auth: User not found ' + token )
+    return cb( false, 200, 'Unauthorized' )
   })
 }
