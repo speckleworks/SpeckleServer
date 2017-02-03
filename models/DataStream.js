@@ -7,7 +7,7 @@ var dataStreamSchema = mongoose.Schema({
   liveInstance: { type: mongoose.Schema.Types.ObjectId, ref: 'HistoryInstance' }, 
   history: [ { type: mongoose.Schema.Types.ObjectId, ref: 'HistoryInstance' } ],
   private: { type: Boolean, default: false },
-  sharedWith: { type: Array, default: [] },
+  sharedWith: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   locked: { type: Boolean, default: false },
   online: { type: Boolean, default: true },
   deleted: { type: Boolean, default: false }

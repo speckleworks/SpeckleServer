@@ -16,11 +16,13 @@
     "cors": "^2.8.1",
     "express": "^4.14.0",
     "express-winston": "^2.0.0",
+    "jsonwebtoken": "^7.2.1",
     "mongoose": "^4.6.8",
-    "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0",
     "shortid": "^2.2.6",
+    "uuid": "^3.0.1",
     "winston": "^2.3.0",
     "ws": "^1.1.1"
   }

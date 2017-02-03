@@ -32,7 +32,7 @@ module.exports = ( req, res ) => {
   
   // one long promise chain, but it has comments!
   // 1: find the stream
-  DataStream.findOne( { streamId : streamId } )    
+  DataStream.findOne( { streamId : streamId } )
     .then( stream => {
       winston.debug( chalk.cyan( 'Finding live instance ', stream.liveInstance, 'for stream', streamId ) )
       if( !stream || !stream.liveInstance ) throw new Error( 'Stream not found or malformed.' )
