@@ -9,13 +9,16 @@ module.exports = function( info, cb ) {
   let token = location.query.access_token
 
   winston.info( chalk.red.underline( 'WS: Access token: ' + token ) ) 
+  if( !token )
+    return cb( false, 401, 'Unauthorized' )
+  
   User.findOne( { apitoken: token } )
   .then( user => {
     if( !user ) throw new Error('WS Auth: User not found. ' + token)
-    return cb( true, 400, 'Unauthorized')
+    return cb( true, 400, 'Authorized')
   })
   .catch( err => {
     winston.error( err )
-    return cb( false, 200, 'Unauthorized' )
+    return cb( false, 401, 'Unauthorized' )
   })
 }
