@@ -11,6 +11,7 @@ module.exports = function( app, express ) {
 
   routes.post( '/login', require('./users/Login'))
 
+  // note the auth middleware
   routes.post( '/update', passport.authenticate( 'jwt', { session: false } ), require('./users/UpdateUser'))
 
   app.use( '/user', routes)

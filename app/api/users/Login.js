@@ -20,9 +20,6 @@ module.exports = function( req, res ) {
       let profile = {
         _id: myUser._id,
         name: myUser.name, 
-        company: myUser.company,
-        apitoken: myUser.apitoken,
-        lastLogin: myUser.logins.length >= 2 ? myUser.logins[ myUser.logins.length - 2 ] : Date.now(),
       }
       let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
       res.send( { success: true, token: token, user: profile } )

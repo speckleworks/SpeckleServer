@@ -18,22 +18,10 @@ module.exports = ( req, res, next ) => {
       return res.send( { success: false, message:'Token check failed.' } ) 
     }
     req.user = myUser
-    next()
+    return next()
   })
   .catch( err => { 
     winston.debug( chalk.bgRed( 'token check failed: ' + token ) )
     return res.send( { success: false, message:'Token check failed.' } ) 
   } )
-  // // TODO properly
-  // if( token === 'asdf' ) { 
-  //   req.user = {
-  //     name: 'dimitrie',
-  //     _id: '58402bb3cb1fd1cab2ff6c5f'
-  //   }
-  //   next() 
-  // }
-  // else {
-  //   winston.debug( chalk.bgRed( 'token check failed: ' + token ) )
-  //   return res.send( { success: false, message:'Token check failed.' } ) 
-  // }  
 }
