@@ -7,19 +7,10 @@ const DataStream        = require('../../../models/DataStream')
 module.exports = ( req, res ) => {
   winston.debug( chalk.bgGreen( 'Getting stream', req.get('speckle-stream-id') ) )
 
-  DataStream.findOne( {streamId: req.params.streamId }, '-owner -sharedWith' ).populate('liveInstance').populate('history', 'name _id createdAt')
+  DataStream.findOne( {streamId: req.params.streamId }, '-owner -sharedWith' )
     .then( stream => {
       if( !stream ) throw new Error( 'No stream found' )
-      let response = { 
-        success: true, 
-        message: 'Stream found',
-        name: stream.liveInstance.name,
-        layers: stream.liveInstance.layers,
-        objects: stream.liveInstance.objects,
-        objectProperties: stream.liveInstance.objectProperties, 
-        history: stream.history
-      }
-      res.send( response )
+      res.send( { success: true, stream: stream } )
     })
     .catch( err => {
       res.status(404)

@@ -9,10 +9,10 @@ var tokenCheck          = require('./middleware/TokenCheck')
 /// this file will need some splitting up later on.               /////.
 ////////////////////////////////////////////////////////////////////////
 
-module.exports = function( app, express, broadcaster ) {
+module.exports = function( app, express ) {
 
   var routes = new express.Router()
-
+  
   routes.post( '/handshake', tokenCheck, ( req, res ) => {
     res.send( { success: true, message: 'This server does exist, and you do seem to have an api token registered with it.'})
   })
@@ -21,17 +21,19 @@ module.exports = function( app, express, broadcaster ) {
   /// setters below                                                 /////.
   ////////////////////////////////////////////////////////////////////////
   
-  // creates a new stream
+  // creates a new stream x
   routes.post( '/stream', tokenCheck, require( './core/CreateStream' ) )
   
   // updates (and broadcasts) stream live instance metadata
   routes.post( '/metadata', tokenCheck, streamIdCheck, require( './core/UpdateMetadata' ) )
+  routes.post( '/stream/metadata', tokenCheck, streamIdCheck, require( './core/UpdateMetadata' ) )
 
   // updates (and broadcasts) stream live instance update
   routes.post( '/live', tokenCheck, streamIdCheck, require( './core/UpdateData' ) )
 
   // todo | saves (and broadcasts) the current liveStreamInstance to the stream history
   routes.post( '/history', tokenCheck, streamIdCheck, require( './core/UpdateHistory') )
+  routes.post( '/stream/history', tokenCheck, streamIdCheck, require( './core/UpdateHistory') )
   
   ////////////////////////////////////////////////////////////////////////
   /// getters below                                                 //////
@@ -48,6 +50,7 @@ module.exports = function( app, express, broadcaster ) {
   
   // possibly most heavily used call (yet simplest too)
   routes.get( '/object', require( './core/GetObject' ) )
+  routes.get( '/geometry', require( './core/GetObject' ) )
 
-  app.use( '/api', routes )
+  app.use( '/api/streams', routes )
 }

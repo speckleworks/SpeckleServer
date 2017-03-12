@@ -78,17 +78,11 @@ app.get('/stats', ( req, res ) => {
   res.json( { numclients: CS.clients.length, rooms: RT.getRooms() } )
 } )
 
-app.get('/serverinfo', (req, res) => {
-  res.send( {
-    restEndpoint: 'https://5th.one',
-    wsEndpoint: 'wss://5th.one'
-  })
-})
-
 ////////////////////////////////////////////////////////////////////////
 /// Routes                                                        /////.
 ////////////////////////////////////////////////////////////////////////
 
+require( './app/api-v1/root' ) ( app, express )
 require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
 require( './app/api/userRoutes' ) ( app, express )
 
