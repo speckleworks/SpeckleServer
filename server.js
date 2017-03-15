@@ -39,7 +39,8 @@ app.use( expressWinston.logger( {
 
 app.use( cookieParser() )
 app.use( bodyParser.json( { limit: '50mb' } ) )
-app.use( passport.initialize() )
+app.use( bodyParser.urlencoded( { limit: '50mb', extended: true } ) )
+app.use( passport.initialize() )  
 require('./.config/passport' ) ( passport )
 
 ////////////////////////////////////////////////////////////////////////
@@ -78,19 +79,13 @@ app.get('/stats', ( req, res ) => {
   res.json( { numclients: CS.clients.length, rooms: RT.getRooms() } )
 } )
 
-app.get('/serverinfo', (req, res) => {
-  res.send( {
-    restEndpoint: 'https://5th.one',
-    wsEndpoint: 'wss://5th.one'
-  })
-})
-
 ////////////////////////////////////////////////////////////////////////
 /// Routes                                                        /////.
 ////////////////////////////////////////////////////////////////////////
 
-require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
-require( './app/api/userRoutes' ) ( app, express )
+require( './app/api-v1/root' ) ( app, express )
+// require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
+// require( './app/api/userRoutes' ) ( app, express )
 
 ////////////////////////////////////////////////////////////////////////
 /// LAUNCH                                                         /////.

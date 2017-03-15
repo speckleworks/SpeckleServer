@@ -14,7 +14,6 @@ const nonHashedTypes       = [ '404', "Number", "Boolean", "String", "Point", "V
 
 module.exports = ( req, res ) => {
   winston.debug( chalk.red( 'Updating stream live history instance data.' ) )
-  console.log(req.body.objectProperties)
   let streamId = req.get( 'speckle-stream-id' )
   let wsId = req.get( 'speckle-ws-id' )
 
