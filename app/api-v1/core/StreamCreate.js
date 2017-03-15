@@ -21,7 +21,7 @@ module.exports = ( req, res ) => {
       return myStream.save()
     })
     .then( stream => {
-      return res.send( { success: true, stream: stream } )
+      return res.send( { success: true, message: 'Creted stream.', data: stream } )
     })
     .catch( err => {
       res.status(400)

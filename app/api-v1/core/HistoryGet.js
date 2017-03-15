@@ -9,7 +9,7 @@ module.exports = ( req, res ) => {
   HistoryInstance.findOne( { _id: req.params.historyId } )
     .then( instance => {
       if( !instance ) throw new Error( 'No history instance found' )
-      res.send( { success: true, historyInstance: instance } )
+      res.send( { success: true, message:'Found history instance.', data: instance } )
     })
     .catch( err => {
       res.status(404)
