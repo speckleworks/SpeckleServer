@@ -69,18 +69,18 @@ module.exports = ( req, res ) => {
         return true
       else {
         winston.debug( chalk.cyan( 'Attempting to store', toInsertInDb.length, 'objects.' ) )
-        console.log( toInsertInDb.map( a => a.hash) )
         return DataObject.insertMany( toInsertInDb )
       }
     })
     // 4: if no errors i'm jumping here, so let's broadcast and do magic
-    .then( () => {
+    .then( ( ) => {
       if( historyId === 'live' )
         RadioTower.broadcast( streamId, { eventName: 'live-update', args: wsArgs }, wsId )
       return res.send( { success: true, message: 'Inserted ' + toInsertInDb.length + ' objects.', streamId: streamId, historyId: historyId } )
     })
     // if errors, check if it's E1100 (dupe keys in db): that's ok, broadcast the grand success.
     .catch( err => {
+      // console.log( err )
       if( err.message.indexOf('E11000') >= 0 ) {
         if( historyId === 'live' )
           RadioTower.broadcast( streamId, { eventName: 'live-update', args: wsArgs }, wsId )

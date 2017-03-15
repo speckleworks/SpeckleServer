@@ -1,3 +1,4 @@
+'use strict'
 var mongoose = require('mongoose')
 
 var dataObjectSchema = mongoose.Schema({
@@ -14,4 +15,5 @@ var dataObjectSchema = mongoose.Schema({
 }, { timestamps: true })
 
 var DataObject = mongoose.model( 'DataObject', dataObjectSchema) 
+
 module.exports = DataObject
