@@ -76,6 +76,8 @@ module.exports = ( req, res ) => {
     .then( ( ) => {
       if( historyId === 'live' )
         RadioTower.broadcast( streamId, { eventName: 'live-update', args: wsArgs }, wsId )
+      else 
+        RadioTower.broadcast( streamId, { eventName: 'history-instance-update' }, wsId )
       return res.send( { success: true, message: 'Inserted ' + toInsertInDb.length + ' objects.', streamId: streamId, historyId: historyId } )
     })
     // if errors, check if it's E1100 (dupe keys in db): that's ok, broadcast the grand success.

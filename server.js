@@ -53,13 +53,6 @@ var WebSocketServer = require('ws').Server
 var wss = new WebSocketServer( { 
   server: server, 
   verifyClient: require('./app/ws/middleware/VerifyClient')
-  //   function (info, cb) { 
-  //   // TODO: cb ( flase, 200, 'error' )
-  //   var location = url.parse(info.req.url, true);
-  //   winston.info( chalk.red.underline( 'WS: Access token: ' + location.query.access_token ) ) 
-  //   var status = true, code = 400, msg = ''    
-  //   cb( status, code, msg )
-  // } 
 } )
 
 require('./app/ws/SpeckleSockets') ( wss )
@@ -84,8 +77,6 @@ app.get('/stats', ( req, res ) => {
 ////////////////////////////////////////////////////////////////////////
 
 require( './app/api-v1/root' ) ( app, express )
-// require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
-// require( './app/api/userRoutes' ) ( app, express )
 
 ////////////////////////////////////////////////////////////////////////
 /// LAUNCH                                                         /////.
