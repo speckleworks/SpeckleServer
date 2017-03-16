@@ -7,7 +7,7 @@ var serverDescription   = require('../../.config/ServerDescription')
 
 module.exports = function( app, express ) {
   var r = new express.Router()
-  
+
   r.get( '/', ( req, res ) => {
     res.send( serverDescription )
   } )
@@ -31,6 +31,9 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId/data/:historyId?', tokenCheck, require( './core/StreamLiveUpdate' ) )
   // update stream live instance metadata; defaults to live if not provided (broadcasts)
   r.put( '/streams/:streamId/meta/:historyId?', tokenCheck, require( './core/StreamLiveMetaUpdate' ) )
+
+  // QUERYING
+  r.get( '/streams/:streamId/data/objects/:format/:historyId?', require( './query/QueryStreamObjects' ) )
 
   // GEOMS
   // get the geometry of an object, full values
