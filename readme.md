@@ -1,5 +1,7 @@
 # Speckle Server
-This is the Speckle Server, which coordinates communications between the various SpeckleClients.
+This is the Speckle Server, which coordinates communications between the various SpeckleClients. It provides a basic accounts system, stream coordination, design data collation and retrieval, live update events and a basic querying mecahnism. 
+
+## Contributions are welcome, get in touch via [@idid](http://twitter.com/idid)!
 
 ## Super Quick Deployment Instructions
 1) Install nodejs using [nvm](https://github.com/creationix/nvm). Tested against v4.4.3 and v7.7.3. 
@@ -27,9 +29,21 @@ module.exports = {
 6) `node server.js` or `nodemon server.js` (you'll need to have nodemon installed for this to work: `npm install -g nodemon`
 7) Done!
 
+## Documentation
+It's forthcoming. [Do you want to help?](mailto:d.stefanescu@ucl.ac.uk)
 
-### Credits
+## API
+[Some basic documentation can be found here.](https://documenter.getpostman.com/collection/view/553672-bb9f112e-f1ad-3084-afe1-96a0ae8e80d7#intro) 
+
+
+## Credits
 Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) / [UCL The Bartlett](https://www.ucl.ac.uk/bartlett/) / [InnoChain](http://innochain.net)
+
+This project has received funding from the European Union’s Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 642877.
+
+![Bartlett](http://streams.speckle.xyz/assets/bartlett-ucl.png)
+
+![InnoChain](http://innochain.net/wp-content/uploads/logo2015.png)
 
 ### License 
 MIT.
