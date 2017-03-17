@@ -1,7 +1,7 @@
 # Speckle Server
 This is the Speckle Server, which coordinates communications between the various SpeckleClients. It provides a basic accounts system, stream coordination, design data collation and retrieval, live update events and a basic querying mecahnism. 
 
-## Contributions are welcome, get in touch via [@idid](http://twitter.com/idid)!
+> Contributions are welcome, get in touch via [@idid](http://twitter.com/idid)!
 
 ## Super Quick Deployment Instructions
 1) Install nodejs using [nvm](https://github.com/creationix/nvm). Tested against v4.4.3 and v7.7.3. 
