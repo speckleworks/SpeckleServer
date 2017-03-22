@@ -3,6 +3,9 @@ const winston           = require('winston')
 const chalk             = require('chalk')
 const uuid              = require('uuid/v4')
 const User              = require('../../../models/User')
+const jwt               = require('jsonwebtoken')
+
+const sessionSecret     = require('../../../.secrets/session')
 
 module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )
@@ -18,7 +21,15 @@ module.exports = function ( req, res ) {
   })
   myUser.save()
     .then( ( user ) => {
-      return res.send( { success: true, message: 'User saved. Redirect to login.', apitoken: user.apitoken })
+      console.log( user )
+
+      let profile = {
+        _id: user._id,
+        name: user.name 
+      }
+      let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
+      console.log( token )
+      return res.send( { success: true, message: 'User saved. Redirect to login.', apitoken: user.apitoken, token: token })
     })
     .catch( err => {
       res.status(400)
