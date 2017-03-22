@@ -6,22 +6,22 @@ const User              = require('../../../models/User')
 
 module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )
-  if( !req.body.email ) return res.send( { success: false, message:'Do not fuck with us. Give us your email.'} )
-  if( !req.body.password ) return res.send( { success: false, message:'Passwords are a necessary evil, fam.'} )
-  if( !req.body.name ) return res.send( { success: false, message:'Please let us know how to call you.'} )
+  if( !req.body.email ) { res.status(400); return res.send( { success: false, message:'Do not fuck with us. Give us your email.'} ) }
+  if( !req.body.password ) { res.status(400); return res.send( { success: false, message:'Passwords are a necessary evil, fam.'} ) }
   
   let myUser = new User({
     email: req.body.email,
     password: req.body.password,
     company: req.body.company,
-    name: req.body.name,
+    name: req.body.name ? req.body.name : 'Anonymous.',
     apitoken: uuid().replace(/-/g, '')
   })
   myUser.save()
-    .then( () => {
-      return res.send( { success: true, message: 'User saved. Redirect to login.' })
+    .then( ( user ) => {
+      return res.send( { success: true, message: 'User saved. Redirect to login.', apitoken: user.apitoken })
     })
     .catch( err => {
+      res.status(400)
       return res.send( { success: false, message:'Email taken.' } )
     })
 }
