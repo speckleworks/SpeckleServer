@@ -15,6 +15,7 @@ const mongoose            = require('mongoose')
 const bluebird            = require('bluebird')
 
 const deets               = require('./.secrets/database')
+var serverDescription     = require('./.config/ServerDescription')
 
 winston.level = 'debug'
 
@@ -58,7 +59,7 @@ var wss = new WebSocketServer( {
 require('./app/ws/SpeckleSockets') ( wss )
 
 app.get('/', function(req, res) {
-  res.send('Hello there. Move along now.')
+  res.send(serverDescription)
 })
 
 ////////////////////////////////////////////////////////////////////////
