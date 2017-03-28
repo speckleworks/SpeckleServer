@@ -15,7 +15,7 @@ const mongoose            = require('mongoose')
 const bluebird            = require('bluebird')
 
 const deets               = require('./.secrets/database')
-var serverDescription     = require('./.config/ServerDescription')
+var serverDescription     = require('./.config/serverDescription')
 
 winston.level = 'debug'
 
