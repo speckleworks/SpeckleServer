@@ -3,3 +3,4 @@ node_modules/
 frontend/
 *.sublime-project
 *.sublime-workspace
+data/
