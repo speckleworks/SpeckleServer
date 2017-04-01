@@ -4,3 +4,4 @@ frontend/
 *.sublime-project
 *.sublime-workspace
 data/
+npm-debug.log
