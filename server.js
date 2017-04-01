@@ -14,21 +14,20 @@ const expressWinston      = require('express-winston')
 const mongoose            = require('mongoose')
 const bluebird            = require('bluebird')
 
-const deets               = require('./.secrets/database')
-var serverDescription     = require('./.config/serverDescription')
+const deets               = require('./config')
 
 winston.level = 'debug'
 
 mongoose.Promise = bluebird
-mongoose.connect( deets.url , ( err ) => {
+mongoose.connect( deets.mongo.url , ( err ) => {
   if( err ) throw err
-  else winston.info('connected to mongoose at ' + deets.url )
+  else winston.info('connected to mongoose at ' + deets.mongo.url )
 })
 
 ////////////////////////////////////////////////////////////////////////
 /// Various Express inits                                         /////.
 ////////////////////////////////////////////////////////////////////////
-var app = express()  
+var app = express()
 app.use( cors() ) // allow cors
 app.use( compression() ) // allow compression
 
@@ -41,7 +40,7 @@ app.use( expressWinston.logger( {
 app.use( cookieParser() )
 app.use( bodyParser.json( { limit: '50mb' } ) )
 app.use( bodyParser.urlencoded( { limit: '50mb', extended: true } ) )
-app.use( passport.initialize() )  
+app.use( passport.initialize() )
 require('./.config/passport' ) ( passport )
 
 ////////////////////////////////////////////////////////////////////////
@@ -51,15 +50,15 @@ var http = require('http')
 var server = http.createServer( app )
 var WebSocketServer = require('ws').Server
 
-var wss = new WebSocketServer( { 
-  server: server, 
+var wss = new WebSocketServer( {
+  server: server,
   verifyClient: require('./app/ws/middleware/VerifyClient')
 } )
 
 require('./app/ws/SpeckleSockets') ( wss )
 
 app.get('/', function(req, res) {
-  res.send(serverDescription)
+  res.send(deets.speckle)
 })
 
 ////////////////////////////////////////////////////////////////////////
@@ -83,7 +82,6 @@ require( './app/api-v1/root' ) ( app, express )
 /// LAUNCH                                                         /////.
 ////////////////////////////////////////////////////////////////////////
 
-var PORT = 8080
-server.listen( PORT, () => {
-  winston.info( chalk.bgBlue( '>>>>>>>> Starting up @ ' + PORT + ' <<<<<<<<<<<') )
+server.listen( deets.server.port, () => {
+  winston.info( chalk.bgBlue( '>>>>>>>> Starting up @ ' + deets.server.port + ' <<<<<<<<<<<') )
 })
