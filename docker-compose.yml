@@ -9,7 +9,10 @@ services:
       - "8080:8080"
     environment:
       - PORT=8080
-      - DB_HOST=mongo
+      - DB_USER=reportsUser ## Your hosted mongo instance username
+      - DB_PW=password ## Your password for the user
+      - DB_HOST=127.0.0.1 ## The URL your db can be found at
+      - DB_PORT=27017 ## The port your mongo is running on
       - SPECKLE_NAME="Speckle OSX Localhost"
       - SPECKLE_URL="http://127.0.0.1:8080/api/v1"
       - SPECKLE_SOCKET="http://127.0.0.1:8080/api/v1"
