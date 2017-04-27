@@ -10,7 +10,7 @@ module.exports = ( req, res ) => {
   winston.debug( chalk.bgCyan( 'Creating a new stream, sending streamid back.' ) )
 
   var liveInstance = new HistoryInstance({ name: 'A1'})
-  liveInstance.save() 
+  liveInstance.save()
     .then( instance => {
       var myStream = new DataStream( {
         owner: req.user._id,
@@ -21,7 +21,7 @@ module.exports = ( req, res ) => {
       return myStream.save()
     })
     .then( stream => {
-      return res.send( { success: true, message: 'Creted stream.', data: stream } )
+      return res.send( { success: true, message: 'Created stream.', data: stream } )
     })
     .catch( err => {
       res.status(400)
