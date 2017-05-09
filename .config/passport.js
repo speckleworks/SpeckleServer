@@ -1,15 +1,15 @@
 'use strict'
 
-var JwtStrategy   = require('passport-jwt').Strategy
-var ExtractJwt    = require('passport-jwt').ExtractJwt
+var JwtStrategy     = require('passport-jwt').Strategy
+var ExtractJwt      = require('passport-jwt').ExtractJwt
 
-var sessionSecret = require('../config')
-var User          = require('../models/User')
+var sessionSecret   = require('../config').sessionSecret
+var User            = require('../models/User')
 
 module.exports = function( passport ) {
   let opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeader(),
-    secretOrKey: sessionSecret.session.secret
+    secretOrKey: sessionSecret
   }
 
   passport.use( new JwtStrategy( opts, ( jwt_payload, done ) => {

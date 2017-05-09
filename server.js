@@ -14,14 +14,16 @@ const expressWinston      = require('express-winston')
 const mongoose            = require('mongoose')
 const bluebird            = require('bluebird')
 
-const deets               = require('./config')
+const CONFIG              = require('./config')
 
 winston.level = 'debug'
 
 mongoose.Promise = bluebird
-mongoose.connect( deets.mongo.url , ( err ) => {
+console.log( CONFIG.mongo )
+
+mongoose.connect( CONFIG.mongo.url , ( err ) => {
   if( err ) throw err
-  else winston.info('connected to mongoose at ' + deets.mongo.url )
+  else winston.info('connected to mongoose at ' + CONFIG.mongo.url )
 })
 
 ////////////////////////////////////////////////////////////////////////
@@ -58,7 +60,7 @@ var wss = new WebSocketServer( {
 require('./app/ws/SpeckleSockets') ( wss )
 
 app.get('/', function(req, res) {
-  res.send(deets.speckle)
+  res.send(CONFIG.serverDescription)
 })
 
 ////////////////////////////////////////////////////////////////////////
@@ -82,6 +84,6 @@ require( './app/api-v1/root' ) ( app, express )
 /// LAUNCH                                                         /////.
 ////////////////////////////////////////////////////////////////////////
 
-server.listen( deets.server.port, () => {
-  winston.info( chalk.bgBlue( '>>>>>>>> Starting up @ ' + deets.server.port + ' <<<<<<<<<<<') )
+server.listen( CONFIG.server.port, () => {
+  winston.info( chalk.bgBlue( '>>>>>>>> Starting up @ ' + CONFIG.server.port + ' <<<<<<<<<<<') )
 })

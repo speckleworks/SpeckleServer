@@ -12,6 +12,10 @@ const DataObject        = require('../../../models/DataObject')
 // const nonHashedTypes    = 'Number Point Vector Boolean String Line Plane'
 const nonHashedTypes       = [ '404', "Number", "Boolean", "String", "Point", "Vector", "Line", "Interval", "Interval2d" ]
 
+const hashedTypes = [ "Polyline", "Curve", "Mesh", "Brep" ] 
+const encodedTypes = [ "Curve", "Brep" ]
+
+
 module.exports = ( req, res ) => {
   winston.debug( chalk.red( 'Updating stream live history instance data.' ) )
   let streamId = req.params.streamId
@@ -23,10 +27,9 @@ module.exports = ( req, res ) => {
   let toInsertInDb = []
   if( req.body.objects != null  && req.body.objects.length > 0)
     req.body.objects.forEach( obj => {
-      if( obj.hasOwnProperty('value') && obj.value != null && nonHashedTypes.indexOf( obj.type ) < 0 )
+      if( hashedTypes.indexOf( obj.type ) >= 0 )
         toInsertInDb.push( obj )
     }) 
-  
   // this is where we will store the ws broadcast message.
   let wsArgs = {}
   
@@ -52,7 +55,7 @@ module.exports = ( req, res ) => {
       historyInstance.objects = [] // set up fresh
       if( req.body.objects != null  && req.body.objects.length > 0)
         req.body.objects.forEach( obj => {
-          historyInstance.objects.push( nonHashedTypes.indexOf( obj.type ) < 0 ? { type: obj.type, hash: obj.hash } : obj ) 
+          historyInstance.objects.push( hashedTypes.indexOf( obj.type ) >= 0 ? { type: obj.type, hash: obj.hash } : obj ) 
         } )
 
       wsArgs.name = historyInstance.name

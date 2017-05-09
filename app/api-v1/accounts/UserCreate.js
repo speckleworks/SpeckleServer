@@ -5,7 +5,7 @@ const uuid              = require('uuid/v4')
 const User              = require('../../../models/User')
 const jwt               = require('jsonwebtoken')
 
-const sessionSecret     = require('../../../config')
+const sessionSecret     = require('../../../config').sessionSecret
 
 module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )
@@ -27,12 +27,13 @@ module.exports = function ( req, res ) {
         _id: user._id,
         name: user.name
       }
-      let token = 'JWT ' + jwt.sign( profile, sessionSecret.session.secret, { expiresIn: '24h' } )
+      let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
       console.log( token )
       return res.send( { success: true, message: 'User saved. Redirect to login.', apitoken: user.apitoken, token: token })
     })
     .catch( err => {
       res.status(400)
+      console.log(err)
       return res.send( { success: false, message:'Email taken.' } )
     })
 }

@@ -3,13 +3,13 @@ const chalk             = require('chalk')
 const passport          = require('passport')
 
 var tokenCheck          = require('./middleware/TokenCheck')
-var serverDescription   = require('../../config')
+var serverDescription   = require('../../config').serverDescription
 
 module.exports = function( app, express ) {
   var r = new express.Router()
 
   r.get( '/', ( req, res ) => {
-    res.send( serverDescription.speckle )
+    res.send( serverDescription )
   } )
 
   // STREAMS Pure

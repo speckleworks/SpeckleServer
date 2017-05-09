@@ -6,9 +6,9 @@ const DataObject        = require('../../../models/DataObject')
 
 module.exports = ( req, res ) => {
   let excludeString = ''
-  if( req.params.type === 'encoded' ) excludeString = '-value'
-  if( req.params.type === 'web' ) excludeString = '-encodedValue'
-  if( req.params.type === 'properties' ) excludeString = '-encodedValue -value'  
+  if( req.params.type === 'native' ) excludeString = '-displayValue'
+  if( req.params.type === 'display' ) excludeString = '-base64'
+  excludeString += ' -_id -__v'
 
   DataObject.findOne( { hash: req.params.hash }, excludeString )
   .then( obj => { 
