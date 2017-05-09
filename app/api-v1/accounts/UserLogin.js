@@ -4,7 +4,7 @@ const chalk             = require('chalk')
 const jwt               = require('jsonwebtoken')
 
 const User              = require('../../../models/User')
-const sessionSecret       = require('../../../.secrets/session')
+const sessionSecret       = require('../../../config')
 
 module.exports = function( req, res ) {
   if( !req.body.email ) return res.send( { success: false, message:'Do not fuck with us'} )
@@ -16,16 +16,16 @@ module.exports = function( req, res ) {
     myUser.validatePassword( req.body.password, myUser.password, match => {
       if( match === false ) return res.send( { success: false, message: 'Invalid password.'} )
       myUser.logins.push( { date: Date.now() } )
-      myUser.save() 
+      myUser.save()
       let profile = {
         _id: myUser._id,
-        name: myUser.name, 
+        name: myUser.name,
       }
-      let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
+      let token = 'JWT ' + jwt.sign( profile, sessionSecret.session.secret, { expiresIn: '24h' } )
       res.send( { success: true, token: token, user: profile } )
     })
   })
-  .catch( err => { 
+  .catch( err => {
     res.send( { success: false, message: err } )
   })
 }

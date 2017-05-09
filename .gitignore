@@ -4,3 +4,5 @@ frontend/
 *.sublime-project
 *.sublime-workspace
 data/
+docker-compose-not-working.yml 
+npm-debug.log

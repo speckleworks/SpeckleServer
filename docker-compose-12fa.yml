@@ -1,0 +1,40 @@
+##not working
+
+version: "2"
+
+services:
+  web:
+    build: .
+    volumes:
+      - ./:/app
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      # - DB_HOST=mongo
+      - SPECKLE_NAME="Speckle OSX Localhost"
+      - SPECKLE_URL="http://127.0.0.1:8080/api/v1"
+      - SPECKLE_SOCKET="http://127.0.0.1:8080/api/v1"
+    links:
+       - mongo
+    depends_on:
+       - mongo
+    restart: unless-stopped
+  mongo:
+     image: mongo:latest
+    #  volumes:
+    #    - ./data/db:/data/db
+     volumes_from:
+       - "mongo-data"
+     depends_on:
+        - mongo-data
+    #  ports:
+    #    - "27017:27017"
+     environment:
+       - MONGO_INITDB_ROOT_USERNAME=reportsUser
+       - MONGO_INITDB_ROOT_PASSWORD=password
+       - MONGO_INITDB_DATABASE=speckle
+  mongo-data:
+      image: mongo:latest
+      volumes:
+        - "/data/db"
