@@ -5,4 +5,6 @@ frontend/
 *.sublime-workspace
 data/
 docker-compose-not-working.yml 
+docker-compose-12fa.yml
+docker-compose-jenca.yml
 npm-debug.log
