@@ -18,12 +18,26 @@ const CONFIG              = require('./config')
 
 winston.level = 'debug'
 
+////////////////////////////////////////////////////////////////////////
+/// Mongo handlers                                                /////.
+////////////////////////////////////////////////////////////////////////
 mongoose.Promise = bluebird
-console.log( CONFIG.mongo )
-
-mongoose.connect( CONFIG.mongo.url , ( err ) => {
+mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true }, ( err ) => {
   if( err ) throw err
   else winston.info('connected to mongoose at ' + CONFIG.mongo.url )
+})
+
+mongoose.connection.on( 'error', err => {
+  winston.debug( 'Failed to connect to DB ' + CONFIG.mongo + ' on startup ', err )
+});
+
+// When the connection is disconnected
+mongoose.connection.on('disconnected', () => {
+  winston.debug( 'Mongoose default was disconnected' )
+});
+
+mongoose.connection.on( 'connected', ref => {
+  winston.debug( chalk.red( 'Connected to mongo.' ) )
 })
 
 ////////////////////////////////////////////////////////////////////////

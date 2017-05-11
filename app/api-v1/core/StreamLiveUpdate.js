@@ -87,6 +87,7 @@ module.exports = ( req, res ) => {
     .catch( err => {
       // console.log( err )
       if( err.message.indexOf('E11000') >= 0 ) {
+        winston.debug('E11000 dupe error.')
         if( historyId === 'live' )
           RadioTower.broadcast( streamId, { eventName: 'live-update', args: wsArgs }, wsId )
         return res.send( { success: true, message: 'Inserted ' + toInsertInDb.length + ' objects.', streamId: streamId, historyId: historyId } )
