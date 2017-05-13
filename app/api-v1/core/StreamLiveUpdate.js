@@ -9,9 +9,6 @@ const DataStream        = require('../../../models/DataStream')
 const HistoryInstance   = require('../../../models/HistoryInstance')
 const DataObject        = require('../../../models/DataObject')
 
-// const nonHashedTypes    = 'Number Point Vector Boolean String Line Plane'
-const nonHashedTypes       = [ '404', "Number", "Boolean", "String", "Point", "Vector", "Line", "Interval", "Interval2d" ]
-
 const hashedTypes = [ "Polyline", "Curve", "Mesh", "Brep" ] 
 const encodedTypes = [ "Curve", "Brep" ]
 
@@ -27,9 +24,15 @@ module.exports = ( req, res ) => {
   let toInsertInDb = []
   if( req.body.objects != null  && req.body.objects.length > 0)
     req.body.objects.forEach( obj => {
-      if( hashedTypes.indexOf( obj.type ) >= 0 )
-        toInsertInDb.push( obj )
+      if( obj )
+        if( hashedTypes.indexOf( obj.type ) >= 0 )
+          toInsertInDb.push( obj )
     }) 
+
+  //
+  toInsertInDb.forEach( obj => console.log( obj.hash ))
+  //
+  
   // this is where we will store the ws broadcast message.
   let wsArgs = {}
   
@@ -55,7 +58,8 @@ module.exports = ( req, res ) => {
       historyInstance.objects = [] // set up fresh
       if( req.body.objects != null  && req.body.objects.length > 0)
         req.body.objects.forEach( obj => {
-          historyInstance.objects.push( hashedTypes.indexOf( obj.type ) >= 0 ? { type: obj.type, hash: obj.hash } : obj ) 
+          if( obj )
+            historyInstance.objects.push( hashedTypes.indexOf( obj.type ) >= 0 ? { type: obj.type, hash: obj.hash } : obj ) 
         } )
 
       wsArgs.name = historyInstance.name
@@ -72,7 +76,9 @@ module.exports = ( req, res ) => {
         return true
       else {
         winston.debug( chalk.cyan( 'Attempting to store', toInsertInDb.length, 'objects.' ) )
-        return DataObject.insertMany( toInsertInDb )
+        let saveOperations = [] 
+        toInsertInDb.forEach( obj => saveOperations.push( DataObject.create( obj ) ) )
+        return Promise.all( saveOperations )
       }
     })
     // 4: if no errors i'm jumping here, so let's broadcast and do magic
@@ -85,7 +91,7 @@ module.exports = ( req, res ) => {
     })
     // if errors, check if it's E1100 (dupe keys in db): that's ok, broadcast the grand success.
     .catch( err => {
-      // console.log( err )
+      console.log( err )
       if( err.message.indexOf('E11000') >= 0 ) {
         winston.debug('E11000 dupe error.')
         if( historyId === 'live' )

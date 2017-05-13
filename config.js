@@ -1,10 +1,10 @@
-var dbUser    = process.env.DB_USER ||  ""
-var dbPw      = process.env.DB_PW || ""
-var host      = process.env.DB_HOST || "127.0.0.1"
-var dbPort    = process.env.DB_PORT || 27017
-var name      = process.env.DB_NAME || "speckle"
-var auth      = process.env.DB_AUTH || ""
 
+var dbUser        = process.env.DB_USER ||  ""
+var dbPw          = process.env.DB_PW || ""
+var dbHost        = process.env.DB_HOST || "127.0.0.1"
+var dbPort        = process.env.DB_PORT || 27017
+var dbName        = process.env.DB_NAME || "speckle"
+var dbAuth        = process.env.DB_AUTH || ""
 
 module.exports = {
   server: {
@@ -16,7 +16,7 @@ module.exports = {
     ws: process.env.SPECKLE_SOCKET || 'ws://10.211.55.2:8080' // Same!
   },
   mongo: {
-    url: dbUser === '' ? `mongodb://${host}:${dbPort}/${name}` : `mongodb://${dbUser}:${dbPw}@${host}:${dbPort}/${name}`
+    url: dbUser === '' ? `mongodb://${dbHost}:${dbPort}/${dbName}` : `mongodb://${dbUser}:${dbPw}@${dbHost}:${dbPort}/${dbName}`
   },
   sessionSecret: 'NaturalSparklingWaterMineral'
 }
