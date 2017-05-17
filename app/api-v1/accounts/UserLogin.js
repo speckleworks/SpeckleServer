@@ -4,7 +4,7 @@ const chalk             = require('chalk')
 const jwt               = require('jsonwebtoken')
 
 const User              = require('../../../models/User')
-const sessionSecret       = require('../../../config')
+const sessionSecret       = require('../../../config').sessionSecret
 
 module.exports = function( req, res ) {
   if( !req.body.email ) return res.send( { success: false, message:'Do not fuck with us'} )
@@ -21,7 +21,7 @@ module.exports = function( req, res ) {
         _id: myUser._id,
         name: myUser.name,
       }
-      let token = 'JWT ' + jwt.sign( profile, sessionSecret.session.secret, { expiresIn: '24h' } )
+      let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
       res.send( { success: true, token: token, user: profile } )
     })
   })
