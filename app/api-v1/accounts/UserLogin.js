@@ -19,6 +19,7 @@ module.exports = function( req, res ) {
       myUser.save()
       let profile = {
         _id: myUser._id,
+        apitoken: myUser.apitoken,
         name: myUser.name,
       }
       let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
