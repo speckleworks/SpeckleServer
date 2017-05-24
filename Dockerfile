@@ -2,13 +2,13 @@ FROM node:argon
 
 RUN mkdir /app
 
-WORKDIR /app
+COPY . /app
 
 COPY package.json /app
 
-RUN npm install
+WORKDIR /app
 
-COPY . /app
+RUN npm install
 
 EXPOSE 8080
 
