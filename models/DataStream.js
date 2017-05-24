@@ -6,6 +6,7 @@ var dataStreamSchema = mongoose.Schema({
   name: { type: String, default:'Anonymous Data Stream' },
   liveInstance: { type: mongoose.Schema.Types.ObjectId, ref: 'HistoryInstance' }, 
   history: [ { type: mongoose.Schema.Types.ObjectId, ref: 'HistoryInstance' } ],
+  layerMaterials: { type: Object, default: {} },
   private: { type: Boolean, default: false },
   sharedWith: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   locked: { type: Boolean, default: false },

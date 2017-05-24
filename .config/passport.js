@@ -13,13 +13,10 @@ module.exports = function( passport ) {
   }
 
   passport.use( new JwtStrategy( opts, ( jwt_payload, done ) => {
-
     User.findOne( { _id: jwt_payload._id }, ( err, user ) => {
       if( err ) return done( err, false ) // not ok
       if( !user ) return done( null, false ) // not ok
       return done( null, user ) // is ok
     } )
   }))
-
-
 }

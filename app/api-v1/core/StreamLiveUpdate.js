@@ -2,6 +2,7 @@
 const winston           = require('winston')
 const chalk             = require('chalk')
 const shortId           = require('shortid')
+const _                 = require('lodash')
 
 const RadioTower        = require('../../ws/RadioTower')
 
@@ -52,14 +53,22 @@ module.exports = ( req, res ) => {
       if( !historyInstance ) throw new Error( 'No live instance found.' )
       
       historyInstance.name = req.body.streamName
-      historyInstance.layers = req.body.layers
+      
+      historyInstance.layers = req.body.layers // this is the nuclear option. wat happens if layer colours or properties are updated from elsewhere? nope. nope. nope. not good. we need to 'merge' the arrays softly, diffing them smoothly.
+
+
+      console.log( historyInstance.layers )
+
       historyInstance.objectProperties = req.body.objectProperties
 
       historyInstance.objects = [] // set up fresh
       if( req.body.objects != null  && req.body.objects.length > 0)
         req.body.objects.forEach( obj => {
-          if( obj )
+
+          if( obj ) {
+            console.log( obj )
             historyInstance.objects.push( hashedTypes.indexOf( obj.type ) >= 0 ? { type: obj.type, hash: obj.hash } : obj ) 
+          }
         } )
 
       wsArgs.name = historyInstance.name
@@ -91,7 +100,6 @@ module.exports = ( req, res ) => {
     })
     // if errors, check if it's E1100 (dupe keys in db): that's ok, broadcast the grand success.
     .catch( err => {
-      console.log( err )
       if( err.message.indexOf('E11000') >= 0 ) {
         winston.debug('E11000 dupe error.')
         if( historyId === 'live' )

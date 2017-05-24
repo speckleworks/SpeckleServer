@@ -17,12 +17,17 @@ module.exports = function( app, express ) {
   r.post( '/streams', tokenCheck, require( './core/StreamCreate' ) )
   // create a new stream history (from live) into stream (broadcasts)
   r.post( '/streams/:streamId/history', tokenCheck, require( './core/StreamCreateHistory' ) )
+  // create / save stream cosmestics
+  r.post( '/streams/:streamId/visuals', passport.authenticate( 'jwt', { session: false } ), require( './core/StreamCosmeticUpdate' ) )
+
 
   // get a specific stream.
   // get all streams for a specific user token
   r.get( '/streams', tokenCheck, require( './core/StreamGetAll' ) )
   // get one stream
   r.get( '/streams/:streamId', require( './core/StreamGet' ) )
+  // gets stream cosmetics
+  r.get( '/streams/:streamId/cosmetics', require( './core/StreamGetCosmetics' ) ) // untested
   // get stream data. if no historyId is provided, we default to the live instance.
   r.get( '/streams/:streamId/data/:historyId?', require( './core/StreamGetData' ) )
 
