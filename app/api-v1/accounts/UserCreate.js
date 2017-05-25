@@ -16,7 +16,7 @@ module.exports = function ( req, res ) {
     email: req.body.email,
     password: req.body.password,
     company: req.body.company,
-    name: req.body.name ? req.body.name : 'Anonymous.',
+    name: req.body.name ? req.body.name : 'John Doe',
     apitoken: uuid().replace(/-/g, '')
   })
   myUser.save()
