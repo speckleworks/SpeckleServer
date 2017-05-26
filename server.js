@@ -68,13 +68,13 @@ var WebSocketServer = require('ws').Server
 
 var wss = new WebSocketServer( {
   server: server,
-  verifyClient: require('./app/ws/middleware/VerifyClient')
+  // verifyClient: require('./app/ws/middleware/VerifyClient')
 } )
 
 require('./app/ws/SpeckleSockets') ( wss )
 
 app.get('/', function(req, res) {
-  res.send(CONFIG.serverDescription)
+  res.send( CONFIG.serverDescription )
 })
 
 ////////////////////////////////////////////////////////////////////////

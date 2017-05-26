@@ -56,17 +56,12 @@ module.exports = ( req, res ) => {
       
       historyInstance.layers = req.body.layers // this is the nuclear option. wat happens if layer colours or properties are updated from elsewhere? nope. nope. nope. not good. we need to 'merge' the arrays softly, diffing them smoothly.
 
-
-      console.log( historyInstance.layers )
-
       historyInstance.objectProperties = req.body.objectProperties
 
       historyInstance.objects = [] // set up fresh
       if( req.body.objects != null  && req.body.objects.length > 0)
         req.body.objects.forEach( obj => {
-
           if( obj ) {
-            console.log( obj )
             historyInstance.objects.push( hashedTypes.indexOf( obj.type ) >= 0 ? { type: obj.type, hash: obj.hash } : obj ) 
           }
         } )

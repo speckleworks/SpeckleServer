@@ -1,10 +1,11 @@
 var mongoose = require('mongoose')
 
 var commentSchema = mongoose.Schema({ 
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  author: { type: Object, default: {} },
   text: { type: String, default: '' },
-  cameraView: { type: Object, default: {} },
-  screenshot: { type: String, default: '' }
+  camera: { type: Object, default: {} },
+  screenshot: { type: String, default: '' },
+  streamId: { type: String }
 }, { timestamps: true } )
 
 module.exports = mongoose.model( 'Comment', commentSchema ) 

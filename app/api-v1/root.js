@@ -44,6 +44,11 @@ module.exports = function( app, express ) {
   // get the geometry of an object, full values
   r.get( '/geometry/:hash/:type?', require( './core/GeometryGet' ) )
 
+  // COMMENTS
+  // TODO
+  r.get( '/comments/:streamId', require( './core/CommentsGet' ) )
+  r.post( '/comments', passport.authenticate( 'jwt', { session: false } ), require( './core/CommentPost' ) )
+
   app.use( '/api/v1', r )
 
   // ACCOUNTS
