@@ -14,6 +14,7 @@ module.exports = ( req, res ) => {
   .then( obj => { 
     if( !obj ) throw new Error('Invalid object.')
     res.status(200)
+    res.setHeader('Cache-Control', 'public, max-age=31557600')
     res.send( {
       success: true,
       message: 'Found object ' + req.params.hash,
