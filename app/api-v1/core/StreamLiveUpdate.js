@@ -23,7 +23,7 @@ module.exports = ( req, res ) => {
   winston.debug( chalk.bgBlue('streamid', streamId, 'history id', historyId, 'ws', wsId) )
 
   let toInsertInDb = []
-  if( req.body.objects != null  && req.body.objects.length > 0)
+  if( req.body.objects != null  && req.body.objects.length > 0 )
     req.body.objects.forEach( obj => {
       if( obj )
         if( hashedTypes.indexOf( obj.type ) >= 0 )

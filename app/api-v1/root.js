@@ -38,14 +38,16 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId/meta/:historyId?', tokenCheck, require( './core/StreamLiveMetaUpdate' ) )
 
   // QUERYING
-  r.get( '/streams/:streamId/data/objects/:format/:historyId?', require( './query/QueryStreamObjects' ) )
+  // r.get( '/streams/:streamId/data/objects/:format/:historyId?', require( './query/QueryStreamObjects' ) )
+
+  r.get( '/objects/:historyId/:index?', require( './query/SimpleObjectsQuery') )
+
 
   // GEOMS
   // get the geometry of an object, full values
   r.get( '/geometry/:hash/:type?', require( './core/GeometryGet' ) )
 
   // COMMENTS
-  // TODO
   r.get( '/comments/:streamId', require( './core/CommentsGet' ) )
   r.post( '/comments', passport.authenticate( 'jwt', { session: false } ), require( './core/CommentPost' ) )
 
