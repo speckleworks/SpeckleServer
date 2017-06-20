@@ -18,7 +18,7 @@ module.exports = ( req, res ) => {
     if( req.params.index === 'all' )
       return res.send( history.objects )
     
-    if( history.objects.length - 1 > parseInt( req.params.index ) )
+    if( history.objects.length > parseInt( req.params.index ) )
       return res.send( history.objects[ parseInt( req.params.index ) ] )
 
     throw 'Out of bounds'

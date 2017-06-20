@@ -41,6 +41,7 @@ module.exports = function( app, express ) {
   // r.get( '/streams/:streamId/data/objects/:format/:historyId?', require( './query/QueryStreamObjects' ) )
 
   r.get( '/objects/:historyId/:index?', require( './query/SimpleObjectsQuery') )
+  // r.get( '/objects/:historyId/layer/:index?', require( './query/SimpleObjectsQuery') )
 
 
   // GEOMS

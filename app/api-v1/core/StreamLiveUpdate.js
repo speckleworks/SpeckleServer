@@ -13,7 +13,6 @@ const DataObject        = require('../../../models/DataObject')
 const hashedTypes = [ "Polyline", "Curve", "Mesh", "Brep" ] 
 const encodedTypes = [ "Curve", "Brep" ]
 
-
 module.exports = ( req, res ) => {
   winston.debug( chalk.red( 'Updating stream live history instance data.' ) )
   let streamId = req.params.streamId
@@ -23,20 +22,39 @@ module.exports = ( req, res ) => {
   winston.debug( chalk.bgBlue('streamid', streamId, 'history id', historyId, 'ws', wsId) )
 
   let toInsertInDb = []
-  if( req.body.objects != null  && req.body.objects.length > 0 )
+  if( req.body.objects != null  && req.body.objects.length > 0 ) {
     req.body.objects.forEach( obj => {
       if( obj )
         if( hashedTypes.indexOf( obj.type ) >= 0 )
           toInsertInDb.push( obj )
     }) 
+  }
 
-  //
-  toInsertInDb.forEach( obj => console.log( obj.hash ))
-  //
-  
+  if( req.body.objectProperties != null && true ) {    
+    function parseObject( obj ) {
+      for( let key in obj ) {
+        if( obj[ key ].hasOwnProperty('type') ) {
+          if( hashedTypes.indexOf( obj[ key ].type ) >= 0 ) {
+            toInsertInDb.push( obj[ key ] )
+            obj[ key ] = { type: obj[ key ].type, hash: obj[ key ].hash }
+          }
+        }
+        else if( typeof obj[ key ] === 'object' )
+          parseObject( obj[ key ] )
+      }
+    }
+    function processProperties( props ) {
+      props.forEach( prop => {
+        parseObject( prop )
+      })
+    }
+    processProperties( req.body.objectProperties )
+    console.log( req.body.objectProperties[0] )
+  }
+
   // this is where we will store the ws broadcast message.
   let wsArgs = {}
-  
+
   // one long promise chain, but it has comments!
   // 1: find the stream
   DataStream.findOne( { streamId : streamId } )
@@ -55,8 +73,9 @@ module.exports = ( req, res ) => {
       historyInstance.name = req.body.streamName
       
       historyInstance.layers = req.body.layers // this is the nuclear option. wat happens if layer colours or properties are updated from elsewhere? nope. nope. nope. not good. we need to 'merge' the arrays softly, diffing them smoothly.
-
-      historyInstance.objectProperties = req.body.objectProperties
+      
+      // need to parse this mofo recursively and insert heavy/hashed objects in geometry store
+      historyInstance.objectProperties = req.body.objectProperties 
 
       historyInstance.objects = [] // set up fresh
       if( req.body.objects != null  && req.body.objects.length > 0)
