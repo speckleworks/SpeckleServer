@@ -16,8 +16,6 @@ module.exports = ( req, res, next ) => {
   .then( myUser => { 
     if( !myUser ) { 
       throw new Error('No user with this token found. Are ye fooling us?')
-      res.status(401)
-      return res.send( { success: false, message:'Token check failed.' } ) 
     }
     req.user = myUser
     return next()
@@ -25,6 +23,6 @@ module.exports = ( req, res, next ) => {
   .catch( err => { 
     winston.debug( chalk.bgRed( 'token check failed: ' + token ) )
     res.status(401)
-    return res.send( { success: false, message:'Token check failed.' } ) 
+    return res.send( { success: false, message:'Token check failed.', error: err } ) 
   } )
 }
