@@ -4,6 +4,7 @@ var winston = require('winston')
 
 var userSchema = mongoose.Schema({
   name: String,
+  surname: String,
   email: { type: String, lowercase: true, unique: true, required: true },
   password: String,
   company: String,

@@ -32,7 +32,7 @@ module.exports = ( req, res ) => {
           return res.send( str )
         } ) 
       else if( req.params.format === 'json' )
-        return res.send( historyInstance.objects )
+        return res.send( JSON.stringify( historyInstance.objects, null, 4 ) )
       else 
         throw new Error('Invalid format specified.')
     })
