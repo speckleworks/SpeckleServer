@@ -17,7 +17,7 @@ module.exports = function ( req, res ) {
     password: req.body.password,
     company: req.body.company,
     name: req.body.name ? req.body.name : 'Anonymous',
-    suranme: req.body.surname ? req.body.surname : '',
+    surname: req.body.surname ? req.body.surname : '',
     apitoken: uuid().replace(/-/g, '')
   })
 
