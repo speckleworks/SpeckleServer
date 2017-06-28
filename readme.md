@@ -7,11 +7,9 @@ This is the Speckle Server, which coordinates communications between the various
 
 1) Install [Docker](https://www.docker.com/products/overview) and [docker-compose](https://docs.docker.com/compose) to your host.
 
-2) Clone this repository and change your working path to this repository.
+2) Clone repository and change your working path to this repository.
 
-3) Skip to next step if you are happy to run your own mongo database with speckle.
-
-If you want to use a hosted mongodb, open docker-compose.yml and update the ENVIRONMENT section under web service with details of your mongo instance.
+3) If you want to use a hosted mongodb, open docker-compose.yml and update the ENVIRONMENT section under web service with details of your mongo instance.
 
 4) Run it! `$ docker-compose up`
 
@@ -40,7 +38,7 @@ It's forthcoming. [Do you want to help?](mailto:d.stefanescu@ucl.ac.uk)
 
 
 ## Credits
-Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) / [UCL The Bartlett](https://www.ucl.ac.uk/bartlett/) / [InnoChain](http://innochain.net)
+Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) / [UCL The Bartlett](https://www.ucl.ac.uk/bartlett/) / [InnoChain](http://innochain.net) / [Jenca](http://www.jenca.org)
 
 This project has received funding from the European Union’s Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 642877.
 
