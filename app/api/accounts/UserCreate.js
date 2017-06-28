@@ -18,30 +18,23 @@ module.exports = function ( req, res ) {
     company: req.body.company,
     name: req.body.name ? req.body.name : 'Anonymous',
     suranme: req.body.surname ? req.body.surname : '',
-    apitoken: uuid().replace(/-/g, '')
+    apitoken: null
   })
 
   User.findOne( { email:req.body.email } )
   .then( user => {
-    console.log( user )
-    if( user ) {
-      winston.debug( 'Email taken ' + req.body.email )
-      // return res.send( {success: false, message: 'Email taken. Please login.'})
-      throw 'Email taken. Please login. Thanks!'
-    }
+    
+    if( user ) throw 'Email taken. Please login. Thanks!'
+    
+    myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id } , sessionSecret, { expiresIn: '2y' } )
+    
     return myUser.save()
   } )
   .then( savedUser => {
-    let profile = {
-      _id: savedUser._id,
-      name: savedUser.name
-    }
-    let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
+    let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
     return res.send( { success: true, message: 'User saved. Redirect to login.', apitoken: savedUser.apitoken, token: token })
   })
   .catch( err => {
-    winston.debug( err )
-    winston.debug( 'Db error' )
     return res.send( {success: false, message: err } )
   })
 }

@@ -12,21 +12,20 @@ module.exports = function( req, res ) {
 
   User.findOne( { 'email': req.body.email } )
   .then( myUser => {
-    if( !myUser ) return res.send( { success: false, message:'Do not fuck with us'} )
+    if( !myUser ) throw 'Invalid credentials.'
     myUser.validatePassword( req.body.password, myUser.password, match => {
-      if( match === false ) return res.send( { success: false, message: 'Invalid password.'} )
+      if( match === false ) {
+        res.status( 401 )
+        res.send( { success: false, message: 'Invalid credentials.' } )
+      } 
       myUser.logins.push( { date: Date.now() } )
       myUser.save()
-      let profile = {
-        _id: myUser._id,
-        apitoken: myUser.apitoken,
-        name: myUser.name,
-      }
-      let token = 'JWT ' + jwt.sign( profile, sessionSecret, { expiresIn: '24h' } )
-      res.send( { success: true, token: token, user: profile } )
+      let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
+      res.send( { success: true, token: token, user: { name: myUser.name, surname: myUser.surname, email: myUser.email, logins: myUser.logins, apiToken: myUser.apitoken } } )
     })
-  })
+  } )
   .catch( err => {
+    res.status( 401 )
     res.send( { success: false, message: err } )
   })
 }
