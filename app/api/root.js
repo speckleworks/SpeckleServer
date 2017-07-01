@@ -28,9 +28,16 @@ module.exports = function( app, express ) {
   
   // get stream
   r.get( '/streams/:streamId', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/StreamGet' ) )
+  r.get( '/streams/:streamId/meta', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/StreamGetMeta' ) )
   // update a stream
   r.put( '/streams/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamPut' ) )
 
+
+  //
+  // OBJECTS //
+  // 
+  r.post( '/objects', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/ObjectPost' ) ) 
+  r.get( '/objects/:objectId', require( './core/ObjectGet' ) )
 
   // // create / save stream cosmestics
   // r.post( '/streams/:streamId/visuals', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamCosmeticUpdate' ) )

@@ -5,7 +5,10 @@ const chalk             = require( 'chalk' )
 
 const DataStream        = require( '../../../models/DataStream' )
 const SpeckleObject     = require( '../../../models/SpeckleObject' )
-const HistoryInstance   = require( '../../../models/HistoryInstance' )
+const GeometryObject    = require( '../../../models/GeometryObject' )
+const SplitObjects      = require( '../helpers/SplitObjects' )
+
+const RadioTower        = require('../../ws/RadioTower')
 
 module.exports = ( req, res ) => {
   
@@ -16,23 +19,39 @@ module.exports = ( req, res ) => {
     return res.send( { success:false, message: 'No stream id provided.' } )
   }
 
+  let geometries = []
+  let parsedObj = []
+  let myStream = {}
   DataStream.findOne( { streamId: req.params.streamId } )
   .then( stream => {
-  
     if( !stream ) throw new Error( 'No stream found.' )
-
     if( !req.user ||  !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) 
       throw new Error( 'Unauthorized. Please log in.' ) 
     
-    // req.body.objects
-    // req.body.layers
-    // req.body.name  
-
+    myStream = stream
+    return SplitObjects( req.body.objects )
+  })
+  .then( result => {
+    geometries = result.geometries
+    parsedObj = result.parsedObj
+    return GeometryObject.insertMany( geometries )
+  } )
+  .then( result => {
+    return SpeckleObject.insertMany( parsedObj )
+  })
+  .then( result => {
+    myStream.objects = result.map( o => o._id )
+    myStream.name = req.body.name ? req.body.name : myStream.name
+    myStream.layers = req.body.layers ? req.body.layers : myStream.layers
+    return myStream.save()
+  })
+  .then( stream => {
+    // RadioTower.broadcast( myStream.streamId, { eventName: 'live-update' } )
     res.status( 200 ) 
-    return res.send( { success:true, message: 'Should update stream now' } )
+    return res.send( { success: true, message: 'Stream was updated.', streamId: myStream.streamId } )
   })
   .catch( err => {
-    console.log( 'wott' )
+    winston.error( err )
     res.status( 400 )
     res.send( { success: false, message: err, streamId: req.streamId } )
   })  

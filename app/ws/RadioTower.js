@@ -7,7 +7,7 @@ var ClientStore   = require('./ClientStore')
 module.exports = {
   rooms: {},
   announce( message ) {
-    winston.debug( chalk.bgRed('Server sending message to all clients') )
+    winston.debug( chalk.bgRed( 'Server sending message to all clients' ) )
     for( let ws of ClientStore.clients ) {
       ws.send( JSON.stringify( message ) )
     }
