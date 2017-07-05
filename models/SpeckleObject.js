@@ -7,9 +7,13 @@ var speckleObjectSchema = mongoose.Schema({
     enum: [ 'Null', 'Boolean', 'Number', 'String', 'Interval', 'Interval2d', 'Point', 'Vector', 'Plane', 'Line', 'Rectangle', 'Circle', 'Box', 'Polyline', 'Curve', 'Mesh', 'Brep' ],
     default: 'Null'
   },
+  // Geometry hash, if any
   hash: { type: String, default: null },
+  // Application's object id, whatever form it takes
+  applicationId: { type: String, default: null },
+  // All the extra properties 
   properties: { type: Object, default: null }
-}, { timestamps: false, strict: false } )
+}, { timestamps: true, strict: false } )
 
 speckleObjectSchema.pre( 'save', next => {
   next()

@@ -5,6 +5,7 @@ const chalk             = require( 'chalk' )
 
 const DataStream        = require( '../../../models/DataStream' )
 const SpeckleObject     = require( '../../../models/SpeckleObject' )
+const AssembleObjects   = require( '../helpers/AssembleObjects' )
 
 module.exports = ( req, res ) => {
 
@@ -13,7 +14,7 @@ module.exports = ( req, res ) => {
     return res.send( { success: false, message: 'No stream id provided.' } )
   }
 
-  DataStream.findOne( { streamId: req.params.streamId } ).populate( 'objects' )
+  DataStream.findOne( { streamId: req.params.streamId } ).populate( 'objects' ).lean()
   .then( stream => {
     
     if( !stream ) throw new Error( 'No stream found.' )
@@ -22,7 +23,9 @@ module.exports = ( req, res ) => {
 
     if( !req.user ||  !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) 
       throw new Error( 'Unauthorized. Please log in.' ) 
-  
+    
+    // return AssembleObjects( stream)
+
     return res.send( { success: true, stream: stream } )
   })
   .catch( err => {

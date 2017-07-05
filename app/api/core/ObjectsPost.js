@@ -1,6 +1,5 @@
 'use strict'
 const winston           = require( 'winston' )
-const passport          = require( 'passport' )
 const chalk             = require( 'chalk' )
 
 const SplitObjects      = require( '../helpers/SplitObjects' )

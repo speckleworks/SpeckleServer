@@ -28,16 +28,27 @@ module.exports = function( app, express ) {
   
   // get stream
   r.get( '/streams/:streamId', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/StreamGet' ) )
-  r.get( '/streams/:streamId/meta', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/StreamGetMeta' ) )
+  r.get( '/streams/meta/:streamId', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/StreamGetMeta' ) )
   // update a stream
   r.put( '/streams/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamPut' ) )
-
+  //r.delete( '/streams/:streamId', TODO )
 
   //
   // OBJECTS //
   // 
-  r.post( '/objects', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/ObjectPost' ) ) 
+  r.post( '/objects', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/ObjectsPost' ) ) 
+  r.put( '/objects', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/ObjectsPut' ) ) 
   r.get( '/objects/:objectId', require( './core/ObjectGet' ) )
+  r.post( '/objects/bulk', require( './core/ObjectsGetBulk' ) )
+  //r.delete( '/object/:objectId', require( 'TODO' ) )
+
+  // 
+  // GEOMETRY //
+  // 
+  r.get( '/geometry/:hash', require( './core/GeometryGet' ) )
+  // r.put( '/geometry/:hash', require( './core/GeometryGet' ) )
+  // r.delete( '/geometry/:hash', require( './core/GeometryGet' ) )
+  
 
   // // create / save stream cosmestics
   // r.post( '/streams/:streamId/visuals', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamCosmeticUpdate' ) )
@@ -53,11 +64,6 @@ module.exports = function( app, express ) {
 
   // r.get( '/objects/:historyId/:index?', require( './query/SimpleObjectsQuery') )
   // // r.get( '/objects/:historyId/layer/:index?', require( './query/SimpleObjectsQuery') )
-
-
-  // // GEOMS
-  // // get the geometry of an object, full values
-  // r.get( '/geometry/:hash/:type?', require( './core/GeometryGet' ) )
 
   // // COMMENTS
   // r.get( '/comments/:streamId', require( './core/CommentsGet' ) )

@@ -1,0 +1,308 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SpeckleApi.paw",
+    "version": "v0.0.0"
+  },
+  "host": "localhost:8080",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/",
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register User",
+        "description": "Register a new user.",
+        "operationId": "c48fd88f-be78-48a9-a901-0b7b9ac1d0df",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"email\":\"johndoe@apple.com\",\"password\":\"luxurygoods\"}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "description": "Login and get jwt token.",
+        "operationId": "d12c7579-befb-43ee-a480-bea3b86278c9",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"email\":\"johndoe@apple.com\",\"password\":\"luxurygoods\"}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "summary": "Get user profile",
+        "description": "",
+        "operationId": "0629484d-7787-403f-bc3a-149942cc5197",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/api/streams": {
+      "post": {
+        "summary": "Create a new stream",
+        "description": "",
+        "operationId": "1cd955f3-09be-4e24-96b8-c5f452fa054a",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      },
+      "get": {
+        "summary": "Get all streams",
+        "description": "Gets all the streams for a user.",
+        "operationId": "aea1eb51-53fd-40cd-a2dc-29afea0505cd",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/api/streams/BJG6Qe-V-": {
+      "get": {
+        "summary": "Get stream",
+        "description": "Gets a specific stream, without authorisation. It will fail if the stream is marked as private.",
+        "operationId": "054bfaf3-107e-499b-b9a2-2ec26efe31ba",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      },
+      "put": {
+        "summary": "Update stream",
+        "description": "Updates a specific stream that is private but the request is authenticated.",
+        "operationId": "671ab62d-b4e4-4b90-a533-74326eee1781",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"objects\":[{\"properties\":{\"A\":{\"properties\":{\"A\":{\"value\":[0,0,0],\"properties\":{},\"type\":\"Point\",\"hash\":\"Point.c6f057b86584942e415435ffb1fa93d4\"},\"B\":{\"origin\":{\"value\":[0,0,0],\"properties\":null,\"type\":\"Point\",\"hash\":\"Point.c6f057b86584942e415435ffb1fa93d4\"},\"normal\":{\"value\":[0,0,1],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.dc5c7986daef50c1e02ab09b442ee34f\"},\"xdir\":{\"value\":[1,0,0],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.f899139df5e1059396431415e770c6dd\"},\"ydir\":{\"value\":[0,1,0],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.ea20a043c08f5168d4409ff4144f32e2\"},\"properties\":null,\"type\":\"Plane\",\"hash\":\"Plane.28d87a307987464d06ceee45f81ba19a\"}},\"value\":[-11,-9,0,-5,-5,0,-1,-14,0,7,-14,0,8,-12,0,4,-6,0],\"type\":\"Polyline\",\"hash\":\"Polyline.b8cabb148761a918b22128c8f05b1d47\"}},\"vertices\":[-1,0,-2,0,0,-2,1,0,-2,-1,0,0,0,0,0,1,0,0,-1,0,2,0,0,2,1,0,2],\"faces\":[1,0,1,4,3,1,1,2,5,4,1,3,4,7,6,1,4,5,8,7],\"colors\":[],\"type\":\"Mesh\",\"hash\":\"Mesh.2c3176b21893ac1cb0b69d83f49fa1f6\"},{\"value\":[0,0,0],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.c6f057b86584942e415435ffb1fa93d4\"}],\"name\":\"Wrong side of the moon\",\"layers\":[]}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/api/streams/BJG6Qe-V-/meta": {
+      "get": {
+        "summary": "Get stream meta",
+        "description": "Does not populate the objects array.",
+        "operationId": "de8c6734-0524-4ce1-b3e0-a180b6a1e91b",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/api/streams/SyLPkGgNW": {
+      "get": {
+        "summary": "Get private stream (anonymous)",
+        "description": "This should return a 401.",
+        "operationId": "b4aa6738-4735-4dba-982e-dcbd3cf11b2b",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/api/streams/rkwnygWNb": {
+      "get": {
+        "summary": "Get private stream (shared)",
+        "description": "Gets a specific stream that is private but the request is authenticated, and the user can edit/view stream (is in the sharedWith array)",
+        "operationId": "de08914d-ad5e-4cb0-91ad-516f480558d8",
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/api/objects": {
+      "post": {
+        "summary": "Create Speckle objects",
+        "description": "Creates and stores in the database a speckle object.\n\nIt will recursively look through the object's properties and store any \"heavy\" geometries (Brep, Mesh, Curve and Polyline) in the Geometries database. All other geometries are stored within the object itself.\n\nResponse will contain the `objects` and `geometries` arrays of the saved documents.",
+        "operationId": "3422a965-a4d6-433d-ba58-aff297ebdd8e",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"objects\":[{\"value\":[0,0,0],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.c6f057b86584942e415435ffb1fa93d4\"},{\"value\":[0,0,0],\"properties\":null,\"type\":\"Point\",\"hash\":\"Point.c6f057b86584942e415435ffb1fa93d4\"},{\"properties\":{\"A\":{\"properties\":{\"A\":{\"value\":[0,0,0],\"properties\":{},\"type\":\"Point\",\"hash\":\"Point.c6f057b86584942e415435ffb1fa93d4\"},\"B\":{\"origin\":{\"value\":[0,0,0],\"properties\":null,\"type\":\"Point\",\"hash\":\"Point.c6f057b86584942e415435ffb1fa93d4\"},\"normal\":{\"value\":[0,0,1],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.dc5c7986daef50c1e02ab09b442ee34f\"},\"xdir\":{\"value\":[1,0,0],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.f899139df5e1059396431415e770c6dd\"},\"ydir\":{\"value\":[0,1,0],\"properties\":null,\"type\":\"Vector\",\"hash\":\"Vector.ea20a043c08f5168d4409ff4144f32e2\"},\"properties\":null,\"type\":\"Plane\",\"hash\":\"Plane.28d87a307987464d06ceee45f81ba19a\"}},\"value\":[-11,-9,0,-5,-5,0,-1,-14,0,7,-14,0,8,-12,0,4,-6,0],\"type\":\"Polyline\",\"hash\":\"Polyline.b8cabb148761a918b22128c8f05b1d47\"}},\"vertices\":[-1,0,-2,0,0,-2,1,0,-2,-1,0,0,0,0,0,1,0,0,-1,0,2,0,0,2,1,0,2],\"faces\":[1,0,1,4,3,1,1,2,5,4,1,3,4,7,6,1,4,5,8,7],\"colors\":[],\"type\":\"Mesh\",\"hash\":\"Mesh.2c3176b21893ac1cb0b69d83f49fa1f6\"}]}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Speckle objects",
+        "description": "Updates speckle objects.\n\nIt will recursively look through the object's properties and store any \"heavy\" geometries (Brep, Mesh, Curve and Polyline) in the Geometries database. All other geometries are stored within the object itself.\n\nResponse will contain the `objects` and `geometries` arrays of the saved documents.",
+        "operationId": "71b9323b-40ab-43ea-a946-4509c7ac15be",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"objects\":[{\"_id\":\"59566dc71877c74ea6d45cdc\",\"__v\":0,\"vertices\":[-1,0,-2,0,0,-2,1,0,-2,-1,0,0,0,0,0,1,0,0,-1,0,2,0,0,2,1,0,2],\"faces\":[1,0,1,4,3,1,1,2,5,4,1,3,4,7,6,1,4,5,8,7],\"colors\":[],\"type\":\"Mesh\",\"hash\":\"Mesh.2c3176b21893ac1cb0b69d83f49fa1f6\"},{\"_id\":\"59575428e3290e5c9c1b3122\",\"value\":[123,3,2],\"properties\":{},\"hash\":\"Vector.c6f057b86584942e415435ffb1fa93d4\",\"type\":\"Vector\"}]}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/api/objects/595639e0d2705141ea354cad": {
+      "get": {
+        "summary": "Get a Speckle object",
+        "description": "Gets a speckle object from the database. It will automatically populate geometry fields for \"heavy types\", that is `'Mesh' || 'Brep' || 'Curve' ||  'Polyline'`.\n\n",
+        "operationId": "1f6e23e3-3480-4044-8eeb-45e571e3eceb",
+        "consumes": [
+          "application/octet-stream"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/api/objects/bulk": {
+      "post": {
+        "summary": "Get Bulk Speckle objects",
+        "description": "Gets a speckle objects in bulk from the database. It will automatically populate geometry fields for \"heavy types\", that is `'Mesh' || 'Brep' || 'Curve' ||  'Polyline'`.\n\n",
+        "operationId": "1c5c4f6f-ba31-4f88-bc54-081f8b724aa8",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "{\"objects\":[\"595751cfd00ccb5c09d9a785\",\"595751cfd00ccb5c09d9a784\"]}"
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    },
+    "/api/geometry/Polyline.b8cabb148761a918b22128c8f05b1d47": {
+      "get": {
+        "summary": "Get a Geometry object",
+        "description": "Gets a speckle geometry document by its hash. \n\n",
+        "operationId": "4411986d-0aca-461a-b0ba-bec1408d0f59",
+        "consumes": [
+          "application/octet-stream"
+        ],
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "in": "body",
+            "name": "body"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "no response description was provided for this operation"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
