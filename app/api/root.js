@@ -22,7 +22,7 @@ module.exports = function( app, express ) {
   // 
   // create a new stream
   r.post( '/streams', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamCreate' ) )
-  
+ 
   // get all streams for a specific user token
   r.get( '/streams', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamGetAll' ) )
   
@@ -31,8 +31,11 @@ module.exports = function( app, express ) {
   r.get( '/streams/meta/:streamId', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/StreamGetMeta' ) )
   // update a stream
   r.put( '/streams/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamPut' ) )
-  //r.delete( '/streams/:streamId', TODO )
-
+  // delete a stream
+  r.delete( '/streams/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), ( req, res ) => res.send('TODO') )
+  // duplicate a stream
+  r.post( '/streams/duplicate/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/DuplicateStream' ) )
+  
   //
   // OBJECTS //
   // 
@@ -40,7 +43,8 @@ module.exports = function( app, express ) {
   r.put( '/objects', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/ObjectsPut' ) ) 
   r.get( '/objects/:objectId', require( './core/ObjectGet' ) )
   r.post( '/objects/bulk', require( './core/ObjectsGetBulk' ) )
-  //r.delete( '/object/:objectId', require( 'TODO' ) )
+  // consider not allowing direct object deletion (to prevent abuse) - so only stream deletion can trigger object deletion.
+  r.delete( '/object/:objectId', passport.authenticate( 'jwt-strict', { session: false } ), (req, res) => res.send('TODO') )
 
   // 
   // GEOMETRY //
@@ -51,16 +55,8 @@ module.exports = function( app, express ) {
   
 
   // // create / save stream cosmestics
-  // r.post( '/streams/:streamId/visuals', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamCosmeticUpdate' ) )
-  // r.get( '/streams/:streamId/cosmetics', require( './core/StreamGetCosmetics' ) ) // untested
-  // // UPDATES
-  // // update stream history instance; defaults to live if not provided (broadcasts)
-  // r.put( '/streams/:streamId/data/:historyId?', tokenCheck, require( './core/StreamLiveUpdate' ) )
-  // // update stream live instance metadata; defaults to live if not provided (broadcasts)
-  // r.put( '/streams/:streamId/meta/:historyId?', tokenCheck, require( './core/StreamLiveMetaUpdate' ) )
-
-  // // QUERYING
-  // // r.get( '/streams/:streamId/data/objects/:format/:historyId?', require( './query/QueryStreamObjects' ) )
+  r.post( '/streams/visuals/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamCosmeticUpdate' ) )
+  r.get( '/streams/visuals/:streamId', require( './core/StreamGetCosmetics' ) ) // untested
 
   // r.get( '/objects/:historyId/:index?', require( './query/SimpleObjectsQuery') )
   // // r.get( '/objects/:historyId/layer/:index?', require( './query/SimpleObjectsQuery') )

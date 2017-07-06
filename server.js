@@ -1,6 +1,5 @@
 'use strict'
 const express             = require('express')
-const compression         = require('compression')
 const cors                = require('cors')
 const cookieParser        = require('cookie-parser')
 const bodyParser          = require('body-parser')
@@ -12,7 +11,7 @@ const expressWinston      = require('express-winston')
 
 
 const mongoose            = require('mongoose')
-const bluebird            = require('bluebird')
+// const bluebird            = require('bluebird')
 
 const CONFIG              = require('./config')
 
@@ -21,7 +20,7 @@ winston.level = 'debug'
 ////////////////////////////////////////////////////////////////////////
 /// Mongo handlers                                                /////.
 ////////////////////////////////////////////////////////////////////////
-mongoose.Promise = bluebird
+mongoose.Promise = global.Promise
 mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true }, ( err ) => {
   if( err ) throw err
   else winston.info('connected to mongoose at ' + CONFIG.mongo.url )
@@ -45,7 +44,6 @@ mongoose.connection.on( 'connected', ref => {
 ////////////////////////////////////////////////////////////////////////
 var app = express()
 app.use( cors() ) // allow cors
-app.use( compression() ) // allow compression
 
 app.use( expressWinston.logger( {
   transports: [ new winston.transports.Console( { json: false, colorize: true } ) ],

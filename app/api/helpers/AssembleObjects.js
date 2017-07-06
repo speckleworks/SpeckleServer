@@ -15,7 +15,6 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
       return iterate( obj.properties ) // will hit the null check and return
     }
     for( let key in obj ){
-      console.log(key, ' <----')
       if( typeof obj[ key ] === 'object' && ! ( obj [ key ] instanceof Array ) )
         iterate( obj[ key ] )
     }
@@ -26,8 +25,6 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
     if( !obj ) return 
     if( obj.type ) {
       if( obj.type === 'Mesh' || obj.type === 'Brep' || obj.type === 'Curve' || obj.type === 'Polyline' ) {
-        console.log('>>>', obj.hash)
-        console.log('>>>', geometries.map( g => g.hash ) )
         var fg = geometries.find( g => g.hash === obj.hash )
         if( !fg ) obj.error = 'Failed to retrieve geometry.'
         for( let key in fg ) 
