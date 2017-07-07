@@ -24,7 +24,7 @@ module.exports = ( req, res ) => {
   })
   .then( result => {
     if( !result ) throw new Error( 'Database fail.' )
-    res.send( { success: true, speckleObject: myObjects } )
+    res.send( { success: true, speckleObjects: myObjects } )
   })
   .catch( err => {
     console.log( err )

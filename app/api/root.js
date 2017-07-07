@@ -21,7 +21,7 @@ module.exports = function( app, express ) {
   // STREAMS //
   // 
   // create a new stream
-  r.post( '/streams', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamCreate' ) )
+  r.post( '/streams', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamPost' ) )
  
   // get all streams for a specific user token
   r.get( '/streams', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamGetAll' ) )
@@ -34,7 +34,7 @@ module.exports = function( app, express ) {
   // delete a stream
   r.delete( '/streams/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), ( req, res ) => res.send('TODO') )
   // duplicate a stream
-  r.post( '/streams/duplicate/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/DuplicateStream' ) )
+  r.post( '/streams/duplicate/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/StreamDuplicate' ) )
   
   //
   // OBJECTS //

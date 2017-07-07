@@ -20,7 +20,9 @@ var dataStreamSchema = mongoose.Schema( {
 
   parent: { type: String, default: null },
 
-  children: { type: Array, default: [ ] }
+  children: { type: Array, default: [ ] },
+
+  comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ]
   
 }, { timestamps: true } )
 
