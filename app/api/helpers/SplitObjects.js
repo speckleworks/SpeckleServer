@@ -1,5 +1,5 @@
 
-const ObjectHasher      = require( 'object-hash' )
+const mmh3              = require( 'murmurhash3' ).murmur128HexSync
 
 module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
   let geometries = []
@@ -8,8 +8,9 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
     if( !obj ) return
     // if( ++stack > 100 ) throw new Error( 'Object too deeply nested.' )
     if( obj.hasOwnProperty( 'type' ) ) {
+      obj.hash = mmh3( JSON.stringify( obj.properties ) + obj.geometryHash )
       if( obj.type === 'Mesh' || obj.type === 'Brep' || obj.type === 'Curve' || obj.type === 'Polyline' ) {
-        let clone = JSON.parse(JSON.stringify(obj))
+        let clone = JSON.parse( JSON.stringify( obj ) )
         delete clone.properties
         geometries.push( clone )
         delete obj.colors
@@ -31,11 +32,9 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
     if( objArray instanceof Array)
       objArray.forEach( myobj => { 
         iterate( myobj ) 
-        myobj.spkHash = ObjectHasher( myobj )
       } )
     else {
       iterate( objArray )
-      objArray.spkHash = ObjectHasher( objArray )
     }
     let result = { geometries: geometries, parsedObj: objArray instanceof Array ? objArray : [ objArray ] }
     resolve( result )

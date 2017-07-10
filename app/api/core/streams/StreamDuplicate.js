@@ -2,7 +2,7 @@ const winston           = require( 'winston' )
 const mongoose          = require( 'mongoose' )
 const shortId           = require( 'shortid' )
 
-const DataStream        = require( '../../../models/DataStream' )
+const DataStream        = require( '../../../../models/DataStream' )
 
 module.exports = ( req, res ) => {
   if( !req.params.streamId ) {

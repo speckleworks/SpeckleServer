@@ -2,12 +2,10 @@
 const winston           = require( 'winston' )
 const chalk             = require( 'chalk' )
 
-const DataStream        = require( '../../../models/DataStream' )
-const SpeckleObject     = require( '../../../models/SpeckleObject' )
-const GeometryObject    = require( '../../../models/GeometryObject' )
-const SplitObjects      = require( '../helpers/SplitObjects' )
-
-const RadioTower        = require('../../ws/RadioTower')
+const DataStream        = require( '../../../../models/DataStream' )
+const SpeckleObject     = require( '../../../../models/SpeckleObject' )
+const GeometryObject    = require( '../../../../models/GeometryObject' )
+const SplitObjects      = require( '../../helpers/SplitObjects' )
 
 module.exports = ( req, res ) => {
   
@@ -45,7 +43,6 @@ module.exports = ( req, res ) => {
     return myStream.save()
   })
   .then( stream => {
-    // RadioTower.broadcast( myStream.streamId, { eventName: 'live-update' } )
     res.status( 200 ) 
     return res.send( { success: true, message: 'Stream was updated.', streamId: myStream.streamId } )
   })

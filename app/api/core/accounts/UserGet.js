@@ -2,7 +2,7 @@
 const winston           = require('winston')
 const chalk             = require('chalk')
 
-const User              = require('../../../models/User')
+const User              = require('../../../../models/User')
 
 module.exports = function ( req, res ) {
   winston.debug('update user route')

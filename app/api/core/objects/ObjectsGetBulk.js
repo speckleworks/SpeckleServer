@@ -1,8 +1,8 @@
 const mongoose          = require( 'mongoose' )
-const SpeckleObject     = require( '../../../models/SpeckleObject' )
-const GeometryObject    = require( '../../../models/GeometryObject' )
+const SpeckleObject     = require( '../../../../models/SpeckleObject' )
+const GeometryObject    = require( '../../../../models/GeometryObject' )
 
-const AssembleObjects   = require( '../helpers/AssembleObjects')
+const AssembleObjects   = require( '../../helpers/AssembleObjects')
 
 module.exports = ( req, res ) => {
   if( !req.body.objects ) { 

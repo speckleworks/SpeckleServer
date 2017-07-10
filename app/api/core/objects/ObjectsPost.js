@@ -2,9 +2,9 @@
 const winston           = require( 'winston' )
 const chalk             = require( 'chalk' )
 
-const SplitObjects      = require( '../helpers/SplitObjects' )
-const SpeckleObject     = require( '../../../models/SpeckleObject' )
-const GeometryObject    = require( '../../../models/GeometryObject' )
+const SplitObjects      = require( '../../helpers/SplitObjects' )
+const SpeckleObject     = require( '../../../../models/SpeckleObject' )
+const GeometryObject    = require( '../../../../models/GeometryObject' )
       
 module.exports = ( req, res ) => {
   let geometries = []
@@ -20,7 +20,7 @@ module.exports = ( req, res ) => {
     return SpeckleObject.insertMany( parsedObj )
   })
   .then( result => {
-    return res.send( { success: true, objects: result.map( o => o._id ), geometries: geometries.map( g => g.hash ) } )
+    return res.send( { success: true, objects: result.map( o => o._id ), geometries: geometries.map( g => g.geometryHash ) } )
   })
   .catch( err => {
     console.log( err )

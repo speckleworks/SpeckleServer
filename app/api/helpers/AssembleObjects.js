@@ -10,7 +10,7 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
     if( !obj ) return 
     if( obj.type ) {
       if( obj.type === 'Mesh' || obj.type === 'Brep' || obj.type === 'Curve' || obj.type === 'Polyline' ) {
-        geometriesToRequest.push( { hash: obj.hash }  )
+        geometriesToRequest.push( { hash: obj.geometryHash }  )
       }
       return iterate( obj.properties ) // will hit the null check and return
     }
@@ -25,7 +25,7 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
     if( !obj ) return 
     if( obj.type ) {
       if( obj.type === 'Mesh' || obj.type === 'Brep' || obj.type === 'Curve' || obj.type === 'Polyline' ) {
-        var fg = geometries.find( g => g.hash === obj.hash )
+        var fg = geometries.find( g => g.geometryHash === obj.geometryHash )
         if( !fg ) obj.error = 'Failed to retrieve geometry.'
         for( let key in fg ) 
           obj[ key ] = fg [ key ]
@@ -44,7 +44,7 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
   
   // because we don't enforce unique hashes anymore, this query has a rather big result. 
   // maaaybe we should do a promise.all(  geoms.map( xx => .findOne( ) ) ), but then how is the result collated?
-  GeometryObject.find( { 'hash': { $in: geometriesToRequest.map( xx => xx.hash ) } } ).lean()
+  GeometryObject.find( { 'geometryHash': { $in: geometriesToRequest.map( xx => xx.geometryHash ) } } ).lean()
   .then( result => {
     geometries = result
     objArray.forEach( o => assemble( o ) )

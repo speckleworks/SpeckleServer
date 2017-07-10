@@ -2,7 +2,7 @@
 const winston           = require('winston')
 const chalk             = require('chalk')
 
-const GeometryObject        = require('../../../models/GeometryObject')
+const GeometryObject        = require('../../../../models/GeometryObject')
 
 module.exports = ( req, res ) => {
   let excludeString = ''

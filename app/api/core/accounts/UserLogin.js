@@ -3,8 +3,8 @@ const winston           = require('winston')
 const chalk             = require('chalk')
 const jwt               = require('jsonwebtoken')
 
-const User              = require('../../../models/User')
-const sessionSecret       = require('../../../config').sessionSecret
+const User              = require('../../../../models/User')
+const sessionSecret     = require('../../../../config').sessionSecret
 
 module.exports = function( req, res ) {
   if( !req.body.email ) return res.send( { success: false, message:'Do not fuck with us'} )

@@ -3,7 +3,7 @@ const winston           = require('winston')
 const chalk             = require('chalk')
 const shortId           = require('shortid')
 
-const DataStream        = require('../../../models/DataStream')
+const DataStream        = require('../../../../models/DataStream')
 
 module.exports = ( req, res ) => {
   let stream = new DataStream( { owner: req.user._id, streamId: shortId.generate() } )

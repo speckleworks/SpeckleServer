@@ -46,9 +46,9 @@ var app = express()
 app.use( cors() ) // allow cors
 
 app.use( expressWinston.logger( {
-  transports: [ new winston.transports.Console( { json: false, colorize: true } ) ],
+  transports: [ new winston.transports.Console( { json: false, colorize: true, timestamp: true } ) ],
   meta: false,
-  msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}}'
+  msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} '
 } ))
 
 app.use( cookieParser() )

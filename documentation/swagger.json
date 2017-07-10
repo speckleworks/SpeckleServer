@@ -1,0 +1,832 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "",
+    "version" : "v0.0.3",
+    "title" : "Speckle API",
+    "contact" : {
+      "name" : "Dimitrie Stefanescu",
+      "url" : "https://speckle.works",
+      "email" : "didimitrie@gmail.com"
+    },
+    "license" : {
+      "name" : ""
+    }
+  },
+  "host" : "localhost:8080",
+  "schemes" : [ "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "security" : [ {
+    "JWT Token Auth" : [ ]
+  } ],
+  "paths" : {
+    "/api/profile" : {
+      "get" : {
+        "tags" : [ "Authentication and Users" ],
+        "summary" : "UserGetProfile",
+        "description" : "Gets the user's profile.",
+        "operationId" : "UserGetProfile",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          }
+        },
+        "security" : [ {
+          "JWT Token Auth" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Authentication and Users" ],
+        "summary" : "UserUpdate",
+        "description" : "TODO. Should update user profile with new information.",
+        "operationId" : "UserUpdate",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200"
+          }
+        },
+        "security" : [ {
+          "JWT Token Auth" : [ ]
+        } ]
+      }
+    },
+    "/api/profile/streams" : {
+      "get" : {
+        "tags" : [ "Authentication and Users" ],
+        "summary" : "UserStreamsGet",
+        "description" : "Gets all the streams for a user (identified via the authorization token, so if that's not present, it won't work).",
+        "operationId" : "UserStreamsGet",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "type" : "object",
+              "description" : "Returns an array of speckle data streams.",
+              "properties" : {
+                "data" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/Data Stream"
+                  }
+                }
+              }
+            },
+            "examples" : {
+              "application/json" : "{\n  \"success\": true,\n  \"message\": \"Stream list for user 59528ad41741dd542ebb6efc\",\n  \"data\": [\n    {\n      \"_id\": \"59528f5d8ca2f755412d8256\",\n      \"updatedAt\": \"2017-06-27T17:01:17.938Z\",\n      \"createdAt\": \"2017-06-27T17:01:17.938Z\",\n      \"streamId\": \"SyLPkGgNW\",\n      \"name\": \"Super\",\n      \"sharedWith\": [],\n      \"private\": true\n    },\n    {\n      \"_id\": \"595373ba14fe9b69ed17881c\",\n      \"updatedAt\": \"2017-06-30T15:29:42.351Z\",\n      \"createdAt\": \"2017-06-28T09:15:38.171Z\",\n      \"streamId\": \"BJG6Qe-V-\",\n      \"name\": \"Wrong side of the moon\",\n      \"sharedWith\": [],\n      \"private\": false\n    },\n    {\n      \"_id\": \"59574e49df3da25abd72a6b1\",\n      \"updatedAt\": \"2017-07-01T07:24:57.041Z\",\n      \"createdAt\": \"2017-07-01T07:24:57.041Z\",\n      \"streamId\": \"Sk-8ApN4b\",\n      \"name\": \"Speckle Stream\",\n      \"sharedWith\": [],\n      \"private\": false\n    }\n  ]\n}"
+            }
+          }
+        },
+        "security" : [ {
+          "JWT Token Auth" : [ ]
+        } ]
+      }
+    },
+    "/auth/register" : {
+      "post" : {
+        "tags" : [ "Authentication and Users" ],
+        "summary" : "UserRegister",
+        "description" : "Registers a new user.",
+        "operationId" : "UserRegister",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        }, {
+          "name" : "body",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "type" : "object",
+            "required" : [ "email", "password" ],
+            "properties" : {
+              "email" : {
+                "type" : "string",
+                "example" : "johndoe@apple.com"
+              },
+              "password" : {
+                "type" : "string",
+                "description" : "the password.",
+                "example" : "luxurygoods"
+              }
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "New user successfully registered.",
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "success" : {
+                  "type" : "boolean"
+                },
+                "message" : {
+                  "type" : "string"
+                },
+                "apitoken" : {
+                  "type" : "string",
+                  "description" : "A jwt token that expires in one year."
+                },
+                "token" : {
+                  "type" : "string",
+                  "description" : "a jwt token that expires in one day (for use in frontend)."
+                }
+              }
+            },
+            "examples" : {
+              "application/json" : "{\n\"success\": true,\n\"message\": \"User saved. Redirect to login.\",\n\"apitoken\": \"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTVmMzllZDkxZjExMWUyMjE1YTU4NzMiLCJpYXQiOjE0OTk0MTI5NzMsImV4cCI6MTU2MjUyODE3M30.ZhEZiYlTwwrM0xv107P3ah1igHA9xue8jWNe-7ykClI\",\n\"token\": \"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTVmMzllZDkxZjExMWUyMjE1YTU4NzMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk5NDEyOTczLCJleHAiOjE0OTk0OTkzNzN9.0sSw7IAXlCt9iD-nwmBZsXoRRZHBeUAMCioJVV1GXrc\"\n}"
+            }
+          },
+          "400" : {
+            "description" : "Email taken.",
+            "schema" : {
+              "type" : "object"
+            },
+            "examples" : {
+              "application/json" : "{\"success\":false,\"message\":\"Email taken. Please login. Thanks!\"}\n"
+            }
+          }
+        }
+      }
+    },
+    "/auth/login" : {
+      "post" : {
+        "tags" : [ "Authentication and Users" ],
+        "summary" : "UserLogin",
+        "description" : "Login and get jwt token.",
+        "operationId" : "UserLogin",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "body",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "default" : "{\"email\":\"johndoe@apple.com\",\"password\":\"luxurygoods\"}"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "type" : "object"
+            },
+            "examples" : {
+              "application/json" : "{\n  \"success\": true,\n  \"token\": \"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTYwODQ5YjQwNzU3MmVmYTg4YTU0NzAiLCJuYW1lIjoiRGltaXRyaWUiLCJpYXQiOjE0OTk0OTc2OTMsImV4cCI6MTQ5OTU4NDA5M30.BsM4du4R0MIjn_JBRst4Jq3xoyNBS6-Y8NmpUuemvlE\",\n  \"user\": {\n    \"name\": \"Dimitrie\",\n    \"surname\": \"Doe\",\n    \"email\": \"johndoe57@apple.com\",\n    \"logins\": [\n      {\n        \"date\": 1499497693389\n      }\n    ],\n    \"apiToken\": \"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTYwODQ5YjQwNzU3MmVmYTg4YTU0NzAiLCJpYXQiOjE0OTk0OTc2MjcsImV4cCI6MTU2MjYxMjgyN30.xdXflg0nc4OWknaSiUKOevwhk4PLXhiKku8SkVdpUwA\"\n  }\n}"
+            }
+          }
+        },
+        "security" : [ ]
+      }
+    },
+    "/api/streams" : {
+      "post" : {
+        "tags" : [ "Streams" ],
+        "summary" : "StreamCreate",
+        "description" : "Creates a new stream.",
+        "operationId" : "StreamCreate",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "required" : [ "stream" ],
+              "type" : "object",
+              "description" : "Returns a newly minted data stream.",
+              "properties" : {
+                "success" : {
+                  "type" : "boolean"
+                },
+                "stream" : {
+                  "$ref" : "#/definitions/Data Stream"
+                }
+              }
+            },
+            "examples" : {
+              "application/json" : "{\n  \"success\": true,\n  \"message\": \"Created stream.\",\n  \"stream\": {\n    \"__v\": 0,\n    \"updatedAt\": \"2017-07-08T07:09:37.686Z\",\n    \"createdAt\": \"2017-07-08T07:09:37.686Z\",\n    \"owner\": \"5960849b407572efa88a5470\",\n    \"streamId\": \"rkqVrWCVb\",\n    \"_id\": \"59608531407572efa88a5471\",\n    \"comments\": [],\n    \"children\": [],\n    \"parent\": null,\n    \"layers\": [],\n    \"objects\": [],\n    \"name\": \"Speckle Stream\",\n    \"sharedWith\": [],\n    \"private\": false\n  }\n}"
+            }
+          }
+        },
+        "security" : [ {
+          "JWT Token Auth" : [ ]
+        } ]
+      }
+    },
+    "/api/streams/{streamId}" : {
+      "get" : {
+        "tags" : [ "Streams" ],
+        "summary" : "StreamGet",
+        "description" : "Will return the specified stream. If no `Authorization` header is provided and the stream is private you will get a 401.\n\nIt populates the `objects` array fully.",
+        "operationId" : "StreamGet",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "$ref" : "#/definitions/Data Stream"
+            },
+            "examples" : {
+              "application/json" : "{\n  \"success\": true,\n  \"stream\": {\n    \"_id\": \"595373ba14fe9b69ed17881c\",\n    \"updatedAt\": \"2017-07-06T11:29:16.423Z\",\n    \"createdAt\": \"2017-06-28T09:15:38.171Z\",\n    \"owner\": \"59528ad41741dd542ebb6efc\",\n    \"streamId\": \"BJG6Qe-V-\",\n    \"children\": [\n      \"595e1eba29cd8fc88c6711df\",\n      \"595e1f0ce48999c89ace71fe\"\n    ],\n    \"parent\": null,\n    \"layers\": [ /*etc*/ ],\n    \"objects\": [ /*etc*/ ],\n    \"sharedWith\": [],\n    \"private\": false,\n    \"__v\": 23,\n    \"layerMaterials\": {},\n    \"name\": \"Wrong side of the moon\"\n  }\n}"
+            }
+          },
+          "401" : {
+            "description" : "Returned when the stream is private, and the Authorization header is not present, or it the user described by it is not either the owner or in the `sharedWith` array."
+          },
+          "404" : {
+            "description" : "Stream not found.",
+            "schema" : {
+              "type" : "object"
+            },
+            "examples" : {
+              "application/json" : "{\n  \"success\": false,\n  \"message\": \"No stream found.\"\n}"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Streams" ],
+        "summary" : "StreamUpdate",
+        "description" : "This is the nuclear option. \n\nUpdates a specific stream:\n- it disassebmles the objects into they geometry components, and saves both in the database\n- it overwrites the objects array (if present)\n- it overwrites the layers array (if present)\n- it overwrites the name (if present)\n",
+        "operationId" : "StreamUpdate",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        }, {
+          "name" : "body",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "type" : "object",
+            "properties" : {
+              "objects" : {
+                "type" : "array",
+                "description" : "the objects in the stream",
+                "items" : {
+                  "$ref" : "#/definitions/Speckle Object"
+                }
+              },
+              "layers" : {
+                "type" : "array",
+                "description" : "the layers in the stream",
+                "items" : {
+                  "$ref" : "#/definitions/Speckle Layer"
+                }
+              },
+              "name" : {
+                "type" : "string",
+                "description" : "the stream's name"
+              }
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "On success"
+          },
+          "401" : {
+            "description" : "Status 401"
+          },
+          "404" : {
+            "description" : "Status 404"
+          }
+        },
+        "security" : [ {
+          "JWT Token Auth" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Streams" ],
+        "summary" : "StreamDelete",
+        "description" : "TODO",
+        "operationId" : "StreamDelete",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200"
+          }
+        },
+        "security" : [ {
+          "JWT Token Auth" : [ ]
+        } ]
+      },
+      "parameters" : [ {
+        "name" : "streamId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "description" : "The stream's id.",
+        "x-example" : "SyLPkGgNW"
+      } ]
+    },
+    "/api/streams/meta/{streamId}" : {
+      "get" : {
+        "tags" : [ "Streams" ],
+        "summary" : "StreamGetMeta",
+        "description" : "It will not populate the objects array :)",
+        "operationId" : "StreamGetMeta",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200"
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "streamId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string"
+      } ]
+    },
+    "/api/streams/duplicate/{streamId}" : {
+      "post" : {
+        "tags" : [ "Streams" ],
+        "summary" : "StreamDuplicate",
+        "description" : "Duplicate the `streamId` and saves it in a database. The clone will automatically have it's parent field set to the original stream's `_id`. \nFurthermore, the clone's `_id` will be pushed into the parent's children array.",
+        "operationId" : "StreamDuplicate",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "type" : "object",
+              "description" : "Returns a `clone` stream as well as the `parent` stream."
+            },
+            "examples" : {
+              "application/json" : "{\n  \"success\": true,\n  \"clone\": {\n    \"_id\": \"595e1f0ce48999c89ace71fe\",\n    \"streamId\": \"BkVMJsiN-\"\n  },\n  \"parent\": {\n    \"_id\": \"595373ba14fe9b69ed17881c\",\n    \"streamId\": \"BJG6Qe-V-\",\n    \"children\": [\n      \"595e1e50523ae9c8726ed78c\",\n      \"595e1eba29cd8fc88c6711df\",\n      \"595e1f0ce48999c89ace71fe\"\n    ]\n  }\n}"
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "streamId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string",
+        "description" : "The stream's id.",
+        "default" : "BJG6Qe-V-"
+      } ]
+    },
+    "/api/objects/{objectId}" : {
+      "get" : {
+        "tags" : [ "Objects" ],
+        "summary" : "ObjectGet",
+        "description" : "Gets a speckle object from the database. It will automatically populate geometry fields for \"heavy types\", that is `'Mesh' || 'Brep' || 'Curve' ||  'Polyline'`.\n\n",
+        "operationId" : "ObjectGet",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200"
+          },
+          "404" : {
+            "description" : "Status 404"
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "objectId",
+        "in" : "path",
+        "required" : true,
+        "type" : "string"
+      } ]
+    },
+    "/api/objects/bulk" : {
+      "post" : {
+        "tags" : [ "Objects" ],
+        "summary" : "ObjectGetBulk",
+        "description" : "Gets a speckle objects in bulk from the database. It will automatically populate geometry fields for \"heavy types\", that is `'Mesh' || 'Brep' || 'Curve' ||  'Polyline'`.\n\n",
+        "operationId" : "ObjectGetBulk",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        }, {
+          "name" : "body",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "type" : "object",
+            "required" : [ "objects" ],
+            "properties" : {
+              "objects" : {
+                "type" : "array",
+                "description" : "an array of `objectIds` to swoosh from the database.",
+                "items" : {
+                  "type" : "string"
+                },
+                "example" : "\"id1\", \"id2\""
+              }
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "required" : [ "speckleObjects" ],
+              "type" : "object",
+              "description" : "Returns an array of speckle objects.",
+              "properties" : {
+                "success" : {
+                  "type" : "boolean"
+                },
+                "speckleObjects" : {
+                  "type" : "array",
+                  "description" : "An array of speckle objects.",
+                  "items" : {
+                    "$ref" : "#/definitions/Speckle Object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/objects" : {
+      "post" : {
+        "tags" : [ "Objects" ],
+        "summary" : "ObjectCreateBulk",
+        "description" : "Creates and stores in the database a speckle object.\n\nIt will recursively look through the object's properties and store any \"heavy\" geometries (Brep, Mesh, Curve and Polyline) in the Geometries database. All other geometries are stored within the object itself.\n\nResponse will contain the `objects` and `geometries` arrays of the saved documents.",
+        "operationId" : "ObjectCreateBulk",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        }, {
+          "name" : "body",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "schema" : {
+              "type" : "object",
+              "description" : "Returns an array of `objectid`s and an array of `geometryHashes` if that's the case. "
+            },
+            "examples" : {
+              "application/json" : "{\n  \"success\": true,\n  \"objects\": [\n    \"59575428e3290e5c9c1b3122\",\n    \"59575428e3290e5c9c1b3123\",\n    \"59575428e3290e5c9c1b3124\"\n  ],\n  \"geometries\": [\n    \"Mesh.2c3176b21893ac1cb0b69d83f49fa1f6\",\n    \"Polyline.b8cabb148761a918b22128c8f05b1d47\"\n  ]\n}"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Objects" ],
+        "summary" : "ObjectUpdateBulk",
+        "description" : "Updates speckle objects.\n\nIt will recursively look through the object's properties and store any \"heavy\" geometries (Brep, Mesh, Curve and Polyline) in the Geometries database. All other geometries are stored within the object itself.\n\nResponse will contain the `objects` and `geometries` arrays of the saved documents.",
+        "operationId" : "ObjectUpdateBulk",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        }, {
+          "name" : "body",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "type" : "object",
+            "properties" : {
+              "objects" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "object",
+                  "properties" : {
+                    "hash" : {
+                      "type" : "string",
+                      "description" : "object's hash"
+                    }
+                  }
+                }
+              }
+            },
+            "description" : "Should contain an array of objects to store."
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200"
+          }
+        },
+        "security" : [ {
+          "JWT Token Auth" : [ ]
+        } ]
+      }
+    },
+    "/api/geometry/{geometryHash}" : {
+      "get" : {
+        "tags" : [ "Objects" ],
+        "summary" : "GeometryGet",
+        "description" : "Gets a speckle geometry document by its hash. \n\n",
+        "operationId" : "GeometryGet",
+        "parameters" : [ {
+          "name" : "Authorization",
+          "in" : "header",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTUyOGFkNDE3NDFkZDU0MmViYjZlZmMiLCJuYW1lIjoiQW5vbnltb3VzIiwiaWF0IjoxNDk4NTgxNzE2LCJleHAiOjE1NjE2OTY5MTZ9.Py9Fwbuj-eiWJDBqZVRv8-uWsTChakhbrLcgKoMS0a4"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200"
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "geometryHash",
+        "in" : "path",
+        "required" : true,
+        "type" : "string"
+      } ]
+    }
+  },
+  "securityDefinitions" : {
+    "JWT Token Auth" : {
+      "type" : "apiKey",
+      "name" : "Authorization",
+      "in" : "header"
+    }
+  },
+  "definitions" : {
+    "Data Stream" : {
+      "type" : "object",
+      "required" : [ "layers", "name", "objects", "owner", "private", "streamId" ],
+      "properties" : {
+        "streamId" : {
+          "type" : "string",
+          "description" : "the stream's short id."
+        },
+        "owner" : {
+          "type" : "string",
+          "description" : "the owner's user id."
+        },
+        "private" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "the data stream's name",
+          "default" : "Anonymous Stream"
+        },
+        "objects" : {
+          "type" : "array",
+          "description" : "An array of speckle object ids.",
+          "items" : {
+            "$ref" : "#/definitions/Speckle Object"
+          }
+        },
+        "layers" : {
+          "type" : "array",
+          "description" : "An array of speckle layers.",
+          "items" : {
+            "$ref" : "#/definitions/Speckle Layer"
+          }
+        },
+        "parent" : {
+          "type" : "string",
+          "description" : "Parent stream's id, if any. If null, this is a `root` stream."
+        },
+        "children" : {
+          "type" : "array",
+          "description" : "Any offspring that this stream might have (created with `/duplicate/{streamId}`",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "description" : "Describes a data stream. The data stream's `streamId` will define the channel on which real-time updates will be distributed on the websocket server.",
+      "example" : "{\n    \"_id\": \"595373ba14fe9b69ed17881c\",\n    \"updatedAt\": \"2017-07-06T11:29:16.423Z\",\n    \"createdAt\": \"2017-06-28T09:15:38.171Z\",\n    \"owner\": \"59528ad41741dd542ebb6efc\",\n    \"streamId\": \"BJG6Qe-V-\",\n    \"children\": [\n      \"595e1eba29cd8fc88c6711df\",\n      \"595e1f0ce48999c89ace71fe\"\n    ],\n    \"parent\": null,\n    \"layers\": [],\n    \"objects\": [\n    ],\n    \"sharedWith\": [],\n    \"private\": false,\n    \"name\": \"Widdly Wiggle Pop\"\n}"
+    },
+    "Speckle Object" : {
+      "type" : "object",
+      "required" : [ "hash", "type" ],
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "description" : "object's type",
+          "enum" : [ "Boolean", "Number", "String", "Interval", "Interval2d", "Point", "Vector", "Plane", "Line", "Rectangle", "Circle", "Box", "Polyline", "Curve", "Mesh", "Brep", "Null" ]
+        },
+        "hash" : {
+          "type" : "string",
+          "description" : "Object's unique hash. It's generated server-side from `JSON.stringify( obj.properties ) + obj.geometryHash` using a murmurhash3 128bit function."
+        },
+        "geometryHash" : {
+          "type" : "string",
+          "description" : "It the object contains geometry, it should have a geometry hash.",
+          "example" : "Polyline.b8cabb148761a918b22128c8f05b1d47"
+        },
+        "applicationId" : {
+          "type" : "string",
+          "description" : "If this object is not an ephemeral object, (ie coming from Grasshopper or Dynamo), and has a unique, persistent and consistent application id, this is where to store said guid."
+        },
+        "properties" : {
+          "type" : "object",
+          "description" : "Anything goes in here, including other objects.",
+          "example" : "{ objectIsSad: false, bimLevel: \"infinity\", nestedTurtle: { ... }}"
+        }
+      },
+      "description" : "Minimal representation of a speckle object."
+    },
+    "Speckle Layer" : {
+      "type" : "object",
+      "required" : [ "guid", "name", "objectCount", "startIndex" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Layer's name"
+        },
+        "guid" : {
+          "type" : "string",
+          "description" : "Layer's guid (must be unique)"
+        },
+        "topology" : {
+          "type" : "string",
+          "description" : "String describing the nested tree structure (Gh centric).",
+          "example" : "0;0;0;0-2 0;0;0;1-2"
+        },
+        "startIndex" : {
+          "type" : "number",
+          "description" : "The index of the first object relative to the stream's objects array"
+        },
+        "objectCount" : {
+          "type" : "number",
+          "description" : "How many objects does this layer have."
+        },
+        "properties" : {
+          "$ref" : "#/definitions/Layer Properties"
+        }
+      },
+      "description" : "Describes a speckle layer."
+    },
+    "Layer Properties" : {
+      "type" : "object",
+      "properties" : {
+        "color" : {
+          "type" : "object",
+          "properties" : {
+            "a" : {
+              "type" : "number",
+              "description" : "alpha value"
+            },
+            "hex" : {
+              "type" : "string",
+              "description" : "hex color value",
+              "example" : "#d4d4d4"
+            }
+          }
+        },
+        "visible" : {
+          "type" : "boolean",
+          "description" : "toggles layer visibility."
+        },
+        "pointsize" : {
+          "type" : "number",
+          "description" : "defines point size in threejs"
+        },
+        "linewidth" : {
+          "type" : "number",
+          "description" : "defines line thickness in threejs"
+        },
+        "shininess" : {
+          "type" : "number",
+          "description" : "says it all. speckle is superficial."
+        },
+        "smooth" : {
+          "type" : "boolean",
+          "description" : "smooth shading toggle"
+        },
+        "showEdges" : {
+          "type" : "boolean",
+          "description" : "display edges or not yo."
+        },
+        "wireframe" : {
+          "type" : "boolean",
+          "description" : "i'm bored."
+        }
+      },
+      "description" : "Holds stream layer properties, mostly for displaying purposes. This object will be filled up with garbage from threejs and others, but below is a minimal schema."
+    },
+    "User" : {
+      "type" : "object",
+      "required" : [ "apitoken", "email", "name" ],
+      "properties" : {
+        "apitoken" : {
+          "type" : "string",
+          "description" : "a signed jwt token that expires in 1 year."
+        },
+        "email" : {
+          "type" : "string",
+          "description" : "user's email"
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "User's given name"
+        },
+        "surname" : {
+          "type" : "string",
+          "description" : "User's family name"
+        },
+        "company" : {
+          "type" : "string",
+          "description" : "Users's company"
+        },
+        "logins" : {
+          "type" : "array",
+          "description" : "an array storing each time the user logged in.",
+          "items" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "description" : "Vaguely describes a speckle user document."
+    }
+  }
+}

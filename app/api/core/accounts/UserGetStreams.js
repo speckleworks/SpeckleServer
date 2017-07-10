@@ -2,7 +2,7 @@
 const winston           = require('winston')
 const chalk             = require('chalk')
 
-const DataStream        = require('../../../models/DataStream')
+const DataStream        = require('../../../../models/DataStream')
 
 module.exports = ( req, res ) => { 
   winston.debug( chalk.bgGreen( 'Getting *all* streams for user ', req.user._id ) )

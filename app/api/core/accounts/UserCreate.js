@@ -2,10 +2,10 @@
 const winston           = require('winston')
 const chalk             = require('chalk')
 const uuid              = require('uuid/v4')
-const User              = require('../../../models/User')
 const jwt               = require('jsonwebtoken')
 
-const sessionSecret     = require('../../../config').sessionSecret
+const User              = require('../../../../models/User')
+const sessionSecret     = require('../../../../config').sessionSecret
 
 module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )

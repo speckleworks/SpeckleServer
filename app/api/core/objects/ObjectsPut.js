@@ -3,9 +3,9 @@ const winston           = require( 'winston' )
 const chalk             = require( 'chalk' )
 const mongoose          = require( 'mongoose' )
 
-const SplitObjects      = require( '../helpers/SplitObjects' )
-const SpeckleObject     = require( '../../../models/SpeckleObject' )
-const GeometryObject    = require( '../../../models/GeometryObject' )
+const SplitObjects      = require( '../../helpers/SplitObjects' )
+const SpeckleObject     = require( '../../../../models/SpeckleObject' )
+const GeometryObject    = require( '../../../../models/GeometryObject' )
       
 module.exports = ( req, res ) => { 
   let geometries = []
