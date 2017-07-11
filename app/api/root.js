@@ -34,30 +34,34 @@ module.exports = function( app, express ) {
   
   // get stream
   r.get( '/streams/:streamId', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/streams/StreamGet' ) )
-  r.get( '/streams/meta/:streamId', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/streams/StreamGetMeta' ) )
+  r.get( '/streams/:streamId/meta', passport.authenticate( [ 'jwt-strict', 'anonymous'], { session: false } ),  require( './core/streams/StreamGetMeta' ) )
   // update a stream
   r.put( '/streams/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/streams/StreamPut' ) )
   // delete a stream
   r.delete( '/streams/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), ( req, res ) => res.send('TODO') )
   // duplicate a stream
-  r.post( '/streams/duplicate/:streamId', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/streams/StreamDuplicate' ) )
+  r.post( '/streams/:streamId/duplicate', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/streams/StreamDuplicate' ) )
   
+
+
   //
   // OBJECTS //
   // 
-  r.post( '/objects', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/objects/ObjectsPost' ) ) 
+  // create many
+  r.post( '/objects/createmany', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/objects/ObjectsPost' ) )
+  // get many
+  r.post( '/objects/getmany', require( './core/objects/ObjectsGetMany' ) )
+  // edit many
   r.put( '/objects', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/objects/ObjectsPut' ) ) 
+  // get one
   r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
-  r.post( '/objects/bulk', require( './core/objects/ObjectsGetBulk' ) )
-  // consider not allowing direct object deletion (to prevent abuse) - so only stream deletion can trigger object deletion.
-  r.delete( '/object/objects/:objectId', passport.authenticate( 'jwt-strict', { session: false } ), (req, res) => res.send('TODO') )
+  // update one TODO
+  r.put( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
 
   // 
   // GEOMETRY //
   // 
   r.get( '/geometry/:hash', require( './core/objects/GeometryGet' ) )
-  // r.put( '/geometry/:hash', require( './core/GeometryGet' ) )
-  // r.delete( '/geometry/:hash', require( './core/GeometryGet' ) )
 
   // // COMMENTS
   // r.get( '/comments/:streamId', require( './core/CommentsGet' ) )

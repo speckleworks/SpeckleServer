@@ -6,6 +6,7 @@ const DataStream        = require( '../../../../models/DataStream' )
 const SpeckleObject     = require( '../../../../models/SpeckleObject' )
 const GeometryObject    = require( '../../../../models/GeometryObject' )
 const SplitObjects      = require( '../../helpers/SplitObjects' )
+const MergeLayers       = require( '../../helpers/MergeLayers' )
 
 module.exports = ( req, res ) => {
   
@@ -38,8 +39,8 @@ module.exports = ( req, res ) => {
   })
   .then( result => {
     myStream.objects = result.map( o => o._id )
+    myStream.layers = req.body.layers ? MergeLayers( myStream.layers, req.body.layers ) : myStream.layers
     myStream.name = req.body.name ? req.body.name : myStream.name
-    myStream.layers = req.body.layers ? req.body.layers : myStream.layers
     return myStream.save()
   })
   .then( stream => {

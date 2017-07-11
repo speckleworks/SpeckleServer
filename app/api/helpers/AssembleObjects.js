@@ -10,7 +10,7 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
     if( !obj ) return 
     if( obj.type ) {
       if( obj.type === 'Mesh' || obj.type === 'Brep' || obj.type === 'Curve' || obj.type === 'Polyline' ) {
-        geometriesToRequest.push( { hash: obj.geometryHash }  )
+        geometriesToRequest.push( { geometryHash: obj.geometryHash }  )
       }
       return iterate( obj.properties ) // will hit the null check and return
     }
