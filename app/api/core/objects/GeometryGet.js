@@ -10,7 +10,7 @@ module.exports = ( req, res ) => {
   if( req.params.type === 'speckle' ) excludeString = '-base64'
   // excludeString += ' -_id -__v'
 
-  GeometryObject.findOne( { hash: req.params.hash }, excludeString )
+  GeometryObject.findOne( { geometryHash: req.params.hash }, excludeString )
   .then( obj => { 
     if( !obj ) throw new Error( 'Invalid object.' )
     res.status( 200 )

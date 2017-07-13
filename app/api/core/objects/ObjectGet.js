@@ -23,8 +23,8 @@ module.exports = ( req, res ) => {
   })
   .then( result => {
     if( !result ) throw new Error( 'Database fail.' )
-    result.properties = myObject.properties
-    res.send( { success: true, speckleObject: result } )
+    result[ 0 ].properties = myObject.properties
+    res.send( { success: true, speckleObject: result[ 0 ] } )
   })
   .catch( err => {
     console.log( err )

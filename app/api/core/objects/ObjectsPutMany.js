@@ -15,6 +15,8 @@ module.exports = ( req, res ) => {
 
   SpeckleObject.find( { '_id': { $in: req.body.objects.map( obj => mongoose.Types.ObjectId( obj._id ) ) } } )
   .then( result => {
+    if( !result || result.length === 0 || result.length != req.body.objects.length ) 
+      throw new Error( 'Failed to find objects.' )
     objectsToUpdate = result
     return SplitObjects( req.body.objects )
   })
@@ -35,7 +37,7 @@ module.exports = ( req, res ) => {
   .catch( err => { 
     winston.error( err )
     res.status( 400 )
-    res.send( { success: false, error: err } )
+    res.send( { success: false, error: err.toString() } )
   })
 
 }

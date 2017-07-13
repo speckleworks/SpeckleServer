@@ -27,25 +27,13 @@ module.exports = ( req, res ) => {
       throw new Error( 'Unauthorized. Please log in.' ) 
     
     myStream = stream
-    return SplitObjects( req.body.objects )
-  })
-  .then( result => {
-    geometries = result.geometries
-    parsedObj = result.parsedObj
-    return GeometryObject.insertMany( geometries )
-  } )
-  .then( result => {
-    return SpeckleObject.insertMany( parsedObj )
-  })
-  .then( result => {
-    myStream.objects = result.map( o => o._id )
     myStream.layers = req.body.layers ? MergeLayers( myStream.layers, req.body.layers ) : myStream.layers
     myStream.name = req.body.name ? req.body.name : myStream.name
     return myStream.save()
   })
   .then( stream => {
     res.status( 200 ) 
-    return res.send( { success: true, message: 'Stream was updated.', streamId: myStream.streamId } )
+    return res.send( { success: true, message: 'Stream meta was updated.', streamId: myStream.streamId } )
   })
   .catch( err => {
     winston.error( err )
