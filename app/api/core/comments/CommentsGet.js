@@ -2,8 +2,8 @@
 const winston           = require('winston')
 const chalk             = require('chalk')
 const uuid              = require('uuid/v4')
-const User              = require('../../../models/User')
-const Comment           = require('../../../models/Comment')
+const User              = require('../../../../models/User')
+const Comment           = require('../../../../models/Comment')
 
 module.exports = function( req, res ) {
 

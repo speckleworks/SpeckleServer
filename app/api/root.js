@@ -30,6 +30,15 @@ module.exports = function( app, express ) {
   r.put( '/accounts/profile', strictAuth, require( './core/accounts/UserPut' ) )
   // get all streams for a specific user token
   r.get( '/accounts/streams', strictAuth, require( './core/accounts/UserGetStreams' ) )
+  // get all clients for a specific user token
+  r.get( '/accounts/clients', strictAuth, require( './core/accounts/UserGetClients' ) )
+
+  // 
+  // CLIENTS //
+  // 
+  r.post( '/clients/', strictAuth, require( './core/clients/ClientCreate' ) )
+  r.get( '/clients/:clientId', strictAuth, require( './core/clients/ClientGet' ) )
+  r.put( '/clients/:clientId', strictAuth, require( './core/clients/ClientPut' ) )
 
   // 
   // STREAMS //

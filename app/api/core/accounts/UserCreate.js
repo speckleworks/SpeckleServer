@@ -9,8 +9,8 @@ const sessionSecret     = require('../../../../config').sessionSecret
 
 module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )
-  if( !req.body.email ) { res.status(400); return res.send( { success: false, message:'Do not fuck with us. Give us your email.'} ) }
-  if( !req.body.password ) { res.status(400); return res.send( { success: false, message:'Passwords are a necessary evil, fam.'} ) }
+  if( !req.body.email ) { res.status(400); return res.send( { success: false, message:'Do not fuck with us. Give us your email.' } ) }
+  if( !req.body.password ) { res.status(400); return res.send( { success: false, message:'Passwords are a necessary evil, fam.' } ) }
 
   let myUser = new User({
     email: req.body.email,

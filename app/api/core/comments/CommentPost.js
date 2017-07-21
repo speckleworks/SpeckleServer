@@ -2,8 +2,8 @@
 const winston           = require('winston')
 const chalk             = require('chalk')
 const uuid              = require('uuid/v4')
-const User              = require('../../../models/User')
-const Comment           = require('../../../models/Comment')
+const User              = require('../../../../models/User')
+const Comment           = require('../../../../models/Comment')
 
 module.exports = function( req, res ) {
   winston.debug( 'comment post.' )
@@ -23,10 +23,10 @@ module.exports = function( req, res ) {
 
   comment.save()
   .then( () => {
-    return res.send( { success: true } )
+    return res.send( { success: true, message: 'Comment saved.' } )
   })
   .catch( err => {
     res.status( 400 )
-    return res.send( { success:false, message: err } )
+    return res.send( { success:false, message: err.toString() } )
   })
 }
