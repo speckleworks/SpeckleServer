@@ -5,6 +5,7 @@ const GeometryObject    = require( '../../../../models/GeometryObject' )
 const AssembleObjects   = require( '../../helpers/AssembleObjects')
 
 module.exports = ( req, res ) => {
+  // console.log( req.body.objects )
   if( !req.body.objects ) { 
     res.status( 400 ) 
     return res.send( { success: false, message: 'No object id provided.' } )
@@ -15,7 +16,6 @@ module.exports = ( req, res ) => {
   }
 
   let myObjects = []
-
   SpeckleObject.find( { _id: { $in: req.body.objects.map( o => mongoose.Types.ObjectId( o ) ) } }  ).lean()
   .then( objects => {
     if( !objects ) throw new Error( 'Database fail.' )

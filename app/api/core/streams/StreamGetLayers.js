@@ -19,7 +19,7 @@ module.exports = ( req, res ) => {
     if( stream.private && ( !req.user ||  !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) ) 
       throw new Error( 'Unauthorized. Please log in.' ) 
 
-    res.send( { success: true, layers: stream.layers } )
+    res.send( { success: true, message:'Delivered layers.', layers: stream.layers } )
   })
   .catch( err => {
     res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )

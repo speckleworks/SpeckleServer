@@ -29,7 +29,7 @@ module.exports = ( req, res ) => {
   })
   .then( assObjects => {
     myStream.objects = assObjects
-    return res.send( { success: true, stream: myStream } )
+    return res.send( { success: true, message: 'Delivered stream.' ,stream: myStream } )
   })
   .catch( err => {
     console.log( err )

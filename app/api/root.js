@@ -50,7 +50,7 @@ module.exports = function( app, express ) {
   // update a stream (objects, layers, name)
   r.put( '/streams/:streamId', strictAuth, require( './core/streams/StreamPut' ) )
   // delete a stream
-  r.delete( '/streams/:streamId', strictAuth, ( req, res ) => res.send('TODO') )
+  r.delete( '/streams/:streamId', strictAuth, require( './core/streams/StreamDelete' ) )
 
   // duplicate a stream
   r.post( '/streams/:streamId/duplicate', strictAuth, require( './core/streams/StreamDuplicate' ) )
@@ -60,12 +60,12 @@ module.exports = function( app, express ) {
   // update stream layers ( can be updated anonymously if stream's not private)
   r.put( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/StreamPutLayers' ))
 
-  // get stream Name
+  // get stream name
   r.get( '/streams/:streamId/name', relaxedAuth, require( './core/streams/StreamGetName' ) )
-  // update stream Name ( can be updated anonymously if stream's not private)
+  // update stream name ( can be updated anonymously if stream's not private)
   r.put( '/streams/:streamId/name', relaxedAuth, require( './core/streams/StreamPutName' ))
 
-  // get stream layers and name
+  // get stream object ids,layers and name
   r.get( '/streams/:streamId/meta', relaxedAuth,  require( './core/streams/StreamGetMeta' ) )
   // update stream layers and name
   r.put( '/streams/:streamId/meta', relaxedAuth,  require( './core/streams/StreamPutMeta' ) )
@@ -73,19 +73,20 @@ module.exports = function( app, express ) {
   //
   // OBJECTS //
   // 
+  
   // create one 
   r.post( '/objects', strictAuth, require( './core/objects/ObjectPost' ) )
-  // create many
-  r.post( '/objects/createmany', strictAuth, require( './core/objects/ObjectsPostMany' ) )
-  // get many (fake post request)
-  r.post( '/objects/getmany', require( './core/objects/ObjectsGetMany' ) )
-  // edit many
-  r.put( '/objects', strictAuth, require( './core/objects/ObjectsPutMany' ) ) 
   // get one
   r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
-  // update one TODO
-  r.put( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
-
+  // update one
+  r.put( '/objects/:objectId', require( './core/objects/ObjectPut' ) )
+  // delete one
+  r.delete( '/objects/:objectId', require( './core/objects/ObjectDelete' ) )
+  // create many
+  r.post( '/witharray/objects', strictAuth, require( './core/objects/ObjectsPostMany' ) )
+  // get many
+  r.put( '/witharray/objects', require( './core/objects/ObjectsGetMany' ) )
+  
   // 
   // GEOMETRY //
   // 

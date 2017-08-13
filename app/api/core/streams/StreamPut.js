@@ -24,7 +24,7 @@ module.exports = ( req, res ) => {
   .then( stream => {
     if( !stream ) throw new Error( 'No stream found.' )
     if( !req.user ||  !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) 
-      throw new Error( 'Unauthorized. Please log in.' ) 
+      throw new Error( 'Unauthorized.' ) 
     
     myStream = stream
     return SplitObjects( req.body.objects )

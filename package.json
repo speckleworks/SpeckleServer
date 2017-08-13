@@ -4,7 +4,8 @@
   "description": "speckle streams backend server api",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "debug": "node --inspect --debug-brk server.js"
   },
   "author": "Dimitrie A. Stefanescu / UCL The Bartlett School of Architecture / InnoChain",
   "license": "GPL-3.0",
