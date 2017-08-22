@@ -8,7 +8,7 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
     if( !obj ) return
     // if( ++stack > 100 ) throw new Error( 'Object too deeply nested.' )
     if( obj.hasOwnProperty( 'type' ) ) {
-      obj.hash = mmh3( JSON.stringify( obj.properties ) + obj.geometryHash )
+      obj.hash = mmh3( JSON.stringify( obj.properties ) + obj.geometryHash + '.' )
       if( obj.type === 'Mesh' || obj.type === 'Brep' || obj.type === 'Curve' || obj.type === 'Polyline' ) {
         let clone = JSON.parse( JSON.stringify( obj ) )
         delete clone.properties

@@ -33,7 +33,7 @@ module.exports = ( req, res ) => {
   })
   .then( stream => {
     res.status( 200 ) 
-    return res.send( { success: true, message: 'Stream meta was updated.', streamId: myStream.streamId } )
+    return res.send( { success: true, message: 'Stream meta was updated.' } )
   })
   .catch( err => {
     winston.error( err )

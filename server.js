@@ -97,5 +97,5 @@ require( './app/api/root' ) ( app, express )
 ////////////////////////////////////////////////////////////////////////
 
 server.listen( CONFIG.server.port, () => {
-  winston.info( chalk.bgBlue( '>>>>>>>> Starting up @ ' + CONFIG.server.port + ' <<<<<<<<<<<') )
+  winston.info( chalk.bgBlue( 'Speckle Server starting up @ ' + CONFIG.server.port ) )
 })
