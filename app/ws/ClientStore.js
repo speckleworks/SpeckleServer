@@ -16,14 +16,14 @@ module.exports = {
     ws.pinger = setInterval( ws => {
       if ( !ws.alive ) {
         ws.missedPingsCount++
-        winston.error( chalk.bgBlue( 'socket missed pings: ' + ws.missedPingsCount ), ws.sessionId )
+        winston.error( chalk.bgBlue( 'socket missed pings: ' + ws.missedPingsCount ), ws.clientId )
         if ( ws.missedPingsCount > 20 )
-          winston.error( chalk.bgRed( 'TODO: Kicking client socket, missed too many pings: ' + ws.missedPingsCount ), ws.sessionId )
+          winston.error( chalk.bgRed( 'TODO: Kicking client socket, missed too many pings: ' + ws.missedPingsCount ), ws.clientId )
         ws.alive = false
       }
       ws.alive = false
 
-      ws.send( 'ping' ) // browser client needs a little shove
+      ws.send( 'ping' )
     }, 1000 * 10, ws )
 
     // push to my amazing datastore
@@ -39,7 +39,7 @@ module.exports = {
     this.clients.splice( this.clients.indexOf( ws ), 1 )
 
     // announce to the world
-    winston.debug( chalk.blue.underline( 'WS CLOSE: Client ' + ws.sessionId + ' was disconnected' ) )
+    winston.debug( chalk.blue.underline( 'WS CLOSE: Client ' + ws.clientId + ' was disconnected' ) )
     winston.debug( chalk.blue.underline( 'Online clients: ' + this.clients.length ) )
   }
 }

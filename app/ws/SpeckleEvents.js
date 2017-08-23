@@ -1,34 +1,32 @@
 'use strict'
-const winston = require('winston')
-const chalk   = require('chalk')
-const radioTower = require('./RadioTower')
+const winston = require( 'winston' )
+const chalk = require( 'chalk' )
+const radioTower = require( './RadioTower' )
 
-module.exports = function ( ws ) {
+module.exports = function( ws ) {
   let parent = ws
-  return { 
-    'alive'() {
+  return {
+    'alive' ( ) {
       parent.alive = true
       parent.missedPingsCount = 0
     },
-    'join-stream'( args ) {
-      parent.role = args.role
-      radioTower.join( args.streamid, parent )
-    },
-    'volatile-broadcast' ( args ) {
-      winston.debug(chalk.blue('Volatile Broadcast from socket'), parent.sessionId, 'in room', parent.room)
-      if( ! parent.authorised ) {
+
+    'broadcast' ( message ) {
+      winston.debug( chalk.blue( 'Volatile Broadcast from socket' ), parent.clientId, 'in streamId', parent.streamId )
+      console.log( message.args )
+      
+      if ( !parent.authorised )
         return winston.error( 'Client ws not authorised to send messages.' )
-      }
-      let message = { eventName: 'volatile-broadcast', args: args }
-      radioTower.broadcast( parent.room, message, parent.sessionId )
+
+      radioTower.broadcast( parent.streamId, message, parent.clientId )
     },
-    'volatile-message' ( args ) {
-      winston.debug(chalk.cyan('Volatile message from socket'), parent.sessionId, 'in room', parent.room)
-      if( ! parent.authorised ) {
+
+    'message' ( message ) {
+      winston.debug( chalk.cyan( 'Volatile message from socket' ), parent.clientId, 'in streamId', parent.streamId )
+      if ( !parent.authorised )
         return winston.error( 'Client ws not authorised to send messages.' )
-      }
-      let message = { eventName: 'volatile-message', args: args.message }
-      radioTower.send( args.recipient, message )
+      
+      radioTower.send( message.recipientId, message )
     }
   }
 }

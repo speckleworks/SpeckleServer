@@ -10,7 +10,7 @@ const MergeLayers       = require( '../../helpers/MergeLayers' )
 
 module.exports = ( req, res ) => {
   
-  winston.debug( chalk.bgGreen( 'Getting stream', req.params.streamId ) )
+  winston.debug( chalk.bgRed( 'Updating stream meta for', req.params.streamId ) )
   
   if( !req.params.streamId ) {
     res.status( 400 ) 
@@ -29,10 +29,13 @@ module.exports = ( req, res ) => {
     myStream = stream
     myStream.layers = req.body.layers ? MergeLayers( myStream.layers, req.body.layers ) : myStream.layers
     myStream.name = req.body.name ? req.body.name : myStream.name
+    myStream.markModified('layers')
+    myStream.markModified('name')
     return myStream.save()
   })
   .then( stream => {
     res.status( 200 ) 
+
     return res.send( { success: true, message: 'Stream meta was updated.' } )
   })
   .catch( err => {

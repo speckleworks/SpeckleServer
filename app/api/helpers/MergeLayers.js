@@ -25,5 +25,6 @@ module.exports = ( oldLayers, newLayers ) => {
     let matchingLayer = layersToRemove.find( l => l.guid === layer.guid )
     if( !matchingLayer ) result.push( layer )
   }
+  console.log( result.map( l => l.name ) )
   return result;
 }
