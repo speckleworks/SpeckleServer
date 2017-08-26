@@ -36,7 +36,7 @@ module.exports = function( app, express ) {
   // 
   // CLIENTS //
   // 
-  r.post( '/clients/', strictAuth, require( './core/clients/ClientCreate' ) )
+  r.post( '/clients/', relaxedAuth, require( './core/clients/ClientCreate' ) )
   r.get( '/clients/:clientId', strictAuth, require( './core/clients/ClientGet' ) )
   r.put( '/clients/:clientId', strictAuth, require( './core/clients/ClientPut' ) )
 

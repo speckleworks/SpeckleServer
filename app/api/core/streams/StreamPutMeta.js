@@ -30,7 +30,6 @@ module.exports = ( req, res ) => {
     myStream.layers = req.body.layers ? MergeLayers( myStream.layers, req.body.layers ) : myStream.layers
     myStream.name = req.body.name ? req.body.name : myStream.name
     myStream.markModified('layers')
-    myStream.markModified('name')
     return myStream.save()
   })
   .then( stream => {

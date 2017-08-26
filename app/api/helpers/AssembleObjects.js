@@ -28,7 +28,7 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
         var fg = geometries.find( g => g.geometryHash === obj.geometryHash )
         if( !fg ) obj.error = 'Failed to retrieve geometry.'
         for( let key in fg ) 
-          obj[ key ] = fg [ key ]
+          if( key !== '_id' ) obj[ key ] = fg [ key ] // monster bug avoided
       }
       return assemble( obj.properties )
     }

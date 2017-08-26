@@ -8,6 +8,9 @@ module.exports = ( req, res ) => {
     return res.send( { success: false, message: 'Malformed request. Client not created.'} )
   }
 
+  if( !req.body.user )
+    winston.debug( 'Creating anonymous client: will not save to database.' )
+
   let myClient = new Client( {
     role: req.body.client.role,
     documentName: req.body.client.documentName,
@@ -15,16 +18,18 @@ module.exports = ( req, res ) => {
     documentGuid: req.body.client.documentGuid,
     streamId: req.body.client.streamId,
     online: true,
-    owner: req.user._id
+    owner: req.user ? req.user._id : ''
   } )
-
-  myClient.save() 
-  .then( result => {
-    res.send( { success: true, message: 'Client created.', clientId: result._id } )
-  })
-  .catch( err => {
-    res.status( 400 )
-    res.send( { success: false, message: err.toString() } )
-  })
+  if( !req.user ) 
+    res.send( { success: true, message: 'Anonymous client created.', clientId: myClient._id } )
+  else 
+    myClient.save() 
+    .then( result => {
+      res.send( { success: true, message: 'Client created.', clientId: result._id } )
+    })
+    .catch( err => {
+      res.status( 400 )
+      res.send( { success: false, message: err.toString() } )
+    })
 
 }

@@ -15,7 +15,11 @@ module.exports = function( wss ) {
     // perform minor auth check here
     let location = url.parse( req.url, true );
     let token = location.query.access_token
-
+    console.log(location.query)
+    ws.authorised = false
+    ws.clientId = location.query.client_id
+    ws.streamId = location.query.stream_id
+    
     User.findOne( { apitoken: token } )
       .then( user => {
         if ( !user ) throw new Error( 'WS Auth: User not found. ' + token )
@@ -26,9 +30,11 @@ module.exports = function( wss ) {
       } )
       .catch( err => {
         winston.debug( 'socket connection is not auhtorised.' )
-        ws.authorised = false
+        ws.clientId = location.query.client_id
+        ws.streamId = location.query.stream_id
       } )
 
+    console.log( ws.clientId )
     ws.events = events( ws );
     clientStore.add( ws )
 

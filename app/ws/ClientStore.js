@@ -16,9 +16,8 @@ module.exports = {
     ws.pinger = setInterval( ws => {
       if ( !ws.alive ) {
         ws.missedPingsCount++
-        winston.error( chalk.bgBlue( 'socket missed pings: ' + ws.missedPingsCount ), ws.clientId )
         if ( ws.missedPingsCount > 20 )
-          winston.error( chalk.bgRed( 'TODO: Kicking client socket, missed too many pings: ' + ws.missedPingsCount ), ws.clientId )
+          winston.error( chalk.bgRed( 'TODO: Kicking client socket, missed too many pings: ' + ws.missedPingsCount, ws.clientId ) )
         ws.alive = false
       }
       ws.alive = false
@@ -34,7 +33,7 @@ module.exports = {
   remove( ws ) {
     // stop pinging this guy
     clearInterval( ws.pinger )
-
+    winston.error( chalk.bgRed( 'Socket removed', ws.clientId ) )
     // cut him out
     this.clients.splice( this.clients.indexOf( ws ), 1 )
 
