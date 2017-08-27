@@ -16,7 +16,7 @@ module.exports = function( req, res ) {
     myUser.validatePassword( req.body.password, myUser.password, match => {
       if( match === false ) {
         res.status( 401 )
-        res.send( { success: false, message: 'Invalid credentials.' } )
+        return res.send( { success: false, message: 'Invalid credentials.' } )
       } 
       myUser.logins.push( { date: Date.now() } )
       myUser.save()

@@ -26,7 +26,7 @@ module.exports = ( req, res ) => {
     if( !req.body.layers ) throw new Error( 'No layers were provided.' )
 
     stream.layers = req.body.layers ? MergeLayers( stream.layers, req.body.layers ) : stream.layers
-    myStream.markModified('layers')
+    stream.markModified('layers')
     return stream.save()
   })
   .then( stream => {
