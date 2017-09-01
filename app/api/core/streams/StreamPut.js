@@ -1,6 +1,7 @@
 'use strict'
 const winston           = require( 'winston' )
 const chalk             = require( 'chalk' )
+const mongoose          = require( 'mongoose' )
 
 const DataStream        = require( '../../../../models/DataStream' )
 const SpeckleObject     = require( '../../../../models/SpeckleObject' )
@@ -27,18 +28,18 @@ module.exports = ( req, res ) => {
       throw new Error( 'Unauthorized.' ) 
     
     myStream = stream
-    return SplitObjects( req.body.objects )
-  })
-  .then( result => {
-    geometries = result.geometries
-    parsedObj = result.parsedObj
-    return GeometryObject.insertMany( geometries )
-  } )
-  .then( result => {
-    return SpeckleObject.insertMany( parsedObj )
-  })
-  .then( result => {
-    myStream.objects = result.map( o => o._id )
+  //   return SplitObjects( req.body.objects )
+  // })
+  // .then( result => {
+  //   geometries = result.geometries
+  //   parsedObj = result.parsedObj
+  //   return GeometryObject.insertMany( geometries )
+  // } )
+  // .then( result => {
+  //   return SpeckleObject.insertMany( parsedObj )
+  // })
+  // .then( result => {
+    myStream.objects = req.body.objects.map( o => new mongoose.mongo.ObjectId( o._id ) )
     myStream.layers = req.body.layers ? MergeLayers( myStream.layers, req.body.layers ) : myStream.layers
     myStream.name = req.body.name ? req.body.name : myStream.name
     myStream.markModified('layers')

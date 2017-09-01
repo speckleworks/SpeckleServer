@@ -10,7 +10,7 @@ const winston = require( 'winston' )
 const expressWinston = require( 'express-winston' )
 
 
-const mongoose = require( 'mongoose' ).set( 'debug', true )
+const mongoose = require( 'mongoose' ).set( 'debug', false )
 // const bluebird            = require('bluebird')
 
 const CONFIG = require( './config' )

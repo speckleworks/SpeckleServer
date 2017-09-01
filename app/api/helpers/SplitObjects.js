@@ -6,11 +6,7 @@ module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
   let stack = 0
   let iterate = ( obj ) => {
     if( !obj ) return
-    if( obj.hasOwnProperty( 'type' ) ) {
-
-      // note: defer this to clients/converters generation
-      obj.hash = mmh3( JSON.stringify( obj.properties ) + obj.geometryHash + '.' )
-      
+    if( obj.hasOwnProperty( 'type' ) ) {     
       if( obj.type === 'Mesh' || obj.type === 'Brep' || obj.type === 'Curve' || obj.type === 'Polyline' ) {
         let clone = JSON.parse( JSON.stringify( obj ) )
         delete clone.properties
