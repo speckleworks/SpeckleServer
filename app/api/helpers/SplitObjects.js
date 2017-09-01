@@ -1,6 +1,4 @@
 
-const mmh3              = require( 'murmurhash3' ).murmur128HexSync
-
 module.exports = ( objArray ) => new Promise( ( resolve, reject ) => {
   let geometries = []
   let stack = 0
