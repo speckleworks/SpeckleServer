@@ -11,32 +11,30 @@ const User = require( '../../models/User' )
 module.exports = function( wss ) {
 
   wss.on( 'connection', function( ws, req ) {
-   
-    // perform minor auth check here
     let location = url.parse( req.url, true );
     let token = location.query.access_token
-    console.log(location.query)
+
     ws.authorised = false
     ws.clientId = location.query.client_id
     ws.streamId = location.query.stream_id
-    
+    winston.debug( chalk.bgRed( 'WS connection request.' ) )
+    winston.debug( location.query )
+
     User.findOne( { apitoken: token } )
       .then( user => {
         if ( !user ) throw new Error( 'WS Auth: User not found. ' + token )
         ws.authorised = true
         ws.userId = user
-        ws.clientId = location.query.client_id
-        ws.streamId = location.query.stream_id
+        ws.events = events( ws )
+        clientStore.add( ws )
       } )
       .catch( err => {
         winston.debug( 'socket connection is not auhtorised.' )
-        ws.clientId = location.query.client_id
-        ws.streamId = location.query.stream_id
+        ws.events = events( ws )
+        clientStore.add( ws )
       } )
 
-    console.log( ws.clientId )
-    ws.events = events( ws );
-    clientStore.add( ws )
+
 
     ws.on( 'message', message => {
       parseMessage( message )
@@ -56,16 +54,16 @@ module.exports = function( wss ) {
   var parseMessage = function( message ) {
     let eventName, args = {}
     return new Promise( ( resolve, reject ) => {
-      if ( !message ) 
+      if ( !message )
         return reject( 'No message provided.' )
-      if ( message === 'alive' ) 
+      if ( message === 'alive' )
         return resolve( { eventName: 'alive' } )
 
       let parsedMessage = JSON.parse( message )
-      
-      if ( !parsedMessage.eventName ) 
+
+      if ( !parsedMessage.eventName )
         return reject( 'Malformed message: no eventName.' )
-      
+
       return resolve( parsedMessage )
     } )
   }

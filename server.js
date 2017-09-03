@@ -103,5 +103,15 @@ require( './app/api/root' )( app, express )
 ////////////////////////////////////////////////////////////////////////
 
 server.listen( CONFIG.server.port, ( ) => {
-  winston.info( chalk.bgBlue( 'Speckle Server starting up @ ' + CONFIG.server.port ) )
+  winston.info(` 
+////////////////////////////////////////////////////////////////////////
+/// Speckle Server                                                /////.
+///                                                               /////.
+/// ` + chalk.blue( 'Blasting onwards on port ' + server.address().port )
+  +
+ `
+///                                                               /////.
+/// https://speckle.works                                         /////.
+////////////////////////////////////////////////////////////////////////
+  `)
 } )

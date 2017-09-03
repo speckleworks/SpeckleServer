@@ -14,6 +14,7 @@ module.exports = {
   },
 
   send( wsSessionId, message ) {
+    winston.debug( chalk.green('recipient: ', wsSessionId ) ) 
     if ( !wsSessionId )
       return winston.error( 'No wsSessionId provided [RadioTower.send]' )
     let recipient = ClientStore.clients.find( client => client.clientId === wsSessionId )

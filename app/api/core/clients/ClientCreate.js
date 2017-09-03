@@ -21,7 +21,7 @@ module.exports = ( req, res ) => {
     owner: req.user ? req.user._id : ''
   } )
   if( !req.user ) 
-    res.send( { success: true, message: 'Anonymous client created.', clientId: myClient._id } )
+    res.send( { success: true, message: 'Anonymous client created.', clientId: 'temp-'+myClient._id } )
   else 
     myClient.save() 
     .then( result => {
