@@ -9,9 +9,18 @@ module.exports = ( req, res ) => {
     return res.send( { success: false, message: 'No object id provided.' } )
   }
 
+  console.log( req.query )
+  
+  let fieldsToPopulate = ''
+  if( req.query.values ) {
+    req.query.values.split(',').forEach( str => {
+      fieldsToPopulate += str + ' '
+    })
+  }
+  console.log( fieldsToPopulate )
   let myObject = {}
 
-  SpeckleObject.findOne( { _id: req.params.objectId }  ).lean()
+  SpeckleObject.findOne( { _id: req.params.objectId }, fieldsToPopulate ).lean()
   .then( object => {
     if( !object ) throw new Error( 'Database fail.' )
     myObject = object

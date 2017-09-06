@@ -12,8 +12,8 @@ var dataStreamSchema = mongoose.Schema( {
 
   name: { type: String, default:'Speckle Stream' },
   
-  layerMaterials: { type: Object, default: { } },
-  
+  baseProperties: { type: Object, default: { } },
+
   objects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'SpeckleObject' } ],
   // objects: [ { type: Array, default: [ ]  } ],
 
