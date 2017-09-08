@@ -102,16 +102,22 @@ require( './app/api/root' )( app, express )
 /// LAUNCH                                                         /////.
 ////////////////////////////////////////////////////////////////////////
 
+// I'm having too much fun
 server.listen( CONFIG.server.port, ( ) => {
-  winston.info(` 
+  winston.info(`
+
+
 ////////////////////////////////////////////////////////////////////////
-/// Speckle Server                                                /////.
 ///                                                               /////.
-/// ` + chalk.blue( 'Blasting onwards on port ' + server.address().port )
-  +
- `
+/// Ye Olde Original Speckle                                      /////.
+///                                                               /////.
+/// ` + chalk.blue( 'Blasting onwards on port ' + server.address().port ) + `!!!                              /////.
 ///                                                               /////.
 /// https://speckle.works                                         /////.
-////////////////////////////////////////////////////////////////////////
+/// `+chalk.magenta('O hai. Speckle is open source (MIT). So contribute!')+`           /////.
+///                                                               /////.
+////////////////S///P///////E/////C///K///L/////////////////////////E///
+
+
   `)
 } )
