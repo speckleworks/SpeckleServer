@@ -73,6 +73,13 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId/meta', relaxedAuth, require( './core/streams/StreamPutMeta' ) )
 
   //
+  // STREAM OBJECTS //
+  // 
+
+  r.get( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/StreamGetObjects' ) )
+
+
+  //
   // OBJECTS //
   // 
 

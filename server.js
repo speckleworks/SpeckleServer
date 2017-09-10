@@ -10,7 +10,7 @@ const winston = require( 'winston' )
 const expressWinston = require( 'express-winston' )
 
 
-const mongoose = require( 'mongoose' ).set( 'debug', false )
+const mongoose = require( 'mongoose' ).set( 'debug', true )
 // const bluebird            = require('bluebird')
 
 const CONFIG = require( './config' )
@@ -119,5 +119,5 @@ server.listen( CONFIG.server.port, ( ) => {
 ////////////////S///P///////E/////C///K///L/////////////////////////E///
 
 
-  `)
+`)
 } )
