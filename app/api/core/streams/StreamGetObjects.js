@@ -30,7 +30,6 @@ module.exports = ( req, res ) => {
       return SpeckleObject.find( query.criteria, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
     } )
     .then( objects => {
-
       res.send( { success: true, objects: objects } )
     } )
     .catch( err => {

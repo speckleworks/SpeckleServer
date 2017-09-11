@@ -76,13 +76,21 @@ module.exports = function( app, express ) {
   // STREAM OBJECTS //
   // 
 
+  // GET stream objects (query)
   r.get( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/StreamGetObjects' ) )
 
+  // ADD objects to the stream
+  r.post( '/streams/:streamId/objects', relaxedAuth, ( req, res ) => { res.send( 'TODO' ) } )
+  // ADD objects to the stream
+  r.put( '/streams/:streamId/objects', relaxedAuth, ( req, res ) => { res.send( 'TODO' ) } )
+  // DELETE objects from the stream
+  r.delete( '/streams/:streamId/objects', relaxedAuth, ( req, res ) => { res.send( 'TODO' ) } )
 
+  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth,  ( req, res ) => { res.send( 'TODO' ) } )
+  
   //
   // OBJECTS //
   // 
-
   // create one 
   r.post( '/objects', strictAuth, require( './core/objects/ObjectPost' ) )
   // get one
