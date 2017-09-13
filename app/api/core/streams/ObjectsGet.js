@@ -15,9 +15,6 @@ module.exports = ( req, res ) => {
     return res.send( { success: false, message: 'No stream id provided.' } )
   }
 
-  let projectionFields = null
-  console.log( chalk.red( req.query ) )
-
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( stream => {
       if ( !stream ) throw new Error( 'No stream found.' )

@@ -9,7 +9,8 @@ var userSchema = mongoose.Schema({
   password: String,
   company: String,
   apitoken: String,
-  logins: { type: Array, default: [] }
+  logins: { type: Array, default: [] },
+  avatar: String
 }, { timestamps: true } )
 
 

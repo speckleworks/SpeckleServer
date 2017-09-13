@@ -41,7 +41,7 @@ module.exports = function( app, express ) {
   r.put( '/clients/:clientId', strictAuth, require( './core/clients/ClientPut' ) )
 
   // 
-  // STREAMS //
+  // STREAMS Core //
   // 
   // create a new stream
   r.post( '/streams', strictAuth, require( './core/streams/StreamPost' ) )
@@ -51,65 +51,75 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId', strictAuth, require( './core/streams/StreamPut' ) )
   // delete a stream
   r.delete( '/streams/:streamId', strictAuth, require( './core/streams/StreamDelete' ) )
-
   // duplicate a stream
-  r.post( '/streams/:streamId/duplicate', strictAuth, require( './core/streams/StreamDuplicate' ) )
+  r.post( '/streams/:streamId/clone', strictAuth, require( './core/streams/StreamDuplicate' ) )
 
-  // get stream layers
-  r.get( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/StreamGetLayers' ) )
-  // update stream layers ( can be updated anonymously if stream's not private)
-  r.put( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/StreamPutLayers' ) )
-  // todo: update stream layer
-  r.put( '/streams/:streamId/layers/:layerId', relaxedAuth, ( req, res ) => { res.send( 'TODO' ) } )
-
+  // 
+  // Stream NAME //
+  // 
   // get stream name
-  r.get( '/streams/:streamId/name', relaxedAuth, require( './core/streams/StreamGetName' ) )
-  // update stream name ( can be updated anonymously if stream's not private)
-  r.put( '/streams/:streamId/name', relaxedAuth, require( './core/streams/StreamPutName' ) )
+  r.get( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NameGet' ) )
+  // update stream name
+  r.post( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NamePut' ) )
 
-  // get stream object ids,layers and name
-  r.get( '/streams/:streamId/meta', relaxedAuth, require( './core/streams/StreamGetMeta' ) )
-  // update stream layers and name
-  r.put( '/streams/:streamId/meta', relaxedAuth, require( './core/streams/StreamPutMeta' ) )
+  // 
+  // Stream LAYERS //
+  // 
+
+  // 1. Collection ops
+  // Get stream layers
+  r.get( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersGet' ) )
+  // Add stream layers
+  r.post( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersPost' ) )
+  // Replace stream layers
+  r.put( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersPut' ) )
+  // Diff stream layers
+  r.patch( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersPatch' ) )
+  // Delete stream layers
+  r.delete( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersDelete' ) )
+
+  // 2. Individual ops
+  r.get( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSingleGet' ) )
+  // Replace stream layer
+  r.put( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSinglePut' ) )
+  // Update stream layer
+  r.patch( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSinglePatch' ) )
+  // Delete stream layer
+  r.delete( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSingleDelete' ) )
 
   //
   // STREAM OBJECTS //
   // 
 
-  // GET stream objects (query)
-  r.get( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/StreamGetObjects' ) )
+  // 1. Collection ops
+  // Get stream objects
+  r.get( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsGet' ) )
+  // Add stream objects
+  r.post( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsPost' ) )
+  // Replace stream objects
+  r.put( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsPut' ) )
+  // Delete stream object list
+  r.delete( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsDelete' ) )
+  // 2.Individual ops
+  // Delete an object from a stream list
+  r.delete( '/streams/:streamId/objects/:objectId', relaxedAuth, require( './core/streams/ObjectDelete' ) )
 
-  // ADD objects to the stream
-  r.post( '/streams/:streamId/objects', relaxedAuth, ( req, res ) => { res.send( 'TODO' ) } )
-  // ADD objects to the stream
-  r.put( '/streams/:streamId/objects', relaxedAuth, ( req, res ) => { res.send( 'TODO' ) } )
-  // DELETE objects from the stream
-  r.delete( '/streams/:streamId/objects', relaxedAuth, ( req, res ) => { res.send( 'TODO' ) } )
-
-  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth,  ( req, res ) => { res.send( 'TODO' ) } )
-  
   //
   // OBJECTS //
   // 
-  // create one 
-  r.post( '/objects', strictAuth, require( './core/objects/ObjectPost' ) )
-  // get one
+  // Get an object TODO: implement field projections
   r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
+  // Create an object
+  r.post( '/objects', strictAuth, require( './core/objects/ObjectPost' ) )
+  // Create many objects
+  r.post( '/objects/bulk', strictAuth, ( req, res ) => { res.send( 'todo' ) } )
   // update one
-  r.put( '/objects/:objectId', require( './core/objects/ObjectPut' ) )
+  r.put( '/objects/:objectId', strictAuth, require( './core/objects/ObjectPut' ) )
   // delete one
-  r.delete( '/objects/:objectId', require( './core/objects/ObjectDelete' ) )
-  // create many
-  r.post( '/witharray/objects', strictAuth, require( './core/objects/ObjectsPostMany' ) )
-  // get many
-  r.put( '/witharray/objects', require( './core/objects/ObjectsGetMany' ) )
+  r.delete( '/objects/:objectId', strictAuth, require( './core/objects/ObjectDelete' ) )
 
-  // 
-  // GEOMETRY //
-  // 
-  r.get( '/geometry/:hash', require( './core/objects/GeometryGet' ) )
 
-  // // COMMENTS
+  // COMMENTS
   // r.get( '/comments/:streamId', require( './core/CommentsGet' ) )
   // r.post( '/comments', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/CommentPost' ) )
 

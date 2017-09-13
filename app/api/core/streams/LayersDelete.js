@@ -1,12 +1,10 @@
 'use strict'
 const winston = require( 'winston' )
-const passport = require( 'passport' )
 const chalk = require( 'chalk' )
 
 const DataStream = require( '../../../../models/DataStream' )
 
 module.exports = ( req, res ) => {
-
   if ( !req.params.streamId ) {
     res.status( 400 )
     return res.send( { success: false, message: 'No stream id provided.' } )
@@ -19,10 +17,17 @@ module.exports = ( req, res ) => {
       if ( stream.private && ( !req.user || !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) )
         throw new Error( 'Unauthorized. Please log in.' )
 
-      return res.send( { success: true, message: 'Delivered stream.', stream: stream } )
+      stream.layers = []
+      stream.markModified( 'layers' )
+      return stream.save( )
+    } )
+    .then( stream => {
+      res.status( 200 )
+      return res.send( { success: true, message: 'Stream layers were deleted.' } )
     } )
     .catch( err => {
-      res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
-      res.send( { success: false, message: err.message, streamId: req.streamId } )
+      winston.error( err )
+      res.status( 400 )
+      res.send( { success: false, message: err.toString( ) } )
     } )
 }

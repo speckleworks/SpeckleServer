@@ -10,6 +10,11 @@ var dataStreamSchema = mongoose.Schema( {
   
   sharedWith: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
 
+  // should replace 'sharedWith' in the near future
+  canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  canComment: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  
   name: { type: String, default:'Speckle Stream' },
   
   baseProperties: { type: Object, default: { } },

@@ -22,7 +22,6 @@ module.exports = ( req, res ) => {
     
     stream.deleted = true
     return stream.save() 
-    // 
   })
   .then( result => {
     return res.send( { success: true, message: 'Stream was flagged as deleted.' } )
