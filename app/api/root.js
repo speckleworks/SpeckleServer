@@ -107,12 +107,12 @@ module.exports = function( app, express ) {
   //
   // OBJECTS //
   // 
-  // Get an object TODO: implement field projections
+  // Get an object
   r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
   // Create an object
   r.post( '/objects', strictAuth, require( './core/objects/ObjectPost' ) )
   // Create many objects
-  r.post( '/objects/bulk', strictAuth, ( req, res ) => { res.send( 'todo' ) } )
+  r.post( '/objects/bulk', strictAuth, require( './core/objects/ObjectPostBulk' ) )
   // update one
   r.put( '/objects/:objectId', strictAuth, require( './core/objects/ObjectPut' ) )
   // delete one

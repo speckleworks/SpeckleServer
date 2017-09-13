@@ -1,37 +1,20 @@
-const SpeckleObject     = require( '../../../../models/SpeckleObject' )
+const q2m = require( 'query-to-mongo' )
+
+const SpeckleObject = require( '../../../../models/SpeckleObject' )
 
 module.exports = ( req, res ) => {
-  res.send('todo')
-  // if( !req.params.objectId ) { 
-  //   res.status(400) 
-  //   return res.send( { success: false, message: 'No object id provided.' } )
-  // }
-
-  // console.log( req.query )
-  
-  // let fieldsToPopulate = ''
-  // if( req.query.values ) {
-  //   req.query.values.split(',').forEach( str => {
-  //     fieldsToPopulate += str + ' '
-  //   })
-  // }
-  // console.log( fieldsToPopulate )
-  // let myObject = {}
-
-  // SpeckleObject.findOne( { _id: req.params.objectId }, fieldsToPopulate ).lean()
-  // .then( object => {
-  //   if( !object ) throw new Error( 'Database fail.' )
-  //   myObject = object
-  //   return AssembleObjects( [ myObject ] )
-  // })
-  // .then( result => {
-  //   if( !result ) throw new Error( 'Database fail.' )
-  //   result[ 0 ].properties = myObject.properties
-  //   res.send( { success: true, speckleObject: result[ 0 ] } )
-  // })
-  // .catch( err => {
-  //   console.log( err )
-  //   res.status( 400 )
-  //   res.send( { success: false, message: err } )
-  // })
+  if ( !req.params.objectId ) {
+    res.status( 400 )
+    return res.send( { success: false, message: 'No object id provided.' } )
+  }
+  let query = q2m( req.query )
+  SpeckleObject.findOne( { _id: req.params.objectId }, query.options.fields )
+    .then( object => {
+      if ( !object ) throw new Error( 'Could not find object.' )
+      res.send( { success: true, speckleObject: object } )
+    } )
+    .catch( err => {
+      res.status( 400 )
+      res.send( { success: false, message: err.toString( ) } )
+    } )
 }
