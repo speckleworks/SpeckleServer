@@ -13,7 +13,7 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
   }
-  Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
+  Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
     .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
     .then( results => {
       results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )

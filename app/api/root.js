@@ -114,6 +114,7 @@ module.exports = function( app, express ) {
 
   //
   // OBJECTS //
+  // These routes are for hackers. Creating objects outside streams is discouraged.
   // 
   // Get an object
   r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
@@ -123,8 +124,6 @@ module.exports = function( app, express ) {
   r.post( '/objects/bulk', strictAuth, require( './core/objects/ObjectPostBulk' ) )
   // update one
   r.put( '/objects/:objectId', strictAuth, require( './core/objects/ObjectPut' ) )
-  // update more
-  r.put( '/objects/bulk', strictAuth, require( './core/objects/ObjectPutBulk' ) )
   // delete one
   r.delete( '/objects/:objectId', strictAuth, require( './core/objects/ObjectDelete' ) )
 
