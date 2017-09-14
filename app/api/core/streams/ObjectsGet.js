@@ -13,23 +13,23 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'No stream id provided.' } )
   }
-  let streamObjects = []
+  let streamObjects = [ ]
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( stream => {
       if ( !stream ) throw new Error( 'No stream found.' )
       if ( stream.private && !req.user ) throw new Error( 'Unauthorized. Please log in.' )
       if ( stream.private && ( !req.user || !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) )
         throw new Error( 'Unauthorized. Please log in.' )
-      streamObjects = stream.objects.map( o => o.toString() )
+      streamObjects = stream.objects.map( o => o.toString( ) )
       let query = q2m( req.query )
       query.criteria[ '_id' ] = { $in: stream.objects }
       return SpeckleObject.find( query.criteria, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
     } )
     .then( objects => {
-      let list = streamObjects.reduce( (arr, o) => { 
-        arr.push( objects.find( oo => oo._id == o ))
+      let list = streamObjects.reduce( ( arr, o ) => {
+        arr.push( objects.find( oo => oo._id == o ) )
         return arr
-      }, [] )
+      }, [ ] )
       res.send( { success: true, objects: list } )
     } )
     .catch( err => {
