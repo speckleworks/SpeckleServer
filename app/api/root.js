@@ -87,6 +87,12 @@ module.exports = function( app, express ) {
   // Delete stream layer
   r.delete( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSingleDelete' ) )
 
+
+  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } )
+  r.post( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } ) // add
+  r.put( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } )  // replace
+  r.patch( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } ) // diff/merge
+
   //
   // STREAM OBJECTS //
   // 
@@ -100,7 +106,9 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsPut' ) )
   // Delete stream object list
   r.delete( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsDelete' ) )
+
   // 2.Individual ops
+  // 
   // Delete an object from a stream list
   r.delete( '/streams/:streamId/objects/:objectId', relaxedAuth, require( './core/streams/ObjectDelete' ) )
 
@@ -115,6 +123,8 @@ module.exports = function( app, express ) {
   r.post( '/objects/bulk', strictAuth, require( './core/objects/ObjectPostBulk' ) )
   // update one
   r.put( '/objects/:objectId', strictAuth, require( './core/objects/ObjectPut' ) )
+  // update more
+  r.put( '/objects/bulk', strictAuth, require( './core/objects/ObjectPutBulk' ) )
   // delete one
   r.delete( '/objects/:objectId', strictAuth, require( './core/objects/ObjectDelete' ) )
 
