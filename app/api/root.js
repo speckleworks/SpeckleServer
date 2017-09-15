@@ -87,11 +87,11 @@ module.exports = function( app, express ) {
   // Delete stream layer
   r.delete( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSingleDelete' ) )
 
-
-  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } )
-  r.post( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } ) // add
-  r.put( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } )  // replace
-  r.patch( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } ) // diff/merge
+  // 3. Layer object manipulations
+  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerGetObjects' ) ) 
+  r.post( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerPostObjects' ) ) // add
+  r.put( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerPutObjects' ) ) // replace
+  r.delete( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } )
 
   //
   // STREAM OBJECTS //
@@ -116,12 +116,12 @@ module.exports = function( app, express ) {
   // OBJECTS //
   // These routes are for hackers. Creating objects outside streams is discouraged.
   // 
-  // Get an object
-  r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
   // Create an object
   r.post( '/objects', strictAuth, require( './core/objects/ObjectPost' ) )
   // Create many objects
   r.post( '/objects/bulk', strictAuth, require( './core/objects/ObjectPostBulk' ) )
+  // Get an object
+  r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
   // update one
   r.put( '/objects/:objectId', strictAuth, require( './core/objects/ObjectPut' ) )
   // delete one

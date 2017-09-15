@@ -33,6 +33,7 @@ module.exports = ( req, res ) => {
       stream.markModified( 'name' )
       stream.markModified( 'layers' )
       stream.markModified( 'objects' )
+      SpeckleObject.updateMany( { '_id': { $in: stream.objects } }, { $addToSet: { partOf: stream.streamId } } ).exec( )
       return stream.save( )
     } )
     .then( result => {
