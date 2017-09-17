@@ -9,12 +9,9 @@ const chalk = require( 'chalk' )
 const winston = require( 'winston' )
 const expressWinston = require( 'express-winston' )
 
-
-const mongoose = require( 'mongoose' ).set( 'debug', false )
-// const bluebird            = require('bluebird')
+const mongoose = require( 'mongoose' ).set( 'debug', true )
 
 const CONFIG = require( './config' )
-
 winston.level = 'debug'
 
 ////////////////////////////////////////////////////////////////////////
@@ -107,17 +104,30 @@ server.listen( CONFIG.server.port, ( ) => {
   winston.info(`
 
 
-////////////////////////////////////////////////////////////////////////
-///                                                               /////.
-/// Ye Olde Original Speckle                                      /////.
-///                                                               /////.
-/// ` + chalk.blue( 'Blasting onwards on port ' + server.address().port ) + `!!!                              /////.
-///                                                               /////.
-/// https://speckle.works                                         /////.
-/// `+chalk.magenta('O hai. Speckle is open source (MIT). So contribute!')+`           /////.
-///                                                               /////.
-////////////////S///P///////E/////C///K///L/////////////////////////E///
+          // ----------------------------------------------------------------//
+        //                                                                 //  |
+      //////////////////////////////////////////////////////////////////////   |
+      ///                                                               ////   |
+      /// Ye Olde Original Speckle Vanity Card                          ////   |
+      /// ------------------------------------                          ////   |
+      ///                                                               ////   |
+      /// speckle.works is an open source initiative for                ////   |
+      /// developing a aec data communication protocol and platform.    ////   |
+      ///                                                               ////   |
+      /// ` + chalk.blue( 'Blasting onwards on port ' + server.address().port ) + `!!!                              ////   |
+      ///                                                               ////   |
+      /// https://speckle.works                                         ////   |
+      /// `+chalk.magenta('O hai. Speckle is open source (MIT). So contribute!')+`           ////   |
+      ///                                                               ////   |
+      ///                                                               ////   |
+      /// Made possible by:                                             ////   |               
+      /// @idid & project contributors +                                ////   |               
+      /// Innochain & UCL The Bartlett                                  ////   |
+      /// European Union Horizon 2020                                   ////   |
+      /// (Marie Sklodowska-Curie grant agreement No 642877.)           ////   |
+      ///                                                               //// //
+      ////////////////S///P///////E/////C///K///L/////////////////////////E/
 
 
-  `)
+`)
 } )

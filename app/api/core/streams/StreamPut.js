@@ -1,58 +1,47 @@
 'use strict'
-const winston           = require( 'winston' )
-const chalk             = require( 'chalk' )
-const mongoose          = require( 'mongoose' )
+const winston = require( 'winston' )
+const chalk = require( 'chalk' )
+const mongoose = require( 'mongoose' )
 
-const DataStream        = require( '../../../../models/DataStream' )
-const SpeckleObject     = require( '../../../../models/SpeckleObject' )
-const GeometryObject    = require( '../../../../models/GeometryObject' )
-const SplitObjects      = require( '../../helpers/SplitObjects' )
-const MergeLayers       = require( '../../helpers/MergeLayers' )
+const DataStream = require( '../../../../models/DataStream' )
+const SpeckleObject = require( '../../../../models/SpeckleObject' )
+const MergeLayers = require( '../../helpers/MergeLayers' )
 
 module.exports = ( req, res ) => {
-  
   winston.debug( chalk.bgGreen( 'Getting stream', req.params.streamId ) )
-  
-  if( !req.params.streamId ) {
-    res.status( 400 ) 
-    return res.send( { success:false, message: 'No stream id provided.' } )
+  if ( !req.params.streamId ) {
+    res.status( 400 )
+    return res.send( { success: false, message: 'No stream id provided.' } )
   }
 
-  let geometries = []
-  let parsedObj = []
-  let myStream = {}
+  let stream = {}
   DataStream.findOne( { streamId: req.params.streamId } )
-  .then( stream => {
-    if( !stream ) throw new Error( 'No stream found.' )
-    if( !req.user ||  !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) 
-      throw new Error( 'Unauthorized.' ) 
-    
-    myStream = stream
-  //   return SplitObjects( req.body.objects )
-  // })
-  // .then( result => {
-  //   geometries = result.geometries
-  //   parsedObj = result.parsedObj
-  //   return GeometryObject.insertMany( geometries )
-  // } )
-  // .then( result => {
-  //   return SpeckleObject.insertMany( parsedObj )
-  // })
-  // .then( result => {
-    myStream.objects = req.body.objects.map( o => new mongoose.mongo.ObjectId( o._id ) )
-    myStream.layers = req.body.layers ? MergeLayers( myStream.layers, req.body.layers ) : myStream.layers
-    myStream.name = req.body.name ? req.body.name : myStream.name
-    myStream.markModified('layers')
-    myStream.markModified('objects')
-    return myStream.save()
-  })
-  .then( stream => {
-    res.status( 200 ) 
-    return res.send( { success: true, message: 'Stream was updated.', streamId: myStream.streamId } )
-  })
-  .catch( err => {
-    winston.error( err )
-    res.status( 400 )
-    res.send( { success: false, message: err.toString(), streamId: req.streamId } )
-  })  
+    .then( result => {
+      stream = result
+      stream.name = req.body.name ? req.body.name : stream.name
+      stream.layers = req.body.layers ? MergeLayers( stream.layers, req.body.layers ) : stream.layers
+      return Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
+    } )
+    .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
+    .then( results => {
+      results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
+      return SpeckleObject.insertMany( req.body.objects.filter( so => so._id === undefined ) )
+    } )
+    .then( results => {
+      results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
+      stream.objects = req.body.objects.map( o => o._id )
+      stream.markModified( 'name' )
+      stream.markModified( 'layers' )
+      stream.markModified( 'objects' )
+      SpeckleObject.updateMany( { '_id': { $in: stream.objects } }, { $addToSet: { partOf: stream.streamId } } ).exec( )
+      return stream.save( )
+    } )
+    .then( result => {
+      res.send( { success: true, message: 'Updated stream.', objects: req.body.objects.map( o => o._id ) } )
+    } )
+    .catch( err => {
+      winston.error( err )
+      res.status( 400 )
+      res.send( { success: false, message: err.toString( ) } )
+    } )
 }

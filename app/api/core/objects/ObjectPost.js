@@ -2,37 +2,24 @@
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 
-const SplitObjects = require( '../../helpers/SplitObjects' )
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
-const GeometryObject = require( '../../../../models/GeometryObject' )
 
 module.exports = ( req, res ) => {
-  let geometries = [ ]
-  let parsedObj = [ ]
-
   SpeckleObject.findOne( { hash: req.body.object.hash }, '_id' )
     .then( result => {
       if ( result ) {
-        res.send( { success: true, objectId: result._id, message: 'Object with same hash was already there.' } )
-        throw  new Error('Existing object')
-      } else
-        return SplitObjects( [ req.body.object ] )
+        res.send( { success: true, objectId: result._id, message: 'Object was already there.' } )
+        throw new Error( 'Existing object' )
+      }
+      return SpeckleObject.create( req.body.object )
     } )
-    .then( result => {
-      geometries = result.geometries
-      parsedObj = result.parsedObj
-      return GeometryObject.insertMany( geometries )
-    } )
-    .then( result => {
-      return SpeckleObject.insertMany( parsedObj )
-    } )
-    .then( result => {
-      return res.send( { success: true, objectId: result[ 0 ]._id, message: 'Inserted a new object.' } )
+    .then( object => {
+      res.send( { success: true, objectId: object._id, message: 'Inserted fresh object ' } )
     } )
     .catch( err => {
-      if( err.message === 'Existing object')
-        return
+      if ( err.message === 'Existing object' ) return
+      winston.error( err )
       res.status( 400 )
-      res.send( err )
+      res.send( { success: false, message: err.toString( ) } )
     } )
 }

@@ -3,7 +3,7 @@ var dbUser        = process.env.DB_USER ||  ""
 var dbPw          = process.env.DB_PW || ""
 var dbHost        = process.env.DB_HOST || "127.0.0.1"
 var dbPort        = process.env.DB_PORT || 27017
-var dbName        = process.env.DB_NAME || "speckle_v2"
+var dbName        = process.env.DB_NAME || "speckle_v3"
 var dbAuth        = process.env.DB_AUTH || ""
 
 module.exports = {

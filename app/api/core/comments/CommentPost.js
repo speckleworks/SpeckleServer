@@ -13,7 +13,6 @@ module.exports = function( req, res ) {
     return res.send( { success: false, message: 'No comment present in body.' } )
   }
 
-  console.log( req.body.comment )
   let comment = new Comment( {
     author: req.body.comment.author,
     camera: req.body.comment.camera,

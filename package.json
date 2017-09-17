@@ -7,8 +7,12 @@
     "start": "node server.js",
     "debug": "node --inspect --debug-brk server.js"
   },
-  "author": "Dimitrie A. Stefanescu / UCL The Bartlett School of Architecture / InnoChain",
-  "license": "GPL-3.0",
+  "author": "Dimitrie A. Stefanescu @idid / UCL The Bartlett School of Architecture / InnoChain",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/speckleworks/SpeckleServer"
+  },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.4.6",
@@ -29,6 +33,7 @@
     "passport-anonymous": "^1.0.1",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
+    "query-to-mongo": "^0.7.0",
     "recursive-iterator": "^2.0.3",
     "shortid": "^2.2.6",
     "uuid": "^3.0.1",
