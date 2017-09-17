@@ -14,7 +14,9 @@ module.exports = ( req, res ) => {
     return res.send( { success: false, message: 'No stream id provided.' } )
   }
   let dbStream = [ ]
+  let originalObjectList = [ ]
   let targetLayer = {}
+
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( stream => {
       if ( !stream ) throw new Error( 'No stream found.' )
@@ -24,9 +26,10 @@ module.exports = ( req, res ) => {
 
       let layer = stream.layers.find( l => l.guid === req.params.layerId )
       if ( !layer ) layer = stream.layers.find( l => l.name === req.params.layerId )
-      if( ! layer ) throw new Error( 'No layer with that id/name found.' )
+      if ( !layer ) throw new Error( 'No layer with that id/name found.' )
       dbStream = stream
       targetLayer = layer
+      originalObjectList = [ ...stream.objects ]
       return Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
     } )
     .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
@@ -43,12 +46,18 @@ module.exports = ( req, res ) => {
         if ( layer.guid === targetLayer.guid ) layer.objectCount = req.body.objects.length
         if ( layer.startIndex > targetLayer.startIndex ) layer.startIndex += diffCount
       } )
+
+      let fullyRemoved = originalObjectList.reduce( ( arr, ob ) => {
+        if ( !dbStream.objects.find( k => k.toString( ) == ob.toString( ) ) ) arr.push( ob )
+      }, [ ] )
+      SpeckleObject.updateMany( { '_id': { $in: fullyRemoved } }, { $pullAll: { partOf: [ req.params.streamId ] } } ).exec( )
+
       dbStream.markModified( 'objects' )
       dbStream.markModified( 'layers' )
       return dbStream.save( )
     } )
     .then( stream => {
-      res.send( { success: true, message: 'Stream layer was updated (objects replaced)' } )
+      res.send( { success: true, message: 'Stream layer was updated (objects replaced)', objects: req.body.objects.map( o => o._id ) } )
     } )
     .catch( err => {
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )

@@ -6,7 +6,8 @@ var commentSchema = mongoose.Schema( {
   author: { type: Object, default: {} },
   text: { type: String, default: '' },
   camera: { type: Object, default: {} },
-  streamId: { type: String }
+  streamId: { type: String },
+  history: [ { type:Object } ]
 }, { timestamps: true } )
 
 module.exports = mongoose.model( 'Comment', commentSchema )

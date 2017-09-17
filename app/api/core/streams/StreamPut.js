@@ -37,8 +37,8 @@ module.exports = ( req, res ) => {
       return stream.save( )
     } )
     .then( result => {
-      res.send( { success: true, message: 'Updated stream.' } )
-    })
+      res.send( { success: true, message: 'Updated stream.', objects: req.body.objects.map( o => o._id ) } )
+    } )
     .catch( err => {
       winston.error( err )
       res.status( 400 )

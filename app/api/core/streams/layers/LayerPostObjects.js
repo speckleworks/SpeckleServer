@@ -24,7 +24,7 @@ module.exports = ( req, res ) => {
 
       let layer = stream.layers.find( l => l.guid === req.params.layerId )
       if ( !layer ) layer = stream.layers.find( l => l.name === req.params.layerId )
-      if( ! layer ) throw new Error( 'No layer with that id/name found.' )
+      if ( !layer ) throw new Error( 'No layer with that id/name found.' )
 
       dbStream = stream
       targetLayer = layer
@@ -50,7 +50,7 @@ module.exports = ( req, res ) => {
       return dbStream.save( )
     } )
     .then( stream => {
-      res.send( { success: true, message: 'Stream layer was updated (objects appended)' } )
+      res.send( { success: true, message: 'Stream layer was updated (objects appended)', objects: req.body.objects.map( o => o._id ) } )
     } )
     .catch( err => {
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )

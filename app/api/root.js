@@ -51,8 +51,12 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId', strictAuth, require( './core/streams/StreamPut' ) )
   // delete a stream
   r.delete( '/streams/:streamId', strictAuth, require( './core/streams/StreamDelete' ) )
+
+  // Special stuff:
   // duplicate a stream
   r.post( '/streams/:streamId/clone', strictAuth, require( './core/streams/StreamDuplicate' ) )
+  // diff a stream against another
+  r.get( '/streams/:streamId/diff/:otherId', relaxedAuth, require( './core/streams/StreamDiff' ) )
 
   // 
   // Stream NAME //
@@ -88,10 +92,10 @@ module.exports = function( app, express ) {
   r.delete( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSingleDelete' ) )
 
   // 3. Layer object manipulations
-  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerGetObjects' ) ) 
+  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerGetObjects' ) )
   r.post( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerPostObjects' ) ) // add
   r.put( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerPutObjects' ) ) // replace
-  r.delete( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, ( rq, rs ) => { rs.send( 'todo' ) } )
+  r.delete( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerDeleteObjects' ) )
 
   //
   // STREAM OBJECTS //
@@ -128,9 +132,11 @@ module.exports = function( app, express ) {
   r.delete( '/objects/:objectId', strictAuth, require( './core/objects/ObjectDelete' ) )
 
 
-  // COMMENTS
-  // r.get( '/comments/:streamId', require( './core/CommentsGet' ) )
-  // r.post( '/comments', passport.authenticate( 'jwt-strict', { session: false } ), require( './core/CommentPost' ) )
+  // TODO: Comment system (once auth is revamped)
+  // r.get( '/comments/:streamId', relaxedAuth, require( './core/comments/CommentsGet' ) )
+  // r.post( '/comments/:streamId', relaxedAuth, require( './core/comments/CommentPost' ) )
+  // r.put( '/comments/:commentId', strictAuth, require( './core/comments/CommentPut' ) )
+  // r.delete( '/comments/:commentId', strictAuth, require( './core/comments/CommentPut' ) )
 
   app.use( '/api', r )
 }
