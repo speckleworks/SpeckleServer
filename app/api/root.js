@@ -64,7 +64,7 @@ module.exports = function( app, express ) {
   // get stream name
   r.get( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NameGet' ) )
   // update stream name
-  r.post( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NamePut' ) )
+  r.put( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NamePut' ) )
 
   // 
   // Stream LAYERS //
@@ -126,6 +126,8 @@ module.exports = function( app, express ) {
   r.post( '/objects/bulk', strictAuth, require( './core/objects/ObjectPostBulk' ) )
   // Get an object
   r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
+  // Get more objects
+  r.post( '/objects/getbulk/', require( './core/objects/ObjectsGetBulk' ) )
   // update one
   r.put( '/objects/:objectId', strictAuth, require( './core/objects/ObjectPut' ) )
   // delete one
