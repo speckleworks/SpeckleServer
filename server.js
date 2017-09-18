@@ -1,6 +1,7 @@
 'use strict'
 const express = require( 'express' )
 const cors = require( 'cors' )
+const serveStatic = require('serve-static')
 const cookieParser = require( 'cookie-parser' )
 const bodyParser = require( 'body-parser' )
 const passport = require( 'passport' )
@@ -68,10 +69,12 @@ var wss = new WebSocketServer( {
 
 require( './app/ws/SpeckleSockets' )( wss )
 
-app.get( '/', function( req, res ) {
-  res.send( CONFIG.serverDescription )
-} )
+// app.get( '/', function( req, res ) {
+//   res.send( CONFIG.serverDescription )
+// } )
 
+app.use( express.static('./static'));
+// app.use(serveStatic('./ftp', {'index': ['default.html', 'default.htm']}))
 ////////////////////////////////////////////////////////////////////////
 /// Temp Routes(debug)                                            /////.
 ////////////////////////////////////////////////////////////////////////
