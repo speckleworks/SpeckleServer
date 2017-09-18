@@ -34,7 +34,7 @@ Visit your speckle server [http://localhost:8080](http://localhost:8080)
 It's forthcoming. [Do you want to help?](mailto:d.stefanescu@ucl.ac.uk)
 
 ## API
-[Some basic documentation can be found here.](https://documenter.getpostman.com/collection/view/553672-bb9f112e-f1ad-3084-afe1-96a0ae8e80d7#intro) [tbc: Need to update link!]
+[Api docs are here. Read them and tremble!](https://speckleworks.github.io/SpeckleOpenApi/#introduction)
 
 
 ## Credits
