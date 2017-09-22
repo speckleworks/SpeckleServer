@@ -6,7 +6,7 @@ var speckleObjectSchema = mongoose.Schema( {
   // object type
   type: {
     type: String,
-    enum: [ 'Null', 'Boolean', 'Number', 'String', 'Interval', 'Interval2d', 'Point', 'Vector', 'Plane', 'Line', 'Rectangle', 'Circle', 'Box', 'Polyline', 'Curve', 'Mesh', 'Brep', 'TextDot' ],
+    enum: [ 'Null', 'Boolean', 'Number', 'String', 'Interval', 'Interval2d', 'Point', 'Vector', 'Plane', 'Line', 'Rectangle', 'Circle', 'Box', 'Polyline', 'Curve', 'Mesh', 'Brep', 'Annotation' ],
     default: 'Null'
   },
 
