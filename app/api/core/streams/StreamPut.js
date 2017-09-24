@@ -18,6 +18,12 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( result => {
       stream = result
+
+      if ( req.body.private ) stream.private = req.body.private
+      if ( req.body.parent ) stream.parent = req.body.parent
+      if( req.body.globalMeasures ) stream.globalMeasures = req.body.globalMeasures
+      if( req.body.baseProperties ) stream.baseProperties = req.body.baseProperties
+
       stream.name = req.body.name ? req.body.name : stream.name
       stream.layers = req.body.layers ? MergeLayers( stream.layers, req.body.layers ) : stream.layers
       return Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
@@ -30,7 +36,7 @@ module.exports = ( req, res ) => {
     .then( results => {
       results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
       stream.objects = req.body.objects.map( o => o._id )
-      stream.markModified( 'name' )
+      // stream.markModified( 'name' )
       stream.markModified( 'layers' )
       stream.markModified( 'objects' )
       SpeckleObject.updateMany( { '_id': { $in: stream.objects } }, { $addToSet: { partOf: stream.streamId } } ).exec( )
