@@ -27,10 +27,11 @@ module.exports = ( req, res ) => {
     } )
     .then( objects => {
       let list = streamObjects.reduce( ( arr, o ) => {
-        arr.push( objects.find( oo => oo._id == o ) )
+        let match = objects.find( oo => oo._id == o )
+        if( match ) arr.push( match )
         return arr
       }, [ ] )
-      res.send( { success: true, objects: list } )
+      res.send( { success: true, objects: list, message: 'Object list returned. If querying, duplication of objects in list will not be respected.' } )
     } )
     .catch( err => {
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
