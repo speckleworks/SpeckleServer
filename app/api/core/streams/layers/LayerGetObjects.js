@@ -35,7 +35,12 @@ module.exports = ( req, res ) => {
       return SpeckleObject.find( query.criteria, query.options.fields, { sort: query.options.sort } )
     } )
     .then( objects => {
-      let list = layerObjects.reduce( ( arr, o ) => [ ...arr, objects.find( oo => oo._id.toString( ) === o.toString( ) ) ], [ ] )
+      let list = layerObjects.reduce( ( arr, o ) => {
+        let match = objects.find( oo => oo._id.toString() === o.toString() )
+        if( match ) arr.push( match )
+        return arr
+      }, [ ] )
+
       res.send( { success: true, objects: list, layer: streamLayer } )
     } )
     .catch( err => {
