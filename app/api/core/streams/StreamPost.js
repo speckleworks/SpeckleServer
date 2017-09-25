@@ -11,7 +11,9 @@ module.exports = ( req, res ) => {
     owner: req.user._id,
     streamId: shortId.generate( ),
   } )
-  if ( !req.body.object ) req.body.objects = [ ]
+  
+  if ( !req.body.objects ) req.body.objects = [ ]
+  
   Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
     .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
     .then( results => {
@@ -33,7 +35,7 @@ module.exports = ( req, res ) => {
       SpeckleObject.updateMany( { '_id': { $in: stream.objects } }, { $addToSet: { partOf: stream.streamId } } ).exec( )
       return stream.save( )
     } )
-    .then( stream => {
+    .then( streamm => {
       winston.debug( 'Created stream', stream.streamId )
       return res.send( { success: true, message: 'Created stream.', stream: stream } )
     } )
