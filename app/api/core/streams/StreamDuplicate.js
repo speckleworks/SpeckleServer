@@ -19,10 +19,10 @@ module.exports = ( req, res ) => {
     clone = new DataStream( stream )
     clone._id = mongoose.Types.ObjectId()
     clone.streamId = shortId.generate()
-    clone.parent = stream._id
+    clone.parent = stream.streamId
     clone.children = []
     clone.isNew = true
-    stream.children.push( clone._id )
+    stream.children.push( clone.streamId )
     return stream.save()
   })
   .then( result => {
