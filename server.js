@@ -50,10 +50,13 @@ app.use( expressWinston.logger( {
 } ) )
 
 app.use( cookieParser( ) )
-app.use( bodyParser.json( { limit: '50mb' } ) )
-app.use( bodyParser.urlencoded( { limit: '50mb', extended: true } ) )
+
+// throws a 413 if over 3mb (deflated)
+app.use( bodyParser.json( { limit: '3mb' } ) )
+app.use( bodyParser.urlencoded( { extended: true } ) )
+
 app.use( passport.initialize( ) )
-app.set('json spaces', 2)
+app.set( 'json spaces', 2 )
 require( './.config/passport' )( passport )
 
 ////////////////////////////////////////////////////////////////////////
