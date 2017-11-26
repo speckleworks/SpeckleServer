@@ -51,8 +51,8 @@ app.use( expressWinston.logger( {
 
 app.use( cookieParser( ) )
 
-// throws a 413 if over 3mb (deflated)
-app.use( bodyParser.json( { limit: '3mb' } ) )
+// throws a 413 if over 10mb (deflated)
+app.use( bodyParser.json( { limit: '10mb' } ) )
 app.use( bodyParser.urlencoded( { extended: true } ) )
 
 app.use( passport.initialize( ) )

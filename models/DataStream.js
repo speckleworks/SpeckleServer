@@ -4,7 +4,7 @@ var dataStreamSchema = mongoose.Schema( {
 
   streamId: { type: String, index: true },
 
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  owner: { type: mongoose.schema.Types.ObjectId, ref: 'User' },
 
   private: { type: Boolean, default: false },
 
