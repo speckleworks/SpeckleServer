@@ -13,7 +13,6 @@ module.exports = function( ws ) {
 
     'broadcast' ( message ) {
       winston.debug( chalk.blue( 'Volatile Broadcast from socket' ), parent.clientId, 'in streamId', parent.streamId )
-
       radioTower.broadcast( parent.streamId, message, parent.clientId )
     },
 

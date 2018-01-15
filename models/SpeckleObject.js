@@ -25,7 +25,10 @@ var speckleObjectSchema = mongoose.Schema( {
   deleted: { type: Boolean, default: false },
 
   // Streams this object is part of
-  partOf: { type: Array, default: [ ], select: false }
+  partOf: { type: Array, default: [ ], select: false },
+
+  // Ownership rights
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
   // strict: false as we store some random extras in here
 }, { timestamps: true, strict: false } )
