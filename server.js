@@ -27,7 +27,7 @@ if ( cluster.isMaster ) {
   } )
   cluster.on( 'exit', ( worker, code, signal ) => {
     winston.debug( `Speckle worker ${worker.process.pid} just died with code ${code} and signal ${signal}.` )
-    winston.debug( `Starting a new one.` )
+    winston.debug( `Starting a new one...` )
     cluster.fork( )
   } )
 } else {
@@ -90,7 +90,7 @@ if ( cluster.isMaster ) {
   require( './app/ws/SpeckleSockets' )( wss )
 
   app.use( express.static( './static' ) )
-  
+
   ////////////////////////////////////////////////////////////////////////
   /// Temp Routes(debug)                                            /////.
   ////////////////////////////////////////////////////////////////////////

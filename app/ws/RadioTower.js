@@ -9,7 +9,7 @@ module.exports = {
   publisher: null,
 
   subscriber: null,
-  
+
   initRedis( ) {
     winston.debug( chalk.magenta( 'Initialising redis in radio tower.' ) )
     this.publisher = redis.createClient( )
@@ -27,8 +27,8 @@ module.exports = {
           this.send( parsedMessage.wsSessionId, parsedMessage.message, true )
           break
         default:
-          winston.debug('Unkown event type in redis pub sub received.')
-        break
+          winston.debug( 'Unkown event type in redis pub sub received.' )
+          break
       }
     } )
 

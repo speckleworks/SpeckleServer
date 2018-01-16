@@ -11,26 +11,6 @@ const events = require( './SpeckleEvents' )
 const User = require( '../../models/User' )
 
 module.exports = function( wss ) {
-
-  ////////////////////////////////////////////////////////////////////////
-  /// Redis handlers                                                /////.
-  ////////////////////////////////////////////////////////////////////////
-  // const redisPub = redis.createClient( )
-  // const redisSub = redis.createClient( )
-
-  // redisSub.subscribe( 'global-ws-messages' )
-  // redisSub.on( 'message', ( channel, message ) => {
-  //   winston.debug( 'channel:', channel, 'message:', message )
-
-  // } )
-
-  // redisPub.on( 'connect', ( ) => {
-    
-  //   // redisPub.publish( 'global-ws-messages', 'am  connected!!!' )
-  // } )
-
-  // redisPub.publish( 'global-ws-messages', 'hello world!' )
-
   wss.on( 'connection', function( ws, req ) {
     let location = url.parse( req.url, true );
     let token = location.query.access_token

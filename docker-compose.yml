@@ -1,5 +1,6 @@
 version: "2"
-
+volumes: 
+  db_data:
 services:
   web:
     image: bigdoods/speckle
@@ -8,20 +9,25 @@ services:
     environment:
       - PORT=8080
       - DB_HOST=mongo
-      - SPECKLE_NAME="Speckle OSX Localhost"
-      - SPECKLE_URL="http://127.0.0.1:8080/api/v1"
-      - SPECKLE_SOCKET="http://127.0.0.1:8080/api/v1"
+      - SPECKLE_NAME="Speckle Server"
+      - SPECKLE_URL="http://127.0.0.1:8080/api"
+      - SPECKLE_SOCKET="ws://127.0.0.1:8080"
     links:
        - mongo:mongo
     depends_on:
        - mongo
+       - redis
   mongo:
      image: mongo:latest
      volumes:
-       - ./data/db:/data/db
+       - db_data:/data/db
      ports:
        - "27017:27017"
      environment:
        - MONGO_INITDB_ROOT_USERNAME=
        - MONGO_INITDB_ROOT_PASSWORD=
        - MONGO_INITDB_DATABASE=speckle
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
