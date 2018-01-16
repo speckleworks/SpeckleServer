@@ -2,6 +2,8 @@
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const url = require( 'url' )
+const redis = require( 'redis' )
+
 const clientStore = require( './ClientStore' )
 const radioTower = require( './RadioTower' )
 const events = require( './SpeckleEvents' )
@@ -9,7 +11,6 @@ const events = require( './SpeckleEvents' )
 const User = require( '../../models/User' )
 
 module.exports = function( wss ) {
-
   wss.on( 'connection', function( ws, req ) {
     let location = url.parse( req.url, true );
     let token = location.query.access_token
@@ -20,21 +21,20 @@ module.exports = function( wss ) {
     winston.debug( chalk.bgRed( 'WS connection request.' ) )
     winston.debug( location.query )
 
+    // sketchy auth for ws messages
     User.findOne( { apitoken: token } )
       .then( user => {
         if ( !user ) throw new Error( 'WS Auth: User not found. ' + token )
         ws.authorised = true
         ws.userId = user
-        ws.events = events( ws )
         clientStore.add( ws )
       } )
       .catch( err => {
         winston.debug( 'socket connection is not auhtorised.' )
-        ws.events = events( ws )
         clientStore.add( ws )
       } )
 
-
+    ws.events = events( ws )
 
     ws.on( 'message', message => {
       parseMessage( message )

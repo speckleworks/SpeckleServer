@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "dev": "nodemon server.js",
     "debug": "node --inspect --debug-brk server.js"
   },
   "author": "Dimitrie A. Stefanescu @idid / UCL The Bartlett School of Architecture / InnoChain",
@@ -27,13 +28,14 @@
     "jsonwebtoken": "^7.2.1",
     "lodash": "^4.17.4",
     "mongoose": "^4.6.8",
-    "object-hash": "^1.1.8",
     "passport": "^0.3.2",
     "passport-anonymous": "^1.0.1",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
+    "prompt": "^1.0.0",
     "query-to-mongo": "^0.7.0",
     "recursive-iterator": "^2.0.3",
+    "redis": "^2.8.0",
     "serve-static": "^1.12.4",
     "shortid": "^2.2.6",
     "uuid": "^3.0.1",
