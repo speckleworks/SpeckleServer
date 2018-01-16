@@ -1,9 +1,13 @@
 version: "2"
 volumes: 
   db_data:
+networks:
+  db:
+  proxy:
+
 services:
-  web:
-    image: bigdoods/speckle
+  speckle:
+    image: speckle/speckleserver:dev
     ports:
       - "8080:8080"
     environment:
@@ -15,19 +19,25 @@ services:
     links:
        - mongo:mongo
     depends_on:
-       - mongo
-       - redis
+      - mongo
+      - redis
+    networks:
+      - db
   mongo:
-     image: mongo:latest
-     volumes:
-       - db_data:/data/db
-     ports:
-       - "27017:27017"
-     environment:
-       - MONGO_INITDB_ROOT_USERNAME=
-       - MONGO_INITDB_ROOT_PASSWORD=
-       - MONGO_INITDB_DATABASE=speckle
+    image: mongo:latest
+    volumes:
+      - db_data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+      - MONGO_INITDB_DATABASE=speckle
+    networks:
+      - db
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
+    networks:
+      - db

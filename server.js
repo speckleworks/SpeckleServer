@@ -16,7 +16,7 @@ const CONFIG = require( './config' )
 winston.level = 'debug'
 
 if ( cluster.isMaster ) {
-  let numWorkers = require( 'os' ).cpus( ).length
+  let numWorkers = require( 'os' ).cpus( ).length * 0.5
   winston.debug( `Setting up ${numWorkers} workers.` )
 
   for ( let i = 0; i < numWorkers; i++ )
@@ -112,6 +112,6 @@ if ( cluster.isMaster ) {
 
   // I'm having too much fun
   server.listen( CONFIG.server.port, ( ) => {
-    winston.info( 'Speckle is now running. This is a worker process.' )
+    winston.info( 'Speckle worker process now running.' )
   } )
 }
