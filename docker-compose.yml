@@ -1,43 +1,45 @@
-version: "2"
-volumes: 
-  db_data:
-networks:
-  db:
-  proxy:
-
+version: '3'
 services:
+  # SPECKLE
   speckle:
     image: speckle/speckleserver:dev
     ports:
-      - "8080:8080"
-    environment:
-      - PORT=8080
-      - DB_HOST=mongo
-      - SPECKLE_NAME="Speckle Server"
-      - SPECKLE_URL="http://127.0.0.1:8080/api"
-      - SPECKLE_SOCKET="ws://127.0.0.1:8080"
-    links:
-       - mongo:mongo
+      - '80:3000'
+    networks: 
+      - webnet
     depends_on:
-      - mongo
       - redis
-    networks:
-      - db
+      - mongo
+    environment: 
+      - SPECKLE_NAME=My Speckle Server
+      - REQ_SIZE=16mb
+      - INDENT_RESPONSES=true
+      # If connecting to your own databses, uncomment & fill in the details!
+      # - MONGO_URI=
+      # - REDIS_PORT=
+      # - REDIS_ADDR=
+    links:
+      - redis
+      - mongo
+  # MONGODB
   mongo:
     image: mongo:latest
-    volumes:
-      - db_data:/data/db
     ports:
-      - "27017:27017"
+      - '27017:27017'
+    networks: 
+      - webnet
+    volumes:
+      - ./data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=
       - MONGO_INITDB_ROOT_PASSWORD=
-      - MONGO_INITDB_DATABASE=speckle
-    networks:
-      - db
+      - MONGO_INITDB_DATABASE=
+  # REDIS
   redis:
     image: redis:alpine
     ports:
-      - "6379:6379"
-    networks:
-      - db
+      - '6379:6379'
+    networks: 
+      - webnet
+networks:
+  webnet:
