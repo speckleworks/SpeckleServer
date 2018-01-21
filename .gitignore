@@ -1,10 +1,10 @@
-.secrets/database.js
+#standard ignores
 node_modules/
-frontend/
 *.sublime-project
 *.sublime-workspace
-data/
-docker-compose-not-working.yml 
-docker-compose-12fa.yml
-docker-compose-jenca.yml
 npm-debug.log
+
+# keep only the data folder
+data/*
+!data/.gitkeep 
+

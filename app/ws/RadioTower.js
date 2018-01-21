@@ -3,20 +3,21 @@ const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const redis = require( 'redis' )
 
+const CONFIG = require( '../../config' )
 var ClientStore = require( './ClientStore' )
 
 module.exports = {
   publisher: null,
-
   subscriber: null,
 
   initRedis( ) {
     winston.debug( chalk.magenta( 'Initialising redis in radio tower.' ) )
-    this.publisher = redis.createClient( )
-    this.subscriber = redis.createClient( )
+    this.publisher = redis.createClient( CONFIG.redis.port, CONFIG.redis.url )
+    this.subscriber = redis.createClient( CONFIG.redis.port, CONFIG.redis.url )
 
     this.subscriber.subscribe( 'ws-broadcast' )
     this.subscriber.subscribe( 'ws-message' )
+
     this.subscriber.on( 'message', ( channel, message ) => {
       let parsedMessage = JSON.parse( message )
       switch ( channel ) {

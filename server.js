@@ -1,4 +1,3 @@
-'use strict'
 const cluster = require( 'cluster' )
 const express = require( 'express' )
 const cors = require( 'cors' )
@@ -16,7 +15,7 @@ const CONFIG = require( './config' )
 winston.level = 'debug'
 
 if ( cluster.isMaster ) {
-  let numWorkers = require( 'os' ).cpus( ).length * 0.5
+  let numWorkers = require( 'os' ).cpus( ).length
   winston.debug( `Setting up ${numWorkers} workers.` )
 
   for ( let i = 0; i < numWorkers; i++ )
@@ -68,11 +67,14 @@ if ( cluster.isMaster ) {
   app.use( cookieParser( ) )
 
   // throws a 413 if over 10mb (deflated)
-  app.use( bodyParser.json( { limit: '10mb' } ) )
+  app.use( bodyParser.json( { limit: CONFIG.serverDescription.maxRequestSize } ) )
   app.use( bodyParser.urlencoded( { extended: true } ) )
 
   app.use( passport.initialize( ) )
-  app.set( 'json spaces', 2 )
+
+  if ( CONFIG.serverDescription.indentResponses )
+    app.set( 'json spaces', 2 )
+  
   require( './.config/passport' )( passport )
 
   ////////////////////////////////////////////////////////////////////////
@@ -83,21 +85,14 @@ if ( cluster.isMaster ) {
   var WebSocketServer = require( 'ws' ).Server
 
   var wss = new WebSocketServer( {
-    server: server,
-    // verifyClient: require('./app/ws/middleware/VerifyClient')
+    server: server
   } )
 
   require( './app/ws/SpeckleSockets' )( wss )
 
   app.use( express.static( './static' ) )
 
-  ////////////////////////////////////////////////////////////////////////
-  /// Temp Routes(debug)                                            /////.
-  ////////////////////////////////////////////////////////////////////////
-
   const RT = require( './app/ws/RadioTower' )
-  const CS = require( './app/ws/ClientStore' )
-
   RT.initRedis( )
 
   ////////////////////////////////////////////////////////////////////////
@@ -110,8 +105,7 @@ if ( cluster.isMaster ) {
   /// LAUNCH                                                         /////.
   ////////////////////////////////////////////////////////////////////////
 
-  // I'm having too much fun
-  server.listen( CONFIG.server.port, ( ) => {
+  server.listen( 3000, ( ) => {
     winston.info( 'Speckle worker process now running.' )
   } )
 }

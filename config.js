@@ -1,25 +1,18 @@
-const dbUser = process.env.DB_USER || ''
-const dbPw = process.env.DB_PW || ''
-const dbHost = process.env.DB_HOST || '127.0.0.1'
-const dbPort = process.env.DB_PORT || 27017
-const dbName = process.env.DB_NAME || 'speckle_v3'
-const dbAuth = process.env.DB_AUTH || ''
-const maxRequestSize = process.env.REQ_SIZE || '10mb'
+let serverName = process.env.SPECKLE_NAME ? process.env.SPECKLE_NAME : 'Default Speckle Server'
+let maxRequestSize = process.env.REQ_SIZE || '10mb'
 
 module.exports = {
-  init: false,
-  server: {
-    port: process.env.PORT || 8080,
-    maxRequestSize: maxRequestSize
-  },
   serverDescription: {
-    serverName: process.env.SPECKLE_NAME || 'Speckle Server', // Not really important
-    restApi: process.env.SPECKLE_URL || 'http://10.211.55.2:8080/api', // Replace 'http://...` with the IP address your server is running on.
-    ws: process.env.SPECKLE_SOCKET || 'ws://10.211.55.2:8080', // Same!
-    maxRequestSize: maxRequestSize
+    serverName: serverName,
+    maxRequestSize: maxRequestSize,
+    indentResponses: process.env.INDENT_RESPONSES == 'true' ? true : false
   },
   mongo: {
-    url: dbUser === '' ? `mongodb://${dbHost}:${dbPort}/${dbName}` : `mongodb://${dbUser}:${dbPw}@${dbHost}:${dbPort}/${dbName}`
+    url: process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://mongo:27017/speckle'
+  },
+  redis: {
+    port: process.env.REDIS_PORT ? process.env.REDIS_PORT : '6379',
+    url: process.env.REDIS_ADDR ? process.env.REDIS_ADDR : 'redis'
   },
   sessionSecret: 'NaturalSparklingWaterMineral'
 }
