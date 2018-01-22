@@ -10,10 +10,10 @@ var speckleObjectSchema = mongoose.Schema( {
   },
 
   // Geometry hash
-  geometryHash: { type: String, default: null },
+  geometryHash: { type: String, default: null,  index: true },
 
   // Object hash (= GeometryHash + Properties) 
-  hash: { type: String, default: null, required: true },
+  hash: { type: String, default: null, required: true, index: true },
 
   // Application's object id, whatever form it takes
   applicationId: { type: String, default: null },
