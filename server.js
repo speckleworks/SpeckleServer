@@ -1,102 +1,111 @@
-'use strict'
-const express             = require('express')
-const compression         = require('compression')
-const cors                = require('cors')
-const cookieParser        = require('cookie-parser')
-const bodyParser          = require('body-parser')
-const passport            = require('passport')
-const path                = require('path')
-const chalk               = require('chalk')
-const winston             = require('winston')
-const expressWinston      = require('express-winston')
+const cluster = require( 'cluster' )
+const express = require( 'express' )
+const cors = require( 'cors' )
+const serveStatic = require( 'serve-static' )
+const cookieParser = require( 'cookie-parser' )
+const bodyParser = require( 'body-parser' )
+const passport = require( 'passport' )
+const path = require( 'path' )
+const chalk = require( 'chalk' )
+const winston = require( 'winston' )
+const expressWinston = require( 'express-winston' )
+const mongoose = require( 'mongoose' ).set( 'debug', false )
 
-
-const mongoose            = require('mongoose')
-const bluebird            = require('bluebird')
-
-const deets               = require('./.secrets/database')
-
+const CONFIG = require( './config' )
 winston.level = 'debug'
 
-mongoose.Promise = bluebird
-mongoose.connect( deets.url , ( err ) => {
-  if( err ) throw err
-  else winston.info('connected to mongoose at ' + deets.url )
-})
+if ( cluster.isMaster ) {
+  let numWorkers = require( 'os' ).cpus( ).length
+  winston.debug( `Setting up ${numWorkers} workers.` )
 
-////////////////////////////////////////////////////////////////////////
-/// Various Express inits                                         /////.
-////////////////////////////////////////////////////////////////////////
-var app = express()  
-app.use( cors() ) // allow cors
-app.use( compression() ) // allow compression
+  for ( let i = 0; i < numWorkers; i++ )
+    cluster.fork( )
 
-app.use( expressWinston.logger( {
-  transports: [ new winston.transports.Console( { json: false, colorize: true } ) ],
-  meta: false,
-  msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}}'
-} ))
+  cluster.on( 'online', worker => {
+    winston.debug( `Speckle worker ${worker.process.pid} is now online.` )
+  } )
+  cluster.on( 'exit', ( worker, code, signal ) => {
+    winston.debug( `Speckle worker ${worker.process.pid} just died with code ${code} and signal ${signal}.` )
+    winston.debug( `Starting a new one...` )
+    cluster.fork( )
+  } )
+} else {
+  ////////////////////////////////////////////////////////////////////////
+  /// Mongo handlers                                                /////.
+  ////////////////////////////////////////////////////////////////////////
+  mongoose.Promise = global.Promise
+  mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true }, ( err ) => {
+    if ( err ) throw err
+    else winston.info( 'connected to mongoose at ' + CONFIG.mongo.url )
+  } )
 
-app.use( cookieParser() )
-app.use( bodyParser.json( { limit: '50mb' } ) )
-app.use( passport.initialize() )
-require('./.config/passport' ) ( passport )
+  mongoose.connection.on( 'error', err => {
+    winston.debug( 'Failed to connect to DB ' + CONFIG.mongo + ' on startup ', err )
+  } );
 
-////////////////////////////////////////////////////////////////////////
-/// Websockets & HTTP Servers                                     /////.
-////////////////////////////////////////////////////////////////////////
-var http = require('http')
-var server = http.createServer( app )
-var WebSocketServer = require('ws').Server
+  // When the connection is disconnected
+  mongoose.connection.on( 'disconnected', ( ) => {
+    winston.debug( 'Mongoose default was disconnected' )
+  } );
 
-var wss = new WebSocketServer( { 
-  server: server, 
-  verifyClient: require('./app/ws/middleware/VerifyClient')
-  //   function (info, cb) { 
-  //   // TODO: cb ( flase, 200, 'error' )
-  //   var location = url.parse(info.req.url, true);
-  //   winston.info( chalk.red.underline( 'WS: Access token: ' + location.query.access_token ) ) 
-  //   var status = true, code = 400, msg = ''    
-  //   cb( status, code, msg )
-  // } 
-} )
+  mongoose.connection.on( 'connected', ref => {
+    winston.debug( chalk.red( 'Connected to mongo.' ) )
+  } )
 
-require('./app/ws/SpeckleSockets') ( wss )
+  ////////////////////////////////////////////////////////////////////////
+  /// Various Express inits                                         /////.
+  ////////////////////////////////////////////////////////////////////////
+  var app = express( )
+  app.use( cors( ) ) // allow cors
 
-app.get('/', function(req, res) {
-  res.send('Hello there. Move along now.')
-})
+  app.use( expressWinston.logger( {
+    transports: [ new winston.transports.Console( { json: false, colorize: true, timestamp: true } ) ],
+    meta: false,
+    msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} '
+  } ) )
 
-////////////////////////////////////////////////////////////////////////
-/// Temp Routes(debug)                                            /////.
-////////////////////////////////////////////////////////////////////////
+  app.use( cookieParser( ) )
 
-const RT = require('./app/ws/RadioTower')
-const CS = require('./app/ws/ClientStore')
+  // throws a 413 if over 10mb (deflated)
+  app.use( bodyParser.json( { limit: CONFIG.serverDescription.maxRequestSize } ) )
+  app.use( bodyParser.urlencoded( { extended: true } ) )
 
-app.get('/stats', ( req, res ) => {
-  res.json( { numclients: CS.clients.length, rooms: RT.getRooms() } )
-} )
+  app.use( passport.initialize( ) )
 
-app.get('/serverinfo', (req, res) => {
-  res.send( {
-    restEndpoint: 'https://5th.one',
-    wsEndpoint: 'wss://5th.one'
-  })
-})
+  if ( CONFIG.serverDescription.indentResponses )
+    app.set( 'json spaces', 2 )
+  
+  require( './.config/passport' )( passport )
 
-////////////////////////////////////////////////////////////////////////
-/// Routes                                                        /////.
-////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  /// Websockets & HTTP Servers                                     /////.
+  ////////////////////////////////////////////////////////////////////////
+  var http = require( 'http' )
+  var server = http.createServer( app )
+  var WebSocketServer = require( 'ws' ).Server
 
-require( './app/api/updateRoutes' ) ( app, express /*, clients, rooms */ )
-require( './app/api/userRoutes' ) ( app, express )
+  var wss = new WebSocketServer( {
+    server: server
+  } )
 
-////////////////////////////////////////////////////////////////////////
-/// LAUNCH                                                         /////.
-////////////////////////////////////////////////////////////////////////
+  require( './app/ws/SpeckleSockets' )( wss )
 
-var PORT = 8080
-server.listen( PORT, () => {
-  winston.info( chalk.bgBlue( '>>>>>>>> Starting up @ ' + PORT + ' <<<<<<<<<<<') )
-})
+  app.use( express.static( './static' ) )
+
+  const RT = require( './app/ws/RadioTower' )
+  RT.initRedis( )
+
+  ////////////////////////////////////////////////////////////////////////
+  /// Routes                                                        /////.
+  ////////////////////////////////////////////////////////////////////////
+
+  require( './app/api/root' )( app, express )
+
+  ////////////////////////////////////////////////////////////////////////
+  /// LAUNCH                                                         /////.
+  ////////////////////////////////////////////////////////////////////////
+
+  server.listen( 3000, ( ) => {
+    winston.info( 'Speckle worker process now running.' )
+  } )
+}

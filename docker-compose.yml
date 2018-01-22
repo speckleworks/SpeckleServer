@@ -1,0 +1,45 @@
+version: '3'
+services:
+  # SPECKLE
+  speckle:
+    image: speckle/speckleserver:dev
+    ports:
+      - '80:3000'
+    networks: 
+      - webnet
+    depends_on:
+      - redis
+      - mongo
+    environment: 
+      - SPECKLE_NAME=My Speckle Server
+      - REQ_SIZE=16mb
+      - INDENT_RESPONSES=true
+      # If connecting to your own databses, uncomment & fill in the details!
+      # - MONGO_URI=
+      # - REDIS_PORT=
+      # - REDIS_ADDR=
+    links:
+      - redis
+      - mongo
+  # MONGODB
+  mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    networks: 
+      - webnet
+    volumes:
+      - ./data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+      - MONGO_INITDB_DATABASE=
+  # REDIS
+  redis:
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+    networks: 
+      - webnet
+networks:
+  webnet:

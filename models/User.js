@@ -3,12 +3,14 @@ var bcrypt = require('bcrypt-nodejs')
 var winston = require('winston')
 
 var userSchema = mongoose.Schema({
-  name: String,
+  name: { type: String, default: 'John' },
+  surname: { type: String, default: 'Doe' },
   email: { type: String, lowercase: true, unique: true, required: true },
   password: String,
   company: String,
   apitoken: String,
-  logins: { type: Array, default: [] }
+  logins: { type: Array, default: [] },
+  avatar: String
 }, { timestamps: true } )
 
 

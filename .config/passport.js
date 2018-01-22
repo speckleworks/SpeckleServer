@@ -1,10 +1,11 @@
 'use strict'
 
-var JwtStrategy   = require('passport-jwt').Strategy
-var ExtractJwt    = require('passport-jwt').ExtractJwt
+var JwtStrategy     = require('passport-jwt').Strategy
+var AnonymousStrategy = require('passport-anonymous')
+var ExtractJwt      = require('passport-jwt').ExtractJwt
 
-var sessionSecret = require('../.secrets/session')
-var User          = require('../models/User')
+var sessionSecret   = require('../config').sessionSecret
+var User            = require('../models/User')
 
 module.exports = function( passport ) {
   let opts = {
@@ -12,8 +13,9 @@ module.exports = function( passport ) {
     secretOrKey: sessionSecret
   }
 
-  passport.use( new JwtStrategy( opts, ( jwt_payload, done ) => {
-    
+  // returns 401 Unautorized, protects sensitive routes
+  passport.use( 'jwt-strict', new JwtStrategy( opts, ( jwt_payload, done ) => {
+    console.log('jwt-strict')
     User.findOne( { _id: jwt_payload._id }, ( err, user ) => {
       if( err ) return done( err, false ) // not ok
       if( !user ) return done( null, false ) // not ok
@@ -21,5 +23,6 @@ module.exports = function( passport ) {
     } )
   }))
 
-
+  // returns always ok, but protection needs to be handled in route
+  passport.use( new AnonymousStrategy() )
 }

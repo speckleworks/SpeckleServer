@@ -1,0 +1,5 @@
+node_modules
+npm-debug.log
+# keep only the data folder
+data/*
+!data/.gitkeep

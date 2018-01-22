@@ -1,5 +1,10 @@
-.secrets/database.js
+#standard ignores
 node_modules/
-frontend/
 *.sublime-project
 *.sublime-workspace
+npm-debug.log
+
+# keep only the data folder
+data/*
+!data/.gitkeep 
+
