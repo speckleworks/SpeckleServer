@@ -12,8 +12,8 @@ module.exports = {
 
   initRedis( ) {
     winston.debug( chalk.magenta( 'Initialising redis in radio tower.' ) )
-    this.publisher = redis.createClient( CONFIG.redis.port, CONFIG.redis.url )
-    this.subscriber = redis.createClient( CONFIG.redis.port, CONFIG.redis.url )
+    this.publisher = redis.createClient( CONFIG.redis.url )
+    this.subscriber = redis.createClient( CONFIG.redis.url )
 
     this.subscriber.subscribe( 'ws-broadcast' )
     this.subscriber.subscribe( 'ws-message' )

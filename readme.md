@@ -27,6 +27,14 @@ Steps:
 
 3) Visit your speckle server [http://localhost](http://localhost) or whatever the IP address of your VPS is.
 
+### Deploying to Heroku
+
+    $ heroku create --stack cedar
+    $ heroku addons:create mongolab:sandbox
+    $ heroku addons:create heroku-redis:hobby-dev
+    $ git push heroku master
+    $ heroku open
+
 ## Develop
 More detailed instructions coming soon. Simply spin off an instance of Redis & Mongo locally, make sure in `config.js` that you're connecting to them, and spin out the server with `nodemon server.js` if  you want live reloads or `node server.js` otherwise. 
 

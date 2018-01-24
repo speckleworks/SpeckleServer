@@ -8,11 +8,10 @@ module.exports = {
     indentResponses: process.env.INDENT_RESPONSES == 'true' ? true : false
   },
   mongo: {
-    url: process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://mongo:27017/speckle'
+    url: process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://mongo:27017/speckle'
   },
   redis: {
-    port: process.env.REDIS_PORT ? process.env.REDIS_PORT : '6379',
-    url: process.env.REDIS_ADDR ? process.env.REDIS_ADDR : 'redis'
+    url: process.env.REDIS_URL || `redis://${process.env.REDIS_ADDR || 'redis'}:${process.env.REDIS_PORT || '6379'}`
   },
   sessionSecret: 'NaturalSparklingWaterMineral'
 }
