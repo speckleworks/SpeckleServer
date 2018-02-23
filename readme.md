@@ -1,7 +1,10 @@
+<a href="url"><img src="https://speckle.works/img/logos/2xlogo-white.png" align="left" height="128" ></a>
+# Speckle Server
+
+> This is the Speckle Server, which coordinates communications between the various SpeckleClients.
 [![DOI](https://zenodo.org/badge/74043433.svg)](https://zenodo.org/badge/latestdoi/74043433)
 
-# Speckle Server
-This is the Speckle Server, which coordinates communications between the various SpeckleClients and provides :
+Speckle Server provides :
 - a basic accounts system
 - stream coordination
 - design data collation and retrieval
