@@ -1,11 +1,16 @@
 [![DOI](https://zenodo.org/badge/74043433.svg)](https://zenodo.org/badge/latestdoi/74043433)
 
 # Speckle Server
-This is the Speckle Server, which coordinates communications between the various SpeckleClients. It provides a basic accounts system, stream coordination, design data collation and retrieval, live update events and a basic querying mechanism.
+This is the Speckle Server, which coordinates communications between the various SpeckleClients and provides :
+- a basic accounts system
+- stream coordination
+- design data collation and retrieval
+- live update events
+- a basic querying mechanism
 
 ## Deploy
 
-Perquisites:  
+Prerequisites:  
 - A machine running [docker](https://www.docker.com/community-edition#download).
 - Have `git` installed too. 
 
@@ -25,6 +30,15 @@ More detailed instructions coming soon. Simply spin off an instance of Redis & M
 ## API
 [API docs are here](https://speckleworks.github.io/SpeckleOpenApi/#introduction) - they are a good overview of what you can do with the speckle server.
 
+### Current limitations
+SpeckleServer currently imposes a default payload size limit for streams, they are as detailed below.
+
+Single object payload restricted before deflation, but this can be adjusted. Current limit :
+- `2e6 bytes` : `2,000,000 bytes` or `2,000 KB` 
+
+Max total payload size is currently restricted at 
+- 1 payload of `50e6 bytes` : `50,000,000 bytes` or `50,000 KB` or `50 MB` or
+- 100 payloads of around `500KB` each
 
 ## Credits
 Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) / [UCL The Bartlett](https://www.ucl.ac.uk/bartlett/) / [InnoChain](http://innochain.net) / [Jenca](http://www.jenca.org)
@@ -32,4 +46,4 @@ Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) / [UCL The 
 This project has received funding from the European Union’s Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 642877.
 
 ### License
-MIT.
+[MIT](https://github.com/speckleworks/SpeckleServer/blob/master/LICENSE)
