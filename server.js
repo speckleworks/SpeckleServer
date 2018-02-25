@@ -74,7 +74,7 @@ if ( cluster.isMaster ) {
 
   if ( CONFIG.serverDescription.indentResponses )
     app.set( 'json spaces', 2 )
-  
+
   require( './.config/passport' )( passport )
 
   ////////////////////////////////////////////////////////////////////////
@@ -105,7 +105,8 @@ if ( cluster.isMaster ) {
   /// LAUNCH                                                         /////.
   ////////////////////////////////////////////////////////////////////////
 
-  server.listen( 3000, ( ) => {
-    winston.info( 'Speckle worker process now running.' )
+  var port = process.env.PORT || 3000
+  server.listen( port, ( ) => {
+    winston.info( `Speckle worker process now running on port ${port}.` )
   } )
 }
