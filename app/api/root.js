@@ -18,7 +18,7 @@ module.exports = function( app, express ) {
   } )
 
   //
-  // ACCOUNTS
+  // ACCOUNTS 
   // 
   // create a new account
   r.post( '/accounts/register', require( './core/accounts/UserCreate' ) )
@@ -49,6 +49,9 @@ module.exports = function( app, express ) {
   r.get( '/streams/:streamId', relaxedAuth, require( './core/streams/StreamGet' ) )
   // update a stream (objects, layers, name)
   r.put( '/streams/:streamId', strictAuth, require( './core/streams/StreamPut' ) )
+  // patch a stream (objects, layers, name)
+  r.patch( '/streams/:streamId', strictAuth, require( './core/streams/StreamPatch' ) )
+  
   // delete a stream
   r.delete( '/streams/:streamId', strictAuth, require( './core/streams/StreamDelete' ) )
 
