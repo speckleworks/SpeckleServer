@@ -8,7 +8,8 @@ const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const MergeLayers = require( '../../helpers/MergeLayers' )
 
 module.exports = ( req, res ) => {
-  winston.debug( chalk.bgGreen( 'Getting stream', req.params.streamId ) )
+  winston.debug( chalk.bgGreen( 'Patching stream', req.params.streamId ) )
+
   if ( !req.params.streamId ) {
     res.status( 400 )
     return res.send( { success: false, message: 'No stream id provided.' } )
@@ -18,7 +19,15 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( result => {
       stream = result
-      
+      // console.log( req.body )
+
+      for ( var key in req.body ) {
+        if ( stream.toObject( ).hasOwnProperty( key ) ) {
+          stream[ key ] = req.body[ key ]
+          stream.markModified( key )
+        }
+      }
+      console.log( stream )
       return stream.save( )
     } )
     .then( result => {
