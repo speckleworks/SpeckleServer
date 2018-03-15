@@ -33,6 +33,12 @@ module.exports = function( app, express ) {
   // get all clients for a specific user token
   r.get( '/accounts/clients', strictAuth, require( './core/accounts/UserGetClients' ) )
 
+  // get display profile  
+  r.get( '/accounts/:userId', strictAuth, require( './core/accounts/UserProfile' ) )
+  // search profiles by email (restrict to 10)
+  r.post( '/accounts/search', strictAuth, require( './core/accounts/UserSearch' ) )
+
+
   // 
   // CLIENTS //
   // 
@@ -65,6 +71,7 @@ module.exports = function( app, express ) {
   // Stream NAME //
   // 
   // get stream name
+  // TODO: deprecate, replaced by patch
   r.get( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NameGet' ) )
   // update stream name
   r.put( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NamePut' ) )

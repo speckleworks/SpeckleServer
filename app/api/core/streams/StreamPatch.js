@@ -19,15 +19,14 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( result => {
       stream = result
-      // console.log( req.body )
 
       for ( var key in req.body ) {
         if ( stream.toObject( ).hasOwnProperty( key ) ) {
           stream[ key ] = req.body[ key ]
           stream.markModified( key )
+          console.log( "patching " + key )
         }
       }
-      console.log( stream )
       return stream.save( )
     } )
     .then( result => {

@@ -7,13 +7,15 @@ var dataStreamSchema = mongoose.Schema( {
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
   private: { type: Boolean, default: false },
-
+  
   sharedWith: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
 
   // should replace 'sharedWith' in the near future
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-  canComment: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  // canComment: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+
+  anonymousComments: { type: Boolean, default: false },
 
   name: { type: String, default: 'Speckle Stream' },
 
