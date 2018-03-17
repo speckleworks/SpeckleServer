@@ -8,7 +8,7 @@ module.exports = ( user, operation, resource ) => {
   return new Promise( ( resolve, reject ) => {
 
     if ( user == null ) user = { role: 'guest', _id: '' }
-    winston.debug( chalk.bgRed( 'checking perms' ), user.role, user._id.toString( ) )
+    winston.debug( chalk.bgRed( 'checking perms' ), user.role, user._id.toString( ), resource.streamId )
 
     // admin or owner
     if ( user.role === 'admin' || user._id.toString( ) === resource.owner.toString( ) ) {
@@ -21,9 +21,12 @@ module.exports = ( user, operation, resource ) => {
       return reject( new Error( "You are not authorised." ) )
     }
 
+    let canRead = resource.canRead.map( x => x.toString() )
+    let canWrite = resource.canWrite.map( x => x.toString() )
+
     switch ( operation ) {
       case 'write':
-        if ( resource.canWrite.indexOf( user._id ) >= 0 ) {
+        if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
           return resolve( )
         }
@@ -35,11 +38,11 @@ module.exports = ( user, operation, resource ) => {
           winston.debug( chalk.bgGreen( 'checking perms' ), `${operation} ok, resource is public` )
           return resolve( )
         }
-        if ( resource.canWrite.indexOf( user._id ) >= 0 ) {
+        if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has write & ${operation} access` )
           return resolve( )
         }
-        if ( resource.canRead.indexOf( user._id ) >= 0 ) {
+        if ( canRead.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
           return resolve( )
         }

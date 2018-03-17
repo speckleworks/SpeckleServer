@@ -19,8 +19,11 @@ module.exports = ( req, res ) => {
 
   DataStream.find( { streamId: { $in: [ req.params.streamId, req.params.otherId ] } } ).lean( )
     .then( streams => {
+      if ( streams.length != 2 ) throw new Error( 'Failed to find streams.' )
+
       first = streams.find( s => s.streamId === req.params.streamId )
       second = streams.find( s => s.streamId === req.params.otherId )
+
       // check if user can read first stream
       return PermissionCheck( req.user, 'read', first )
     } )
@@ -42,7 +45,6 @@ module.exports = ( req, res ) => {
       res.send( { success: true, objects: objects, layers: layers } )
     } )
     .catch( err => {
-      winston.debug( err )
       res.status( 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )

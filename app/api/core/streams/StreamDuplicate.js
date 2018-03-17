@@ -40,7 +40,6 @@ module.exports = ( req, res ) => {
       res.send( { success: true, clone: { _id: result._id, streamId: clone.streamId }, parent: { _id: parent._id, streamId: parent.streamId, children: parent.children } } )
     } )
     .catch( err => {
-      winston.debug( err )
       res.status( 400 )
       res.send( { success: false, message: err, streamId: req.streamId } )
     } )
