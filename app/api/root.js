@@ -8,10 +8,10 @@ var serverDescription = require( '../../config' ).serverDescription
 module.exports = function( app, express ) {
   var r = new express.Router( )
 
-  // strict auth will return a 401 if no authorization header is present
-  let strictAuth = passport.authenticate( 'jwt-strict', { session: false } )
-  // relaxed auth allows for annonymous access to the endpoint, but permissions should be checked inside
-  let relaxedAuth = passport.authenticate( [ 'jwt-strict', 'anonymous' ], { session: false } )
+  // strict auth will return a 401 if no authorization header is present. pass means req.user exists
+  let mandatoryAuthorisation = passport.authenticate( 'jwt-strict', { session: false } )
+  // relaxed auth allows for annonymous access to the endpoint, but permissions should be checked inside. pass doesn't guarantee req.user
+  let optionalAuthorisation = passport.authenticate( [ 'jwt-strict', 'anonymous' ], { session: false } )
 
   r.get( '/', ( req, res ) => {
     res.send( serverDescription )
@@ -24,57 +24,58 @@ module.exports = function( app, express ) {
   r.post( '/accounts/register', require( './core/accounts/UserCreate' ) )
   // returns a jwt-strict token
   r.post( '/accounts/login', require( './core/accounts/UserLogin' ) )
+
   // get profile
-  r.get( '/accounts/profile', strictAuth, require( './core/accounts/UserGet' ) )
+  r.get( '/accounts/profile', mandatoryAuthorisation, require( './core/accounts/UserGet' ) )
   // update profile
-  r.put( '/accounts/profile', strictAuth, require( './core/accounts/UserPut' ) )
+  r.put( '/accounts/profile', mandatoryAuthorisation, require( './core/accounts/UserPut' ) )
   // get all streams for a specific user token
-  r.get( '/accounts/streams', strictAuth, require( './core/accounts/UserGetStreams' ) )
+  r.get( '/accounts/streams', mandatoryAuthorisation, require( './core/accounts/UserGetStreams' ) )
   // get all clients for a specific user token
-  r.get( '/accounts/clients', strictAuth, require( './core/accounts/UserGetClients' ) )
+  r.get( '/accounts/clients', mandatoryAuthorisation, require( './core/accounts/UserGetClients' ) )
 
   // get display profile  
-  r.get( '/accounts/:userId', strictAuth, require( './core/accounts/UserProfile' ) )
+  r.get( '/accounts/:userId', mandatoryAuthorisation, require( './core/accounts/UserProfile' ) )
   // search profiles by email (restrict to 10)
-  r.post( '/accounts/search', strictAuth, require( './core/accounts/UserSearch' ) )
+  r.post( '/accounts/search', mandatoryAuthorisation, require( './core/accounts/UserSearch' ) )
 
 
   // 
   // CLIENTS //
   // 
-  r.post( '/clients/', relaxedAuth, require( './core/clients/ClientCreate' ) )
-  r.get( '/clients/:clientId', strictAuth, require( './core/clients/ClientGet' ) )
-  r.put( '/clients/:clientId', strictAuth, require( './core/clients/ClientPut' ) )
+  r.post( '/clients/', optionalAuthorisation, require( './core/clients/ClientCreate' ) )
+  r.get( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientGet' ) )
+  r.put( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientPut' ) )
 
   // 
   // STREAMS Core //
   // 
-  // create a new stream
-  r.post( '/streams', strictAuth, require( './core/streams/StreamPost' ) )
-  // get stream
-  r.get( '/streams/:streamId', relaxedAuth, require( './core/streams/StreamGet' ) )
-  // update a stream (objects, layers, name)
-  r.put( '/streams/:streamId', strictAuth, require( './core/streams/StreamPut' ) )
-  // patch a stream (objects, layers, name)
-  r.patch( '/streams/:streamId', strictAuth, require( './core/streams/StreamPatch' ) )
+  // create a new stream 
+  r.post( '/streams', mandatoryAuthorisation, require( './core/streams/StreamPost' ) )
+  // get stream / perm check 'read'
+  r.get( '/streams/:streamId', optionalAuthorisation, require( './core/streams/StreamGet' ) )
+  // update a stream / perm check 'write'
+  r.put( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamPut' ) )
+  // patch a stream / perm check 'write'
+  r.patch( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamPatch' ) )
   
   // delete a stream
-  r.delete( '/streams/:streamId', strictAuth, require( './core/streams/StreamDelete' ) )
+  r.delete( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamDelete' ) )
 
   // Special stuff:
-  // duplicate a stream
-  r.post( '/streams/:streamId/clone', strictAuth, require( './core/streams/StreamDuplicate' ) )
-  // diff a stream against another
-  r.get( '/streams/:streamId/diff/:otherId', relaxedAuth, require( './core/streams/StreamDiff' ) )
+  // duplicate a stream / perm check 'read'
+  r.post( '/streams/:streamId/clone', mandatoryAuthorisation, require( './core/streams/StreamDuplicate' ) )
+  // diff a stream against another / perm check 'read' / perm check 'read'
+  r.get( '/streams/:streamId/diff/:otherId', optionalAuthorisation, require( './core/streams/StreamDiff' ) )
 
   // 
   // Stream NAME //
   // 
   // get stream name
-  // TODO: deprecate, replaced by patch
-  r.get( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NameGet' ) )
-  // update stream name
-  r.put( '/streams/:streamId/name', relaxedAuth, require( './core/streams/NamePut' ) )
+  // TODO: deprecate, replaced by patch, perm chec
+  r.get( '/streams/:streamId/name', optionalAuthorisation, require( './core/streams/NameGet' ) )
+  // update stream name, replaced by patch
+  r.put( '/streams/:streamId/name', mandatoryAuthorisation, require( './core/streams/NamePut' ) )
 
   // 
   // Stream LAYERS //
@@ -82,30 +83,30 @@ module.exports = function( app, express ) {
 
   // 1. Collection ops
   // Get stream layers
-  r.get( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersGet' ) )
+  r.get( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersGet' ) )
   // Add stream layers
-  r.post( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersPost' ) )
+  r.post( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersPost' ) )
   // Replace stream layers
-  r.put( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersPut' ) )
+  r.put( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersPut' ) )
   // Diff stream layers
-  r.patch( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersPatch' ) )
+  r.patch( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersPatch' ) )
   // Delete stream layers
-  r.delete( '/streams/:streamId/layers', relaxedAuth, require( './core/streams/LayersDelete' ) )
+  r.delete( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersDelete' ) )
 
   // 2. Individual ops
-  r.get( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSingleGet' ) )
+  r.get( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSingleGet' ) )
   // Replace stream layer
-  r.put( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSinglePut' ) )
+  r.put( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSinglePut' ) )
   // Update stream layer
-  r.patch( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSinglePatch' ) )
+  r.patch( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSinglePatch' ) )
   // Delete stream layer
-  r.delete( '/streams/:streamId/layers/:layerId', relaxedAuth, require( './core/streams/LayerSingleDelete' ) )
+  r.delete( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSingleDelete' ) )
 
   // 3. Layer object manipulations
-  r.get( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerGetObjects' ) )
-  r.post( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerPostObjects' ) ) // add
-  r.put( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerPutObjects' ) ) // replace
-  r.delete( '/streams/:streamId/layers/:layerId/objects', relaxedAuth, require( './core/streams/layers/LayerDeleteObjects' ) )
+  r.get( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerGetObjects' ) )
+  r.post( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerPostObjects' ) ) // add
+  r.put( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerPutObjects' ) ) // replace
+  r.delete( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerDeleteObjects' ) )
 
   //
   // STREAM OBJECTS //
@@ -113,42 +114,42 @@ module.exports = function( app, express ) {
 
   // 1. Collection ops
   // Get stream objects
-  r.get( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsGet' ) )
+  r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsGet' ) )
   // Add stream objects
-  r.post( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsPost' ) )
+  r.post( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsPost' ) )
   // Replace stream objects
-  r.put( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsPut' ) )
+  r.put( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsPut' ) )
   // Delete stream object list
-  r.delete( '/streams/:streamId/objects', relaxedAuth, require( './core/streams/ObjectsDelete' ) )
+  r.delete( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsDelete' ) )
 
   // 2.Individual ops
   // 
   // Delete an object from a stream list
-  r.delete( '/streams/:streamId/objects/:objectId', relaxedAuth, require( './core/streams/ObjectDelete' ) )
+  r.delete( '/streams/:streamId/objects/:objectId', optionalAuthorisation, require( './core/streams/ObjectDelete' ) )
 
   //
   // OBJECTS //
   // These routes are for hackers. Creating objects outside streams is discouraged.
   // 
   // Create an object
-  r.post( '/objects', strictAuth, require( './core/objects/ObjectPost' ) )
+  r.post( '/objects', mandatoryAuthorisation, require( './core/objects/ObjectPost' ) )
   // Create many objects
-  r.post( '/objects/bulk', strictAuth, require( './core/objects/ObjectPostBulk' ) )
+  r.post( '/objects/bulk', mandatoryAuthorisation, require( './core/objects/ObjectPostBulk' ) )
   // Get an object
   r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
   // Get more objects
   r.post( '/objects/getbulk/', require( './core/objects/ObjectsGetBulk' ) )
   // update one
-  r.put( '/objects/:objectId', strictAuth, require( './core/objects/ObjectPut' ) )
+  r.put( '/objects/:objectId', mandatoryAuthorisation, require( './core/objects/ObjectPut' ) )
   // delete one
-  r.delete( '/objects/:objectId', strictAuth, require( './core/objects/ObjectDelete' ) )
+  r.delete( '/objects/:objectId', mandatoryAuthorisation, require( './core/objects/ObjectDelete' ) )
 
 
   // TODO: Comment system (once auth is revamped)
-  // r.get( '/comments/:streamId', relaxedAuth, require( './core/comments/CommentsGet' ) )
-  // r.post( '/comments/:streamId', relaxedAuth, require( './core/comments/CommentPost' ) )
-  // r.put( '/comments/:commentId', strictAuth, require( './core/comments/CommentPut' ) )
-  // r.delete( '/comments/:commentId', strictAuth, require( './core/comments/CommentPut' ) )
+  // r.get( '/comments/:streamId', optionalAuthorisation, require( './core/comments/CommentsGet' ) )
+  // r.post( '/comments/:streamId', optionalAuthorisation, require( './core/comments/CommentPost' ) )
+  // r.put( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentPut' ) )
+  // r.delete( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentPut' ) )
 
   app.use( '/api', r )
 }

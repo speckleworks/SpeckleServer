@@ -6,6 +6,7 @@ const mongoose = require( 'mongoose' )
 const DataStream = require( '../../../../models/DataStream' )
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const MergeLayers = require( '../../helpers/MergeLayers' )
+const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
   winston.debug( chalk.bgGreen( 'Patching stream', req.params.streamId ) )
@@ -19,7 +20,9 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( result => {
       stream = result
-
+      return PermissionCheck( req.user, 'write', result )
+    })
+    .then(() => {
       for ( var key in req.body ) {
         if ( stream.toObject( ).hasOwnProperty( key ) ) {
           stream[ key ] = req.body[ key ]

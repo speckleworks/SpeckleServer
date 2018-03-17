@@ -3,6 +3,7 @@ const mongoose = require( 'mongoose' )
 const shortId = require( 'shortid' )
 
 const DataStream = require( '../../../../models/DataStream' )
+const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
   if ( !req.params.streamId ) {
@@ -12,9 +13,14 @@ module.exports = ( req, res ) => {
 
   let clone = {}
   let parent = {}
+  let stream = {}
 
   DataStream.findOne( { streamId: req.params.streamId } )
-    .then( stream => {
+    .then( result => {
+      stream = result
+      return PermissionCheck( req.user, 'read', result )
+    } )
+    .then( ( ) => {
       if ( !stream ) throw new Error( 'Database fail.' )
       clone = new DataStream( stream )
       clone._id = mongoose.Types.ObjectId( )
@@ -22,6 +28,7 @@ module.exports = ( req, res ) => {
       clone.parent = stream.streamId
       clone.children = [ ]
       clone.isNew = true
+      clone.owner = req.user._id
       stream.children.push( clone.streamId )
       return stream.save( )
     } )

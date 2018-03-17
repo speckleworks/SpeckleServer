@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "local-dev": "MONGO_URI='localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' nodemon server.js"
+    "local-dev": "MONGO_URI='localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='3' nodemon server.js "
   },
   "author": "Dimitrie A. Stefanescu @idid / UCL The Bartlett School of Architecture / InnoChain",
   "license": "MIT",

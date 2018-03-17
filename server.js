@@ -15,7 +15,9 @@ const CONFIG = require( './config' )
 winston.level = 'debug'
 
 if ( cluster.isMaster ) {
-  let numWorkers = require( 'os' ).cpus( ).length
+  let osCpus = require( 'os' ).cpus( ).length
+  let envCpus = process.env.MAX_PROC
+  let numWorkers = envCpus ? ( envCpus > osCpus ? osCpus : envCpus ) : osCpus
   winston.debug( `Setting up ${numWorkers} workers.` )
 
   for ( let i = 0; i < numWorkers; i++ )

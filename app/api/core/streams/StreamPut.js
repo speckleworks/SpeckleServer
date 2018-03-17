@@ -6,6 +6,7 @@ const mongoose = require( 'mongoose' )
 const DataStream = require( '../../../../models/DataStream' )
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const MergeLayers = require( '../../helpers/MergeLayers' )
+const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
   winston.debug( chalk.bgGreen( 'Getting stream', req.params.streamId ) )
@@ -18,11 +19,13 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( result => {
       stream = result
-
+      return PermissionCheck( req.user, 'write', result )
+    } )
+    .then( ( ) => {
       if ( req.body.private ) stream.private = req.body.private
       if ( req.body.parent ) stream.parent = req.body.parent
-      if( req.body.globalMeasures ) stream.globalMeasures = req.body.globalMeasures
-      if( req.body.baseProperties ) stream.baseProperties = req.body.baseProperties
+      if ( req.body.globalMeasures ) stream.globalMeasures = req.body.globalMeasures
+      if ( req.body.baseProperties ) stream.baseProperties = req.body.baseProperties
 
       stream.name = req.body.name ? req.body.name : stream.name
       stream.layers = req.body.layers ? MergeLayers( stream.layers, req.body.layers ) : stream.layers
@@ -47,7 +50,7 @@ module.exports = ( req, res ) => {
     } )
     .catch( err => {
       winston.error( err )
-      res.status( 400 )
+      res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )
 }
