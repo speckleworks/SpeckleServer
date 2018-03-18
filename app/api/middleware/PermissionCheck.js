@@ -23,7 +23,7 @@ module.exports = ( user, operation, resource ) => {
 
     let canRead = resource.canRead.map( x => x.toString() )
     let canWrite = resource.canWrite.map( x => x.toString() )
-
+    
     switch ( operation ) {
       case 'write':
         if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {

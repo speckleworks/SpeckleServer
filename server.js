@@ -77,7 +77,7 @@ if ( cluster.isMaster ) {
   if ( CONFIG.serverDescription.indentResponses )
     app.set( 'json spaces', 2 )
 
-  require( './.config/passport' )( passport )
+  require( './config/passport' )( passport )
 
   ////////////////////////////////////////////////////////////////////////
   /// Websockets & HTTP Servers                                     /////.

@@ -28,7 +28,18 @@ module.exports = ( req, res ) => {
       clone.parent = stream.streamId
       clone.children = [ ]
       clone.isNew = true
-      clone.owner = req.user._id
+      clone.name += ' Clone'
+      clone.createdAt = new Date
+      clone.updatedAt = new Date
+
+      if ( req.user._id.toString( ) != stream.owner.toString( ) ) {
+        // new ownership
+        clone.owner = req.user._id
+        //  grant original owner has read access
+        clone.canRead = [ stream.owner ]
+        // make it private
+        clone.canWrite = [ ]
+      }
       stream.children.push( clone.streamId )
       return stream.save( )
     } )

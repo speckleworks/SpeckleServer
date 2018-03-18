@@ -116,16 +116,16 @@ module.exports = function( app, express ) {
   // Get stream objects
   r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsGet' ) )
   // Add stream objects
-  r.post( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsPost' ) )
+  r.post( '/streams/:streamId/objects', mandatoryAuthorisation, require( './core/streams/ObjectsPost' ) )
   // Replace stream objects
-  r.put( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsPut' ) )
+  r.put( '/streams/:streamId/objects', mandatoryAuthorisation, require( './core/streams/ObjectsPut' ) )
   // Delete stream object list
-  r.delete( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsDelete' ) )
+  r.delete( '/streams/:streamId/objects', mandatoryAuthorisation, require( './core/streams/ObjectsDelete' ) )
 
   // 2.Individual ops
   // 
   // Delete an object from a stream list
-  r.delete( '/streams/:streamId/objects/:objectId', optionalAuthorisation, require( './core/streams/ObjectDelete' ) )
+  r.delete( '/streams/:streamId/objects/:objectId', mandatoryAuthorisation, require( './core/streams/ObjectDelete' ) )
 
   //
   // OBJECTS //
@@ -136,9 +136,9 @@ module.exports = function( app, express ) {
   // Create many objects
   r.post( '/objects/bulk', mandatoryAuthorisation, require( './core/objects/ObjectPostBulk' ) )
   // Get an object
-  r.get( '/objects/:objectId', require( './core/objects/ObjectGet' ) )
+  r.get( '/objects/:objectId', optionalAuthorisation, require( './core/objects/ObjectGet' ) )
   // Get more objects
-  r.post( '/objects/getbulk/', require( './core/objects/ObjectsGetBulk' ) )
+  r.post( '/objects/getbulk/', optionalAuthorisation, require( './core/objects/ObjectsGetBulk' ) )
   // update one
   r.put( '/objects/:objectId', mandatoryAuthorisation, require( './core/objects/ObjectPut' ) )
   // delete one
