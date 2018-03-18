@@ -30,6 +30,12 @@ var speckleObjectSchema = mongoose.Schema( {
   // Ownership rights
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
+  // should replace 'sharedWith' in the near future
+  canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+
+  anonymousComments: { type: Boolean, default: false },
+
   // strict: false as we store some random extras in here
 }, { timestamps: true, strict: false } )
 

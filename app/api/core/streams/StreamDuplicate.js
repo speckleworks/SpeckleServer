@@ -27,7 +27,6 @@ module.exports = ( req, res ) => {
       clone.streamId = shortId.generate( )
       clone.parent = stream.streamId
       clone.children = [ ]
-      clone.isNew = true
       clone.name += ' Clone'
       clone.createdAt = new Date
       clone.updatedAt = new Date
@@ -35,12 +34,14 @@ module.exports = ( req, res ) => {
       if ( req.user._id.toString( ) != stream.owner.toString( ) ) {
         // new ownership
         clone.owner = req.user._id
-        //  grant original owner has read access
+        //  grant original owner read access
         clone.canRead = [ stream.owner ]
         // make it private
         clone.canWrite = [ ]
       }
+      
       stream.children.push( clone.streamId )
+      clone.isNew = true
       return stream.save( )
     } )
     .then( result => {
