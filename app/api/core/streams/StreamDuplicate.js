@@ -30,7 +30,8 @@ module.exports = ( req, res ) => {
       clone.name += ' Clone'
       clone.createdAt = new Date
       clone.updatedAt = new Date
-
+      clone.private = stream.private
+      
       if ( req.user._id.toString( ) != stream.owner.toString( ) ) {
         // new ownership
         clone.owner = req.user._id

@@ -8,50 +8,51 @@ module.exports = ( user, operation, resource ) => {
   return new Promise( ( resolve, reject ) => {
 
     if ( user == null ) user = { role: 'guest', _id: '' }
-    winston.debug( chalk.bgRed( 'checking perms' ), user.role, user._id.toString( ), resource.streamId )
+    winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|' , user.role, '|', user._id.toString( ), '|', resource.owner.toString( ), 'id:', resource.streamId ? resource.streamId : resource._id.toString( ) )
 
     // admin or owner
     if ( user.role === 'admin' || user._id.toString( ) === resource.owner.toString( ) ) {
       winston.debug( chalk.bgGreen( 'checking perms' ), 'user is admin or owner' )
-      return resolve( )
+      return resolve( resource )
     }
 
     if ( operation == null ) {
       winston.debug( chalk.bgRed( 'checking perms' ), 'no operation specified' )
-      return reject( new Error( "You are not authorised." ) )
+      return reject( new Error( `You are not authorised to ${operation}.` ) )
     }
 
-    let canRead = resource.canRead.map( x => x.toString() )
-    let canWrite = resource.canWrite.map( x => x.toString() )
-    
+    // let's get basic
+    let canRead = resource.canRead.map( x => x.toString( ) )
+    let canWrite = resource.canWrite.map( x => x.toString( ) )
+
     switch ( operation ) {
       case 'write':
         if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
-          return resolve( )
+          return resolve( resource )
         }
         winston.debug( chalk.bgRed( 'checking perms' ), `user has NO ${operation} access` )
-        return reject( new Error( "You are not authorised." ) )
+        return reject( new Error( `You are not authorised to ${operation}.` ) )
 
       case 'read':
-        if ( !resource.private ) {
+        if ( resource.private === false ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `${operation} ok, resource is public` )
-          return resolve( )
+          return resolve( resource )
         }
         if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has write & ${operation} access` )
-          return resolve( )
+          return resolve( resource )
         }
         if ( canRead.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
-          return resolve( )
+          return resolve( resource )
         }
         winston.debug( chalk.bgRed( 'checking perms' ), `user has NO ${operation} access` )
-        return reject( new Error( "You are not authorised." ) )
+        return reject( new Error( `You are not authorised to ${operation}.` ) )
 
       default:
         winston.debug( chalk.bgRed( 'checking perms' ), `operation ${operation} not defined` )
-        return reject( new Error( "You are not authorised." ) )
+        return reject( new Error( `You are not authorised to ${operation}: unknown.` ) )
     }
   } )
 }
