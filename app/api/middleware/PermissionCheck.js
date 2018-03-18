@@ -7,7 +7,9 @@ const User = require( '../../../models/User' )
 module.exports = ( user, operation, resource ) => {
   return new Promise( ( resolve, reject ) => {
 
+    if( !resource ) return reject( new Error('Resource not found.') )
     if ( user == null ) user = { role: 'guest', _id: '' }
+
     winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|' , user.role, '|', user._id.toString( ), '|', resource.owner.toString( ), 'id:', resource.streamId ? resource.streamId : resource._id.toString( ) )
 
     // admin or owner

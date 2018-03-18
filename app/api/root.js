@@ -77,36 +77,6 @@ module.exports = function( app, express ) {
   // update stream name, replaced by patch
   r.put( '/streams/:streamId/name', mandatoryAuthorisation, require( './core/streams/NamePut' ) )
 
-  // 
-  // Stream LAYERS //
-  // 
-
-  // 1. Collection ops
-  // Get stream layers
-  r.get( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersGet' ) )
-  // Add stream layers
-  r.post( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersPost' ) )
-  // Replace stream layers
-  r.put( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersPut' ) )
-  // Diff stream layers
-  r.patch( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersPatch' ) )
-  // Delete stream layers
-  r.delete( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersDelete' ) )
-
-  // 2. Individual ops
-  r.get( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSingleGet' ) )
-  // Replace stream layer
-  r.put( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSinglePut' ) )
-  // Update stream layer
-  r.patch( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSinglePatch' ) )
-  // Delete stream layer
-  r.delete( '/streams/:streamId/layers/:layerId', optionalAuthorisation, require( './core/streams/LayerSingleDelete' ) )
-
-  // 3. Layer object manipulations
-  r.get( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerGetObjects' ) )
-  r.post( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerPostObjects' ) ) // add
-  r.put( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerPutObjects' ) ) // replace
-  r.delete( '/streams/:streamId/layers/:layerId/objects', optionalAuthorisation, require( './core/streams/layers/LayerDeleteObjects' ) )
 
   //
   // STREAM OBJECTS //
@@ -122,14 +92,9 @@ module.exports = function( app, express ) {
   // Delete stream object list
   r.delete( '/streams/:streamId/objects', mandatoryAuthorisation, require( './core/streams/ObjectsDelete' ) )
 
-  // 2.Individual ops
-  // 
-  // Delete an object from a stream list
-  r.delete( '/streams/:streamId/objects/:objectId', mandatoryAuthorisation, require( './core/streams/ObjectDelete' ) )
-
   //
   // OBJECTS //
-  // These routes are for hackers. Creating objects outside streams is discouraged.
+  // These routes are for creating objects.
   // 
   // Create an object
   r.post( '/objects', mandatoryAuthorisation, require( './core/objects/ObjectPost' ) )
