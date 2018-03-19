@@ -7,12 +7,12 @@ const User = require( '../../../models/User' )
 module.exports = ( user, operation, resource ) => {
   return new Promise( ( resolve, reject ) => {
 
-    if( !resource ) return reject( new Error('Resource not found.') )
+    if ( !resource ) return reject( new Error( 'Resource not found.' ) )
     if ( user == null ) user = { role: 'guest', _id: '' }
 
-    winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|' , user.role, '|', user._id.toString( ), '|', resource.owner.toString( ), 'id:', resource.streamId ? resource.streamId : resource._id.toString( ) )
+    winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|', user.role, '|', user._id.toString( ), '|', resource.owner.toString( ), 'id:', resource.streamId ? resource.streamId : resource._id.toString( ) )
 
-    // admin or owner
+    // admin or owner: anyhting goes
     if ( user.role === 'admin' || user._id.toString( ) === resource.owner.toString( ) ) {
       winston.debug( chalk.bgGreen( 'checking perms' ), 'user is admin or owner' )
       return resolve( resource )
@@ -51,6 +51,10 @@ module.exports = ( user, operation, resource ) => {
         }
         winston.debug( chalk.bgRed( 'checking perms' ), `user has NO ${operation} access` )
         return reject( new Error( `You are not authorised to ${operation}.` ) )
+
+      case 'delete':
+        // ownership or admin is already checked and resolved above
+        return reject( new Error( 'You do not own the stream.' ) )
 
       default:
         winston.debug( chalk.bgRed( 'checking perms' ), `operation ${operation} not defined` )
