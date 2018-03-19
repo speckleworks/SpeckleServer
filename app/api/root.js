@@ -29,6 +29,7 @@ module.exports = function( app, express ) {
   r.get( '/accounts/profile', mandatoryAuthorisation, require( './core/accounts/UserGet' ) )
   // update profile
   r.put( '/accounts/profile', mandatoryAuthorisation, require( './core/accounts/UserPut' ) )
+  // todo: r.patch(profile)
   // get all streams for a specific user token
   r.get( '/accounts/streams', mandatoryAuthorisation, require( './core/accounts/UserGetStreams' ) )
   // get all clients for a specific user token
@@ -46,7 +47,8 @@ module.exports = function( app, express ) {
   r.post( '/clients/', optionalAuthorisation, require( './core/clients/ClientCreate' ) )
   r.get( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientGet' ) )
   r.put( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientPut' ) )
-
+  // todo: r.patch(client)
+  
   // 
   // STREAMS Core //
   // 
@@ -58,30 +60,16 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamPut' ) )
   // patch a stream / perm check 'write'
   r.patch( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamPatch' ) )
-  
-  // delete a stream
+  // delete a stream / perm check 'delete'
   r.delete( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamDelete' ) )
-
-  // Special stuff:
   // duplicate a stream / perm check 'read'
   r.post( '/streams/:streamId/clone', mandatoryAuthorisation, require( './core/streams/StreamDuplicate' ) )
   // diff a stream against another / perm check 'read' / perm check 'read'
   r.get( '/streams/:streamId/diff/:otherId', optionalAuthorisation, require( './core/streams/StreamDiff' ) )
 
-  // 
-  // Stream NAME //
-  // 
-  // get stream name
-  // TODO: deprecate, replaced by patch, perm chec
-  r.get( '/streams/:streamId/name', optionalAuthorisation, require( './core/streams/NameGet' ) )
-  // update stream name, replaced by patch
-  r.put( '/streams/:streamId/name', mandatoryAuthorisation, require( './core/streams/NamePut' ) )
-
-
   //
   // STREAM OBJECTS //
   // 
-
   // 1. Collection ops
   // Get stream objects
   r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './core/streams/ObjectsGet' ) )
@@ -115,6 +103,17 @@ module.exports = function( app, express ) {
   // r.post( '/comments/:streamId', optionalAuthorisation, require( './core/comments/CommentPost' ) )
   // r.put( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentPut' ) )
   // r.delete( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentPut' ) )
+
+  // 
+  // DEPRECATED //
+  // 
+  // get stream name, should be replaced by allowing queries in GET  /stream/:streamId
+  r.get( '/streams/:streamId/name', optionalAuthorisation, require( './core/streams/NameGet' ) )
+  // update stream name, replaced by patch
+  r.put( '/streams/:streamId/name', mandatoryAuthorisation, require( './core/streams/NamePut' ) )
+  // Replace stream layers, method still used by the gh client
+  r.put( '/streams/:streamId/layers', mandatoryAuthorisation, require( './core/streams/LayersPut' ) )
+
 
   app.use( '/api', r )
 }
