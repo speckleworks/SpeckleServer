@@ -113,6 +113,7 @@ module.exports = function( app, express ) {
   r.put( '/streams/:streamId/name', mandatoryAuthorisation, require( './core/streams/NamePut' ) )
   // Replace stream layers, method still used by the gh client
   r.put( '/streams/:streamId/layers', mandatoryAuthorisation, require( './core/streams/LayersPut' ) )
+  r.get( '/streams/:streamId/layers', op  tionalAuthorisation, require( './core/streams/LayersGet' ) )
 
 
   app.use( '/api', r )
