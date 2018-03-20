@@ -1,26 +1,21 @@
-'use strict'
 const winston = require( 'winston' )
-const passport = require( 'passport' )
 const chalk = require( 'chalk' )
-
 
 const DataStream = require( '../../../../models/DataStream' )
 const PermissionCheck = require( '../../middleware/PermissionCheck' )
+const PrepareQuery = require( '../../middleware/PrepareQuery' )
 
 module.exports = ( req, res ) => {
-
   if ( !req.params.streamId ) {
     res.status( 400 )
     return res.send( { success: false, message: 'No stream id provided.' } )
   }
 
-  let stream = null
-  DataStream.findOne( { streamId: req.params.streamId } )
-    .then( doc => {
-      stream = doc
-      return PermissionCheck( req.user, 'read', doc )
-    } )
-    .then( ( ) => {
+  let query = PrepareQuery( req.query )
+
+  DataStream.findOne( { streamId: req.params.streamId }, query.options.fields )
+    .then( stream => PermissionCheck( req.user, 'read', stream ) )
+    .then( stream => {
       if ( !stream ) throw new Error( 'No stream found.' )
       return res.send( { success: true, message: 'Delivered stream.', stream: stream } )
     } )
