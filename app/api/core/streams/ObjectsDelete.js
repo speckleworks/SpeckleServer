@@ -13,19 +13,14 @@ module.exports = ( req, res ) => {
   }
 
   DataStream.findOne( { streamId: req.params.streamId } )
+    .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
-      if ( !stream ) throw new Error( 'No stream found.' )
-      if ( !req.user || !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { req.user._id.equals( id ) } ) ) )
-        throw new Error( 'Unauthorized.' )
-
       if ( !req.body.objects ) {
-        winston.debug( 'Deleting all objects from the stream list.' )
         SpeckleObject.updateMany( { '_id': { $in: stream.objects } }, { $pullAll: { partOf: [ req.params.streamId ] } } ).exec( )
         stream.objects = [ ]
         stream.markModified( 'objects' )
         return stream.save( )
       } else {
-        winston.debug( 'Deleting some objects from the stream list.' )
         SpeckleObject.updateMany( { '_id': { $in: req.body.objects } }, { $pullAll: { partOf: [ req.params.streamId ] } } ).exec( )
         stream.objects = _.differenceWith( stream.objects, req.body.objects, ( a, b ) => a.toString( ) === b.toString( ) )
         stream.markModified( 'objects' )

@@ -13,14 +13,10 @@ module.exports = ( req, res ) => {
 
   let clone = {}
   let parent = {}
-  let stream = {}
 
   DataStream.findOne( { streamId: req.params.streamId } )
-    .then( result => {
-      stream = result
-      return PermissionCheck( req.user, 'read', result )
-    } )
-    .then( ( ) => {
+    .then( stream => PermissionCheck( req.user, 'read', result ) )
+    .then( stream => {
       if ( !stream ) throw new Error( 'Database fail.' )
       clone = new DataStream( stream )
       clone._id = mongoose.Types.ObjectId( )
@@ -53,6 +49,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, clone: { _id: result._id, streamId: clone.streamId }, parent: { _id: parent._id, streamId: parent.streamId, children: parent.children } } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( 400 )
       res.send( { success: false, message: err, streamId: req.streamId } )
     } )

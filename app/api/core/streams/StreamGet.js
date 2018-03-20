@@ -20,6 +20,7 @@ module.exports = ( req, res ) => {
       return res.send( { success: true, message: 'Delivered stream.', stream: stream } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )
       res.send( { success: false, message: err.message, streamId: req.streamId } )
     } )

@@ -14,14 +14,12 @@ module.exports = ( req, res ) => {
   }
 
   DataStream.findOne( { streamId: req.params.streamId }, 'name private owner canRead canWrite' )
-    .then( stream => {
-      if ( !stream ) throw new Error( 'No stream found.' )
-      return PermissionCheck( req.user, 'read', stream )
-    } )
+    .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
       res.send( { success: true, name: stream.name, message: 'This api route will be deprecated. Please use PATCH /api/stream/:streamId' } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )
       res.send( { success: false, message: err.message, streamId: req.streamId } )
     } )

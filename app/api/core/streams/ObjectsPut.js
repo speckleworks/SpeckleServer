@@ -13,11 +13,8 @@ module.exports = ( req, res ) => {
   }
 
   DataStream.findOne( { streamId: req.params.streamId } )
+    .then( stream => PermissionCheck( req.user, 'write', stream ) )
     .then( stream => {
-      if ( !stream ) throw new Error( 'No stream found.' )
-      if ( !req.user || !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { req.user._id.equals( id ) } ) ) )
-        throw new Error( 'Unauthorized.' )
-
       // these should be non-hanging
       let orphans = _.difference( stream.objects, req.body.objects )
       SpeckleObject.updateMany( { '_id': { $in: orphans } }, { $pullAll: { partOf: [ req.params.streamId ] } } ).exec( )

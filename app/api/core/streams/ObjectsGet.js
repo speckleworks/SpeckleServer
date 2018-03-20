@@ -6,6 +6,7 @@ const q2m = require( 'query-to-mongo' )
 
 const DataStream = require( '../../../../models/DataStream' )
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
+const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
 
@@ -15,11 +16,8 @@ module.exports = ( req, res ) => {
   }
   let streamObjects = [ ]
   DataStream.findOne( { streamId: req.params.streamId } )
+    .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
-      if ( !stream ) throw new Error( 'No stream found.' )
-      if ( stream.private && !req.user ) throw new Error( 'Unauthorized. Please log in.' )
-      if ( stream.private && ( !req.user || !( req.user._id.equals( stream.owner ) || stream.sharedWith.find( id => { return req.user._id.equals( id ) } ) ) ) )
-        throw new Error( 'Unauthorized. Please log in.' )
       streamObjects = stream.objects.map( o => o.toString( ) )
       let query = q2m( req.query )
       query.criteria[ '_id' ] = { $in: stream.objects }

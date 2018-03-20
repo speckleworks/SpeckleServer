@@ -11,9 +11,9 @@ module.exports = ( req, res ) => {
     owner: req.user._id,
     streamId: shortId.generate( ),
   } )
-  
+
   if ( !req.body.objects ) req.body.objects = [ ]
-  
+
   Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
     .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
     .then( results => {

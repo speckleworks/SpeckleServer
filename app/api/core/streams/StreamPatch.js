@@ -18,16 +18,12 @@ module.exports = ( req, res ) => {
 
   let stream = {}
   DataStream.findOne( { streamId: req.params.streamId } )
-    .then( result => {
-      stream = result
-      return PermissionCheck( req.user, 'write', result )
-    })
-    .then(() => {
+    .then( stream => PermissionCheck( req.user, 'write', stream ) )
+    .then( stream => {
       for ( var key in req.body ) {
         if ( stream.toObject( ).hasOwnProperty( key ) ) {
           stream[ key ] = req.body[ key ]
           stream.markModified( key )
-          console.log( "patching " + key )
         }
       }
       return stream.save( )

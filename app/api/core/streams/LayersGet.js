@@ -14,14 +14,12 @@ module.exports = ( req, res ) => {
   }
 
   DataStream.findOne( { streamId: req.params.streamId } ).lean( )
-    .then( stream => {
-      if ( !stream ) throw new Error( 'No stream found.' )
-      return PermissionCheck( req.user, 'read', stream )
-    } )
+    .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
       res.send( { success: true, message: 'Delivered layers.', layers: stream.layers } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
       res.send( { success: false, message: err.toString( ), streamId: req.streamId } )
     } )

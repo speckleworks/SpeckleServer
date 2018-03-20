@@ -17,11 +17,9 @@ module.exports = ( req, res ) => {
 
   let stream = {}
   DataStream.findOne( { streamId: req.params.streamId } )
-    .then( result => {
-      stream = result
-      return PermissionCheck( req.user, 'write', result )
-    } )
-    .then( ( ) => {
+    .then( resource => PermissionCheck( req.user, 'write', resource ) )
+    .then( resource => {
+      stream = resource
       if ( req.body.private ) stream.private = req.body.private
       if ( req.body.parent ) stream.parent = req.body.parent
       if ( req.body.globalMeasures ) stream.globalMeasures = req.body.globalMeasures

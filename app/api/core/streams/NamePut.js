@@ -16,10 +16,7 @@ module.exports = ( req, res ) => {
   }
 
   DataStream.findOne( { streamId: req.params.streamId } )
-    .then( stream => {
-      if ( !stream ) throw new Error( 'No stream found.' )
-      return PermissionCheck( req.user, 'read', stream )
-    } )
+    .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
       if ( !req.body.name ) throw new Error( 'No name was provided.' )
       stream.name = req.body.name
