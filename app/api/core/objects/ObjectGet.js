@@ -1,6 +1,7 @@
 const q2m = require( 'query-to-mongo' )
 
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
+const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
   if ( !req.params.objectId ) {
@@ -9,11 +10,12 @@ module.exports = ( req, res ) => {
   }
   let query = q2m( req.query )
   SpeckleObject.findOne( { _id: req.params.objectId }, query.options.fields )
+    .then( object => PermissionCheck( req.user, 'read', object ) )
     .then( object => {
-      if ( !object ) throw new Error( 'Could not find object.' )
       res.send( { success: true, speckleObject: object } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )

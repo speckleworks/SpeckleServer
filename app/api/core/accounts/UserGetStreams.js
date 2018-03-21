@@ -20,8 +20,8 @@ module.exports = ( req, res ) => {
       res.send( { success: true, message: 'Stream list for user ' + req.user._id, streams: userOwnedStreams, sharedStreams: sharedWithStreams } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( 400 )
-      console.log( err )
       res.send( { success: false, message: 'Something failed.' } )
     } )
 }

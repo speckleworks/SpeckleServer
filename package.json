@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "local-dev": "MONGO_URI='localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='3' nodemon server.js "
+    "local-dev": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='2' nodemon server.js "
   },
   "author": "Dimitrie A. Stefanescu @idid / UCL The Bartlett School of Architecture / InnoChain",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "json2csv": "^3.7.3",
     "jsonwebtoken": "^7.2.1",
     "lodash": "^4.17.4",
-    "mongoose": "^4.6.8",
+    "mongoose": "^5.0.11",
     "passport": "^0.4.0",
     "passport-anonymous": "^1.0.1",
     "passport-jwt": "^4.0.0",

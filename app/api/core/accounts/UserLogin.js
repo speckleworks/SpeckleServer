@@ -25,6 +25,7 @@ module.exports = function( req, res ) {
     })
   } )
   .catch( err => {
+    winston.error( err )
     res.status( 401 )
     res.send( { success: false, message: err } )
   })

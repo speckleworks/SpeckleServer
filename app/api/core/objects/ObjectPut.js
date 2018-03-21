@@ -10,11 +10,14 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
   }
-  SpeckleObject.findOneAndUpdate( { _id: req.params.objectId }, req.body.object )
-    .then( result => {
+  SpeckleObject.findOne( { _id: req.params.objectId } )
+    .then( result => PermissionCheck( req.user, 'read', result, Object.keys( req.body.object ) ) )
+    .then( result => result.set( req.body.object ).save( ) )
+    .then( res => {
       res.send( { success: true, message: 'Object updated.' } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( 400 )
       return res.send( { success: false, message: err.toString( ) } )
     } )

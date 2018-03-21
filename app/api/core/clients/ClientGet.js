@@ -13,6 +13,7 @@ module.exports = ( req, res ) => {
     res.send( { success: true, message: 'Client found.', client: result } )
   })
   .catch( err => {
+    winston.error( err )
     res.status( 400 )
     res.send( { success: false, message: err.toString() } )
   })

@@ -17,16 +17,16 @@ module.exports = ( req, res ) => {
 
   let stream = {}
   DataStream.findOne( { streamId: req.params.streamId } )
-    .then( resource => PermissionCheck( req.user, 'write', resource ) )
+    .then( resource => PermissionCheck( req.user, 'write', resource, Object.keys( req.body ) ) )
     .then( resource => {
       stream = resource
-      if ( req.body.private ) stream.private = req.body.private
-      if ( req.body.parent ) stream.parent = req.body.parent
-      if ( req.body.globalMeasures ) stream.globalMeasures = req.body.globalMeasures
-      if ( req.body.baseProperties ) stream.baseProperties = req.body.baseProperties
-
+      stream.private = req.body.private ? req.body.private : stream.private
+      stream.parent = req.body.parent ? req.body.parent : stream.parent
+      stream.globalMeasures = req.body.globalMeasures ? req.body.globalMeasures : stream.globalMeasures
+      stream.baseProperties = req.body.baseProperties ? req.body.baseProperties : stream.baseProperties
       stream.name = req.body.name ? req.body.name : stream.name
-      stream.layers = req.body.layers ? MergeLayers( stream.layers, req.body.layers ) : stream.layers
+      stream.layers = req.body.layers ? req.body.layers : stream.layers
+      
       return Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
     } )
     .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )

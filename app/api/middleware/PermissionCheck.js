@@ -1,10 +1,14 @@
 'use strict'
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
-const url = require( 'url' )
-const User = require( '../../../models/User' )
 
-module.exports = ( user, operation, resource ) => {
+const ProtectedFields = require( './ProtectedFields' )
+/*
+Takes in user, operatin scope, resource and optionally modifier keys
+Resolves successfully, returning the resource back and the scope for finer grained checkups
+Rejects with an error, specifying the reason
+ */
+module.exports = ( user, operation, resource, mod ) => {
   return new Promise( ( resolve, reject ) => {
 
     if ( !resource ) return reject( new Error( 'Resource not found.' ) )
@@ -12,10 +16,16 @@ module.exports = ( user, operation, resource ) => {
 
     winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|', user.role, '|', user._id.toString( ), '|', resource.owner.toString( ), 'id:', resource.streamId ? resource.streamId : resource._id.toString( ) )
 
-    // admin or owner: anyhting goes
+    // admin or owner: anything goes
     if ( user.role === 'admin' || user._id.toString( ) === resource.owner.toString( ) ) {
       winston.debug( chalk.bgGreen( 'checking perms' ), 'user is admin or owner' )
-      return resolve( resource )
+      return resolve( resource, 'full' )
+    }
+
+    if( mod && mod instanceof Array) {
+      for(let key of mod )
+        if ( ProtectedFields.indexOf( key ) != -1 )
+          return reject( new Error( `Protected field, you are not authorised to edit ${key}.`) )
     }
 
     if ( operation == null ) {
@@ -31,7 +41,7 @@ module.exports = ( user, operation, resource ) => {
       case 'write':
         if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
-          return resolve( resource )
+          return resolve( resource, 'normal' )
         }
         winston.debug( chalk.bgRed( 'checking perms' ), `user has NO ${operation} access` )
         return reject( new Error( `You are not authorised to ${operation}.` ) )
@@ -39,15 +49,15 @@ module.exports = ( user, operation, resource ) => {
       case 'read':
         if ( resource.private === false ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `${operation} ok, resource is public` )
-          return resolve( resource )
+          return resolve( resource, 'normal' )
         }
         if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has write & ${operation} access` )
-          return resolve( resource )
+          return resolve( resource, 'normal' )
         }
         if ( canRead.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
-          return resolve( resource )
+          return resolve( resource, 'normal' )
         }
         winston.debug( chalk.bgRed( 'checking perms' ), `user has NO ${operation} access` )
         return reject( new Error( `You are not authorised to ${operation}.` ) )

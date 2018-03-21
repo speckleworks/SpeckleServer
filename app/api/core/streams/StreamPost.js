@@ -40,6 +40,7 @@ module.exports = ( req, res ) => {
       return res.send( { success: true, message: 'Created stream.', stream: stream } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( 400 )
       return res.send( { success: false, message: err.toString( ) } )
     } )

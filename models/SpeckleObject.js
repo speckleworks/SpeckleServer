@@ -2,18 +2,28 @@
 const mongoose = require( 'mongoose' )
 
 var speckleObjectSchema = mongoose.Schema( {
-  // object type
+
+  // ownership & permissions
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  private: { type: Boolean, default: false },
+  canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  anonymousComments: { type: Boolean, default: false },
+  // comments
+  comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
+  
+  // Object Type
   type: {
     type: String,
     enum: [ 'Null', 'Boolean', 'Number', 'String', 'Interval', 'Interval2d', 'Point', 'Vector', 'Plane', 'Line', 'Rectangle', 'Circle', 'Arc', 'Ellipse', 'Polycurve', 'Box', 'Polyline', 'Curve', 'Mesh', 'Brep', 'Annotation', 'Extrusion', 'Abstract' ],
-    default: 'Null'
+    required: true
   },
 
   // Geometry hash
   geometryHash: { type: String, default: null,  index: true },
 
   // Object hash (= GeometryHash + Properties) 
-  hash: { type: String, default: null, required: true, index: true },
+  hash: { type: String, default: null, required: true, index: true, required: true },
 
   // Application's object id, whatever form it takes
   applicationId: { type: String, default: null },
@@ -26,15 +36,6 @@ var speckleObjectSchema = mongoose.Schema( {
 
   // Streams this object is part of
   partOf: { type: Array, default: [ ], select: false },
-
-  // Ownership rights
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-
-  // should replace 'sharedWith' in the near future
-  canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-  canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-
-  anonymousComments: { type: Boolean, default: false },
 
   // strict: false as we store some random extras in here
 }, { timestamps: true, strict: false } )

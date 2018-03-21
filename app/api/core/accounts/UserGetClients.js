@@ -11,6 +11,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, message: 'Stream list for user ' + req.user._id, clients: clients } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )

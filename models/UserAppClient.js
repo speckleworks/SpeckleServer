@@ -4,6 +4,15 @@ var mongoose = require( 'mongoose' )
 // why? to make a graph later on of all the connections
 var clientSchema = mongoose.Schema( {
 
+  // ownership & permissions
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  private: { type: Boolean, default: false },
+  canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  anonymousComments: { type: Boolean, default: false },
+  // comments
+  comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
+
   role: { type: String }, // Receiver, Sender, Hybrid
 
   documentName: { type: String },
@@ -13,8 +22,6 @@ var clientSchema = mongoose.Schema( {
   documentType: { type: String }, // Rhino, Grasshopper, Node, Browser, etc.
 
   documentLocation: { type: String }, // Location
-
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // ze owner
 
   streamId: { type: String }, // stream that we're connected to
 

@@ -15,6 +15,7 @@ module.exports = function ( req, res ) {
     res.send( { success: true, users: user } )
   })
   .catch( err => {
+    winston.error( err )
     res.status( 400 )
     res.send( { success: false, message: err.toString() } )
   })

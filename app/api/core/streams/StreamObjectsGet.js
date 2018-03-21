@@ -32,6 +32,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, objects: list, message: 'Object list returned. If querying, duplication of objects in list will not be respected.' } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
       res.send( { success: false, message: err.message, streamId: req.streamId } )
     } )

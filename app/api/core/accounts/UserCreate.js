@@ -32,6 +32,7 @@ module.exports = function( req, res ) {
       return res.send( { success: true, message: 'User saved. Redirect to login.', apitoken: savedUser.apitoken, token: token } )
     } )
     .catch( err => {
+      winston.error( err )
       res.status( 400 )
       return res.send( { success: false, message: err.message } )
     } )
