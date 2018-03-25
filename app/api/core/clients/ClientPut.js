@@ -5,23 +5,15 @@ const Client = require( '../../../../models/UserAppClient' )
 const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
-  if ( !req.params.clientId || !req.body.client ) {
+  if ( !req.params.clientId || !req.body) {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
   }
   Client.findOne( { _id: req.params.clientId } )
-    .then( resource => PermissionCheck( req.user, 'write', resource, Object.keys( req.body.client ) ) )
+    .then( resource => PermissionCheck( req.user, 'write', resource, Object.keys( req.body ) ) )
+    .then( resource => resource.set( req.body ).save( ) )
     .then( resource => {
-      for ( let key in req.body.client ) {
-        if ( resource.toObject( ).hasOwnProperty( key ) ) {
-          resource[ key ] = req.body.client[ key ]
-          resource.markModified( key )
-        }
-      }
-      return resource.save( )
-    } )
-    .then( result => {
-      res.send( { success: true, message: 'Client updated.' } )
+      res.send( { success: true, message: 'Client updated following fields: ' + Object.keys( req.body ) } )
     } )
     .catch( err => {
       winston.error( err )

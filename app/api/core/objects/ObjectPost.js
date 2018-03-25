@@ -15,7 +15,7 @@ module.exports = ( req, res ) => {
       }
     } )
     .then( object => {
-      res.send( { success: true, objectId: object._id, message: 'Created new object. ' } )
+      res.send( { success: true, objectId: object._id, hash: object.hash, message: 'Created new object. ' } )
     } )
     .catch( err => {
       winston.error( err )

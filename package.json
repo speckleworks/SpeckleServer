@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "local-dev": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='2' nodemon server.js "
+    "local-dev": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='1' nodemon server.js ",
+    "local-dev-inspect": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='1' nodemon --inspect server.js "
   },
   "author": "Dimitrie A. Stefanescu @idid / UCL The Bartlett School of Architecture / InnoChain",
   "license": "MIT",
@@ -36,7 +37,7 @@
     "redis": "^2.8.0",
     "serve-static": "^1.12.4",
     "shortid": "^2.2.6",
-    "uuid": "^3.0.1",
+    "uuid": "^3.2.1",
     "winston": "^2.3.0",
     "ws": "^3.0.0"
   }

@@ -1,7 +1,7 @@
 var mongoose = require( 'mongoose' )
 
 var dataStreamSchema = mongoose.Schema( {
-
+  // stream short id
   streamId: { type: String, index: true },
 
   // ownership & permissions
@@ -27,10 +27,9 @@ var dataStreamSchema = mongoose.Schema( {
   
   viewerLayers: { type: Array, default: [ ] },
 
+  // versioning
   parent: { type: String, default: null },
-
   children: { type: Array, default: [ ] },
-
   ancestors: { type: Array, default: [ ] },
 
   deleted: { type: Boolean, default: false }

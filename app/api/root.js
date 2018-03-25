@@ -16,31 +16,23 @@ module.exports = function( app, express ) {
   //
   // ACCOUNTS & USERS
   // 
-  
-  
-  // create a new account
+
+  // create a new account xxx
   r.post( '/accounts/register', require( './core/accounts/UserCreate' ) )
-  
-  // login
+
+  // login xxx
   r.post( '/accounts/login', require( './core/accounts/UserLogin' ) )
-  
-  // get profile
-  r.get( '/accounts/profile', mandatoryAuthorisation, require( './core/accounts/UserGet' ) )
-  
-  // update profile 
-  r.put( '/accounts/profile', mandatoryAuthorisation, require( './core/accounts/UserPut' ) )
-  r.patch( '/accounts/profile', mandatoryAuthorisation, require( './core/accounts/UserPut' ) )
-  
-  // get all streams for a specific user token
-  r.get( '/accounts/streams', mandatoryAuthorisation, require( './core/accounts/UserGetStreams' ) )
-  
-  // get all clients for a specific user token
-  r.get( '/accounts/clients', mandatoryAuthorisation, require( './core/accounts/UserGetClients' ) )
-  
-  // get display profile  
+
+  // get profile xxx
+  r.get( '/accounts', mandatoryAuthorisation, require( './core/accounts/UserGet' ) )
+
+  // update profile xxx 
+  r.put( '/accounts', mandatoryAuthorisation, require( './core/accounts/UserPut' ) )
+
+  // get other user's display profile xxx
   r.get( '/accounts/:userId', mandatoryAuthorisation, require( './core/accounts/UserProfile' ) )
-  
-  // search profiles by email (restrict to 10)
+
+  // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './core/accounts/UserSearch' ) )
 
 
@@ -48,35 +40,36 @@ module.exports = function( app, express ) {
   // CLIENTS
   // 
 
-  
-  // create a new client
-  r.post( '/clients/', optionalAuthorisation, require( './core/clients/ClientPost' ) )
-  
-  // get a client
+  // create a new client xxx
+  r.post( '/clients', optionalAuthorisation, require( './core/clients/ClientPost' ) )
+
+  // get a user's clients xxx
+  r.get( '/clients', mandatoryAuthorisation, require( './core/accounts/UserGetClients' ) )
+
+  // get a client / perm check 'read' xxx
   r.get( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientGet' ) )
-  
-  // update a client
-  r.patch( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientPatch' ) )
-  r.put( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientPatch' ) )
-  
-  // delete a client
+
+  // update a client / perm check 'write' xxx
+  r.put( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientPut' ) )
+
+  // delete a client / perm check 'delete' xxx
   r.delete( '/clients/:clientId', mandatoryAuthorisation, require( './core/clients/ClientDelete' ) )
-  
+
   // 
   // STREAMS 
   // 
 
-  // create a new stream 
+  // create a new stream xxx
   r.post( '/streams', mandatoryAuthorisation, require( './core/streams/StreamPost' ) )
+
+  // get a user's streams xxx
+  r.get( '/streams', mandatoryAuthorisation, require( './core/accounts/UserGetStreams' ) )
 
   // get stream / perm check 'read'
   r.get( '/streams/:streamId', optionalAuthorisation, require( './core/streams/StreamGet' ) )
 
   // update a stream / perm check 'write'
   r.put( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamPut' ) )
-
-  // patch a stream / perm check 'write'
-  r.patch( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamPatch' ) )
 
   // delete a stream / perm check 'delete'
   r.delete( '/streams/:streamId', mandatoryAuthorisation, require( './core/streams/StreamDelete' ) )
@@ -94,44 +87,79 @@ module.exports = function( app, express ) {
   //
   // OBJECTS 
   // 
-  
+
   // Create an object
   r.post( '/objects', mandatoryAuthorisation, require( './core/objects/ObjectPost' ) )
+
   // Create many objects
   r.post( '/objects/bulk', mandatoryAuthorisation, require( './core/objects/ObjectPostBulk' ) )
+
   // Get an object / perm check 'read'
   r.get( '/objects/:objectId', optionalAuthorisation, require( './core/objects/ObjectGet' ) )
-  // Get more objects
+
+  // Get more objects / perm check 'read'
   r.post( '/objects/getbulk/', optionalAuthorisation, require( './core/objects/ObjectsGetBulk' ) )
+
   // update one
   r.put( '/objects/:objectId', mandatoryAuthorisation, require( './core/objects/ObjectPut' ) )
-  // delete one
+
+  // delete one / perm check 'delete'
   r.delete( '/objects/:objectId', mandatoryAuthorisation, require( './core/objects/ObjectDelete' ) )
 
 
-  // TODO: Comment system (once auth is revamped)
-  // r.get( '/comments/:streamId', optionalAuthorisation, require( './core/comments/CommentsGet' ) )
-  // r.post( '/comments/:streamId', optionalAuthorisation, require( './core/comments/CommentPost' ) )
-  // r.put( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentPut' ) )
-  // r.delete( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentPut' ) )
+  // 
+  // COMMENTS
+  // 
+  
+  // get user's comments
+  r.get( '/comments', mandatoryAuthorisation, require( './core/comments/CommentGetAll' ) )
+  
+  // get user's assignedTo comments
+  r.get( '/comments/assigned', mandatoryAuthorisation, require( './core/comments/CommentGetAssigned' ) )
+  
+  // create a comment attached to a resource
+  r.post( '/comments/:resourceType/:resourceId', optionalAuthorisation, require( './core/comments/CommentPost' ) )
+  
+  // get comments from  a resource
+  r.get( '/comments/:resourceType/:resourceId', optionalAuthorisation, require( './core/comments/CommentGet' ) )
+  
+  // edit a comment
+  r.put( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentPut' ) )
+  
+  // delete a comment
+  r.delete( '/comments/:commentId', mandatoryAuthorisation, require( './core/comments/CommentDelete' ) )
+
 
   // 
-  // DEPRECATED 
+  // PROJECTS 
   // 
-  // get stream name, should be replaced by allowing queries in GET  /stream/:streamId
-  r.get( '/streams/:streamId/name', optionalAuthorisation, ( req, res, next ) => { req.query = { fields: 'name' }; next( ); }, require( './core/streams/StreamGet' ) )
-  // update stream name, replaced by patch
-  r.put( '/streams/:streamId/name', mandatoryAuthorisation, require( './core/streams/StreamPatch' ) )
-  // Replace stream layers, method still used by the gh client
-  r.put( '/streams/:streamId/layers', mandatoryAuthorisation, require( './core/streams/StreamPatch' ) )
-  // Get stream layers, replaced with GET /api/streams/:streamId?fields=layers
-  r.get( '/streams/:streamId/layers', optionalAuthorisation, require( './core/streams/LayersGet' ) )
 
-  // generate routes
+  // create a project
+  r.post( '/projects', mandatoryAuthorisation, require( './core/projects/ProjectPost' ) )
+
+  // get user's projects
+  r.get( '/projects', mandatoryAuthorisation, require( './core/projects/ProjectGetAll' ) )
+
+  // get project by id
+  r.get( '/projects/:projectId', mandatoryAuthorisation, require( './core/projects/ProjectGet' ) )
+
+  // update a project
+  r.put( '/projects/:projectId', mandatoryAuthorisation, require( './core/projects/ProjectPut' ) )
+
+  // crushkilldestroy a project
+  r.delete( '/projects/:projectId', mandatoryAuthorisation, require( './core/projects/ProjectDelete' ) )
+
+
+  //
+  // FINAL ROUTES & MOUNT
+  //
+
+  // generate routes doc
   let routes = [ ]
+  let count = 1
   r.stack.forEach( ( middleware ) => {
     if ( middleware.route )
-      routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase( ) ) + '\t\t /api' + middleware.route.path )
+      routes.push( Object.keys( middleware.route.methods ).map( m => count++ + ":\t" + m.toUpperCase( ) ) + '\t\t /api' + middleware.route.path )
   } )
 
   r.get( '/', ( req, res ) => {

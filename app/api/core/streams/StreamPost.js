@@ -1,4 +1,3 @@
-'use strict'
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const shortId = require( 'shortid' )
@@ -17,7 +16,9 @@ module.exports = ( req, res ) => {
   Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
     .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
     .then( results => {
-      results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
+      results.forEach( o => {
+        req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => { oo._id = o._id.toString( ) } )
+      } )
       return SpeckleObject.insertMany( req.body.objects.filter( so => so._id === undefined ) )
     } )
     .then( results => {
@@ -36,7 +37,6 @@ module.exports = ( req, res ) => {
       return stream.save( )
     } )
     .then( streamm => {
-      winston.debug( 'Created stream', stream.streamId )
       return res.send( { success: true, message: 'Created stream.', stream: stream } )
     } )
     .catch( err => {

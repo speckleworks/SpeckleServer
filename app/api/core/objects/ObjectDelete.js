@@ -4,6 +4,7 @@ const passport          = require( 'passport' )
 const chalk             = require( 'chalk' )
 
 const SpeckleObject     = require( '../../../../models/SpeckleObject' )
+const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
   if( !req.params.objectId ) {
@@ -12,13 +13,10 @@ module.exports = ( req, res ) => {
   }
 
   SpeckleObject.findOne( { _id: req.params.objectId } )
-  .then( obj => {
-    if( !obj ) throw new Error( 'No obj found.' )
-    obj.deleted = true
-    return obj.save() 
-  })
+  .then( obj => PermissionCheck( req.user, 'delete', obj ) )
+  .then( obj => obj.remove() )
   .then( result => {
-    return res.send( { success: true, message: 'Object was flagged as deleted.' } )
+    return res.send( { success: true, message: 'Object was deleted. Bye bye data.' } )
   })
   .catch( err => {
     winston.error( err )

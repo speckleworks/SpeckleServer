@@ -1,9 +1,6 @@
 var mongoose = require( 'mongoose' )
 
-// schema to keep track of user application clients (receivers and senders). 
-// why? to make a graph later on of all the connections
 var clientSchema = mongoose.Schema( {
-
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   private: { type: Boolean, default: false },

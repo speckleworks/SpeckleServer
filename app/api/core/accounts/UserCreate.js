@@ -1,7 +1,5 @@
-'use strict'
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
-const uuid = require( 'uuid/v4' )
 const jwt = require( 'jsonwebtoken' )
 
 const User = require( '../../../../models/User' )
@@ -29,7 +27,7 @@ module.exports = function( req, res ) {
     } )
     .then( savedUser => {
       let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
-      return res.send( { success: true, message: 'User saved. Redirect to login.', apitoken: savedUser.apitoken, token: token } )
+      return res.send( { success: true, message: 'User saved. Redirect to login.', resource: { apitoken: savedUser.apitoken, token: token, email: savedUser.email } } )
     } )
     .catch( err => {
       winston.error( err )

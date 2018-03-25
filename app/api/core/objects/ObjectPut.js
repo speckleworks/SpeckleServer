@@ -1,9 +1,8 @@
-'use strict'
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
-const mongoose = require( 'mongoose' )
 
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
+const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
   if ( !req.params.objectId ) {
@@ -11,9 +10,9 @@ module.exports = ( req, res ) => {
     return res.send( { success: false, message: 'Malformed request.' } )
   }
   SpeckleObject.findOne( { _id: req.params.objectId } )
-    .then( result => PermissionCheck( req.user, 'read', result, Object.keys( req.body.object ) ) )
-    .then( result => result.set( req.body.object ).save( ) )
-    .then( res => {
+    .then( result => PermissionCheck( req.user, 'write', result, Object.keys( req.body ) ) )
+    .then( result => result.set( req.body ).save( ) )
+    .then( result => {
       res.send( { success: true, message: 'Object updated.' } )
     } )
     .catch( err => {

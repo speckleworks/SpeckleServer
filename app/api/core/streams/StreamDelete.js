@@ -12,10 +12,10 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'No stream id provided.' } )
   }
-  let stream = {}
+
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( stream => PermissionCheck( req.user, 'delete', stream ) )
-    .then( () => {
+    .then( stream => {
       return stream.remove( )
     } )
     .then( result => {

@@ -1,5 +1,6 @@
-const q2m = require( 'query-to-mongo' )
+const winston = require( 'winston' )
 
+const PrepareQuery = require( '../../middleware/PrepareQuery' )
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const PermissionCheck = require( '../../middleware/PermissionCheck' )
 
@@ -8,7 +9,9 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'No object id provided.' } )
   }
-  let query = q2m( req.query )
+  
+  let query = PrepareQuery( req.query )
+
   SpeckleObject.findOne( { _id: req.params.objectId }, query.options.fields )
     .then( object => PermissionCheck( req.user, 'read', object ) )
     .then( object => {

@@ -14,7 +14,7 @@ module.exports = ( user, operation, resource, mod ) => {
     if ( !resource ) return reject( new Error( 'Resource not found.' ) )
     if ( user == null ) user = { role: 'guest', _id: '' }
 
-    winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|', user.role, '|', user._id.toString( ), '|', resource.owner.toString( ), 'id:', resource.streamId ? resource.streamId : resource._id.toString( ) )
+    winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|', user.role, '|', user._id.toString( ) )
 
     // admin or owner: anything goes
     if ( user.role === 'admin' || user._id.toString( ) === resource.owner.toString( ) ) {
@@ -22,10 +22,10 @@ module.exports = ( user, operation, resource, mod ) => {
       return resolve( resource, 'full' )
     }
 
-    if( mod && mod instanceof Array) {
-      for(let key of mod )
+    if ( mod && mod instanceof Array ) {
+      for ( let key of mod )
         if ( ProtectedFields.indexOf( key ) != -1 )
-          return reject( new Error( `Protected field, you are not authorised to edit ${key}.`) )
+          return reject( new Error( `Protected field, you are not authorised to edit ${key}.` ) )
     }
 
     if ( operation == null ) {
@@ -51,6 +51,25 @@ module.exports = ( user, operation, resource, mod ) => {
           winston.debug( chalk.bgGreen( 'checking perms' ), `${operation} ok, resource is public` )
           return resolve( resource, 'normal' )
         }
+        if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
+          winston.debug( chalk.bgGreen( 'checking perms' ), `user has write & ${operation} access` )
+          return resolve( resource, 'normal' )
+        }
+        if ( canRead.indexOf( user._id.toString( ) ) >= 0 ) {
+          winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
+          return resolve( resource, 'normal' )
+        }
+        winston.debug( chalk.bgRed( 'checking perms' ), `user has NO ${operation} access` )
+        return reject( new Error( `You are not authorised to ${operation}.` ) )
+
+      case 'comment':
+        if ( resource.private === false && resource.anonymousComments === true ) {
+          winston.debug( chalk.bgGreen( 'checking perms' ), `${operation} ok` )
+          return resolve( resource, 'normal' )
+        }
+        if ( user.role === 'guest' && resource.anonymousComments === false )
+          return reject( new Error( `You are not authorised to ${operation}.` ) )
+
         if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           winston.debug( chalk.bgGreen( 'checking perms' ), `user has write & ${operation} access` )
           return resolve( resource, 'normal' )

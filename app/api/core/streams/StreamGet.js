@@ -1,5 +1,6 @@
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
+const uuid = require( 'uuid/v4' )
 
 const DataStream = require( '../../../../models/DataStream' )
 const PermissionCheck = require( '../../middleware/PermissionCheck' )
@@ -16,7 +17,8 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId: req.params.streamId }, query.options.fields )
     .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
-      if ( !stream ) throw new Error( 'No stream found.' )
+      if ( ( !stream.layers || stream.layers.length === 0 ) )
+        stream.layers = stream.objects ? [ getDefaultLayer( stream.objects.length  ) ] : [ ]
       return res.send( { success: true, message: 'Delivered stream.', stream: stream } )
     } )
     .catch( err => {
@@ -24,4 +26,17 @@ module.exports = ( req, res ) => {
       res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )
       res.send( { success: false, message: err.message, streamId: req.streamId } )
     } )
+}
+
+// creats a default speckle layer
+function getDefaultLayer( length ) {
+  return {
+    name: 'Default Generated Speckle Layer',
+    guid: uuid(),
+    orderIndex: 0,
+    startIndex: 0,
+    objectCount: length,
+    topology: `0;0-${length} `,
+    properties: { color: { a: 1, hex: 'Black' } }
+  }
 }

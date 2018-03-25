@@ -15,7 +15,7 @@ module.exports = ( req, res ) => {
   let parent = {}
 
   DataStream.findOne( { streamId: req.params.streamId } )
-    .then( stream => PermissionCheck( req.user, 'read', result ) )
+    .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
       if ( !stream ) throw new Error( 'Database fail.' )
       clone = new DataStream( stream )

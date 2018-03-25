@@ -13,14 +13,17 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
   }
-
-  req.body.object.forEach( obj => { obj.owner = req.user._id } )
-
+  
+  // creates an array of object update promises
   Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
     .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
     .then( results => {
       results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
-      return SpeckleObject.insertMany( req.body.objects.filter( so => so._id === undefined ) )
+      // array of objects to create
+      let toCreate = req.body.objects.filter( so => so._id === undefined )
+      // populate ownership
+      toCreate.forEach( obj => obj.owner = req.user._id )
+      return SpeckleObject.insertMany( toCreate )
     } )
     .then( results => {
       results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
