@@ -1,36 +1,23 @@
-'use strict'
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const _ = require( 'lodash' )
 
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
+const BulkObjectSave = require( '../../middleware/BulkObjectSave' )
 
-// (1) Update all the objects that have an _id (replaces them completely)
-// (2) Check in the db for existing objects by hash & map their _id to the obj list
-// (3) Insert all the new objects
 module.exports = ( req, res ) => {
-  if ( !req.body.objects ) {
+
+  if ( !req.body ) {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
   }
-  
-  // creates an array of object update promises
-  Promise.all( req.body.objects.reduce( ( arr, o ) => ( o._id !== undefined && o.type !== 'Placeholder' ) ? [ SpeckleObject.update( { _id: o._id }, o ), ...arr ] : arr, [ ] ) )
-    .then( ( ) => SpeckleObject.find( { hash: { $in: req.body.objects.reduce( ( arr, o ) => o._id === undefined ? [ o.hash, ...arr ] : arr, [ ] ) } }, '_id hash' ) )
-    .then( results => {
-      results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
-      // array of objects to create
-      let toCreate = req.body.objects.filter( so => so._id === undefined )
-      // populate ownership
-      toCreate.forEach( obj => obj.owner = req.user._id )
-      return SpeckleObject.insertMany( toCreate )
-    } )
-    .then( results => {
-      results.forEach( o => req.body.objects.filter( oo => oo.hash == o.hash ).forEach( oo => oo._id = o._id.toString( ) ) )
-      res.send( { success: true, message: 'Saved objects to database.', objectIds: req.body.objects.map( o => o._id ) } )
+
+  BulkObjectSave( req.body, req.user )
+    .then( objects => {
+      res.send( { success: true, message: 'Saved objects to database.', resources: objects.map( o => o._id ) } )
     } )
     .catch( err => {
-      winston.error( err )
+      inston.error( err )
       res.status( 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )

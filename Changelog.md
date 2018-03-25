@@ -36,7 +36,7 @@ ResponseBase: {
     success: Boolean,
     message: String (optional),
     resource: Object,
-    // or, never and
+    // or
     resources: Array of Objects
 }
 ```
