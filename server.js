@@ -101,8 +101,10 @@ if ( cluster.isMaster ) {
   /// Routes                                                        /////.
   ////////////////////////////////////////////////////////////////////////
 
-  require( './app/api/root' )( app, express )
-
+  // handle api versions gracefully
+  require( './app/api/v0/index' )( app, express, '/api/v0' )
+  require( './app/api/v1/index' )( app, express, '/api/v1' )
+  
   ////////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.
   ////////////////////////////////////////////////////////////////////////

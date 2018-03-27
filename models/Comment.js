@@ -9,6 +9,12 @@ var commentSchema = mongoose.Schema( {
   // content
   text: { type: String, required: true },
 
+  // parent resource
+  resource: { 
+    resourceType: { type: String, required: true },
+    resourceId: { type: String, required: true }
+  },
+
   // minimal issue-like functionality
   closed: { type: Boolean, default: false },
   assignedTo: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],

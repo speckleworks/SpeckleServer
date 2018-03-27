@@ -1,7 +1,8 @@
 
 ## TODOS
-- tests
-- move bulk object creation in its own middleware
+- [ ] tests
+- [x] move bulk object creation in its own middleware
+- [ ] comment create should get "parent resource" as property
 
 ## General Summary: 
 **Before**: ±40 routes for accounts, streams, objects
@@ -19,14 +20,14 @@ Will return an array of resources, some of which may be null/undefined if the us
 
 ## Models: 
 
-Old: 
+Existing: 
 - Streams (`DataStream`)
 - Objects (`SpeckleObject`)
 - Users (`User`)
 
-New: 
-- Projects (`Project`)
-- Comments (`Comment`)
+Added: 
+- Projects (`Project`): groups of users and streams. may contain other subprojects. 
+- Comments (`Comment`):  can  be attached to any resource bar users, including themselves.
 
 ## Responses
 All responses should be unified to the following: 
@@ -56,4 +57,3 @@ All Payloads for POST or PUT should be unified to:
 - POST/PUT Comment: BODY A Comment
     + POST: new Comment( body )
     + PUT: myComment.set( body ).save( )
-
