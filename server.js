@@ -79,6 +79,10 @@ if ( cluster.isMaster ) {
 
   require( './config/passport' )( passport )
 
+  // Admin app
+  app.use( express.static( __dirname + '/node_modules/speckle-admin' ) )
+  // TODO: add viewer
+  //app.use( '/view',  express.static( __dirname + '/node_modules/speckle-view' ) )
   ////////////////////////////////////////////////////////////////////////
   /// Websockets & HTTP Servers                                     /////.
   ////////////////////////////////////////////////////////////////////////
@@ -92,8 +96,6 @@ if ( cluster.isMaster ) {
 
   require( './app/ws/SpeckleSockets' )( wss )
 
-  app.use( express.static( './static' ) )
-
   const RT = require( './app/ws/RadioTower' )
   RT.initRedis( )
 
@@ -104,7 +106,7 @@ if ( cluster.isMaster ) {
   // handle api versions gracefully
   require( './app/api/v0/index' )( app, express, '/api/v0' )
   require( './app/api/v1/index' )( app, express, '/api/v1' )
-  
+
   ////////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.
   ////////////////////////////////////////////////////////////////////////
