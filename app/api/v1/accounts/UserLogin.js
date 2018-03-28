@@ -21,8 +21,9 @@ module.exports = function( req, res ) {
         myUser.save( )
         let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
         let userObject = myUser.toObject( )
+        userObject.token = token
         delete userObject[ 'password' ]
-        res.send( { success: true, token: token, message: 'You have logged in.', resource: userObject } )
+        res.send( { success: true, message: 'You have logged in.', resource: userObject } )
       } )
     } )
     .catch( err => {

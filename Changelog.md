@@ -3,6 +3,9 @@
 - [ ] tests
 - [x] move bulk object creation in its own middleware
 - [ ] comment create should get "parent resource" as property
+- [ ] Docs
+- [ ] Response Create  Client should return resource with id at least
+- [ ] 
 
 ## General Summary: 
 **Before**: ±40 routes for accounts, streams, objects

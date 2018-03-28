@@ -1,7 +1,7 @@
 {
-  "name": "speckle.streams.server",
+  "name": "speckle.server",
   "version": "0.0.1",
-  "description": "speckle streams backend server api",
+  "description": "speckle streams backend server",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
