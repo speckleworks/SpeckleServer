@@ -11,19 +11,6 @@ module.exports = ( req, res ) => {
   }
 
   Project.findOne( { _id: req.params.projectId } )
-    .populate( { path: 'owner', select: 'name surname email company _id' } )
-    .populate( {
-      path: 'permissions.canRead',
-      select: 'name surname email company _id'
-    } )
-    .populate( {
-      path: 'permissions.canWrite',
-      select: 'name surname email company _id'
-    } )
-    .populate( {
-      path: 'streams',
-      select: 'name streamId'
-    } )
     .then( resource => PermissionCheck( req.user, 'read', resource ) )
     .then( resource => {
       res.send( { success: true, resource: resource } )

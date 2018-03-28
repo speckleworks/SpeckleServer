@@ -16,7 +16,7 @@ module.exports = function ( req, res ) {
   User.find( { email : { "$regex": req.body.email, "$options": "i" } }, '_id name surname email company' ).limit( 5 )
   .then( myUsers => {
     if( !myUsers ) throw new Error( 'no users found.' )
-    res.send( { success: true, users: myUsers } )
+    res.send( { success: true, resources: myUsers } )
   })
   .catch( err => {
     winston.error( err )

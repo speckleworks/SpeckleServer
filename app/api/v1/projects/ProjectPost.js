@@ -11,7 +11,6 @@ module.exports = ( req, res ) => {
 
   let project = new Project( req.body )
   project.owner = req.user._id
-  project.permissions.canWrite.push( req.user._id )
 
   project.save( )
     .then( resource => res.send( { success: true, resource: resource } ) )

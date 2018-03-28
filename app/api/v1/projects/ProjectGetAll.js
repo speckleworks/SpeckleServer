@@ -7,19 +7,6 @@ const PermissionCheck = require( '../middleware/PermissionCheck' )
 module.exports = ( req, res ) => {
 
   Project.find( { owner: req.user._id } )
-    .populate( { path: 'owner', select: 'name surname email company _id' } )
-    .populate( {
-      path: 'permissions.canRead',
-      select: 'name surname email company _id'
-    } )
-    .populate( {
-      path: 'permissions.canWrite',
-      select: 'name surname email company _id'
-    } )
-    .populate( {
-      path: 'streams',
-      select: 'name streamId'
-    } )
     .then( resources => {
       res.send( { success: true, resources: resources } )
     } )
