@@ -1,5 +1,5 @@
-'use strict'
 const mongoose = require( 'mongoose' )
+const DataTypes = require( './SpeckleDataTypesEnum' )
 
 var speckleObjectSchema = mongoose.Schema( {
   // ownership & permissions
@@ -14,12 +14,12 @@ var speckleObjectSchema = mongoose.Schema( {
   // Object Type
   type: {
     type: String,
-    enum: [ 'Null', 'Boolean', 'Number', 'String', 'Interval', 'Interval2d', 'Point', 'Vector', 'Plane', 'Line', 'Rectangle', 'Circle', 'Arc', 'Ellipse', 'Polycurve', 'Box', 'Polyline', 'Curve', 'Mesh', 'Brep', 'Annotation', 'Extrusion', 'Abstract' ],
+    enum: DataTypes,
     required: true
   },
 
   // Object name
-  name: { type: String, default: 'Object Doe' }, 
+  name: { type: String, default: 'Object Doe' },
 
   // Geometry hash
   geometryHash: { type: String, default: null, index: true },
