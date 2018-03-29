@@ -15,7 +15,7 @@ module.exports = ( req, res ) => {
   SpeckleObject.findOne( { _id: req.params.objectId }, query.options.fields )
     .then( object => PermissionCheck( req.user, 'read', object ) )
     .then( object => {
-      res.send( { success: true, speckleObject: object } )
+      res.send( { success: true, resource: object } )
     } )
     .catch( err => {
       winston.error( err )

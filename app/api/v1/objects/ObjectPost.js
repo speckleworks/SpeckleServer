@@ -14,7 +14,7 @@ module.exports = ( req, res ) => {
 
   BulkObjectSave( req.body instanceof Array ? req.body : [ req.body ], req.user )
     .then( objects => {
-      res.send( { success: true, message: 'Saved objects to database.', resources: objects.map( o => o._id ) } )
+      res.send( { success: true, message: 'Saved objects to database.', resources: objects.map( o => { return { type: 'Placeholder', _id: o._id } } ) } )
     } )
     .catch( err => {
       winston.error( err )

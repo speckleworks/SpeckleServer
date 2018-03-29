@@ -11,7 +11,7 @@ module.exports = ( req, res ) => {
   SpeckleObject.findOne( { _id: req.params.objectId }, query.options.fields )
     .then( object => {
       if ( !object ) throw new Error( 'Could not find object.' )
-      res.send( { success: true, speckleObject: object } )
+      res.send( { success: true, resource: object } )
     } )
     .catch( err => {
       res.status( 400 )

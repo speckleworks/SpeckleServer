@@ -18,7 +18,7 @@ module.exports = ( req, res ) => {
   SpeckleObject.find( query.criteria, query.options.fields, { sort: query.options.sort } )
     .then( objects => {
       let list = req.body.objects.reduce( ( arr, o ) => [ ...arr, objects.find( oo => oo._id.toString( ) === o.toString( ) ) ], [ ] )
-      res.send( { success: true, objects: list } )
+      res.send( { success: true, resources: list } )
     } )
     .catch( err => {
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )

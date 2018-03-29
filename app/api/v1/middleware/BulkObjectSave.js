@@ -9,6 +9,7 @@ module.exports = ( objects, user ) => {
   winston.debug( chalk.bgBlue( 'Bulk obj save: ' ) + ` ${objects.length} received` )
   objects.forEach( obj => {
     if ( !obj.hash && obj.type != 'Placeholder' ) obj.hash = crypto.createHash( 'md5' ).update( JSON.stringify( obj ) ).digest( 'hex' );
+    console.log( obj.hash )
   } )
 
   return new Promise( ( resolve, reject ) => {

@@ -29,7 +29,7 @@ module.exports = ( req, res ) => {
           return obj ? obj : { _id: o.toString( ), type: 'String', value: 'You do not have permissions to view this object' }
         } )( )
       ], [ ] )
-      res.send( { success: true, objects: list } )
+      res.send( { success: true, resources: list } )
     } )
     .catch( err => {
       winston.error( err )

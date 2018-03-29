@@ -33,9 +33,12 @@ module.exports = ( req, res ) => {
     } )
     .then( ( ) => {
       let objects = { common: null, inA: null, inB: null }
-      objects.inA = _.differenceWith( first.objects, second.objects, ( arrVal, otherVal ) => arrVal.toString( ) === otherVal.toString( ) )
-      objects.inB = _.differenceWith( second.objects, first.objects, ( arrVal, otherVal ) => arrVal.toString( ) === otherVal.toString( ) )
-      objects.common = _.intersectionWith( first.objects, second.objects, ( arrVal, otherVal ) => arrVal.toString( ) === otherVal.toString( ) )
+      first.objects = first.objects.map( o => o.toString( ) )
+      second.objects = second.objects.map( o => o.toString( ) )
+      
+      objects.common = first.objects.filter( id => second.objects.includes( id ) )
+      objects.inA = first.objects.filter( id => !second.objects.includes( id ) )
+      objects.inB = second.objects.filter( id => !first.objects.includes( id ) )
 
       let layers = { common: null, inA: null, inB: null }
       layers.common = _.intersectionWith( first.layers, second.layers, ( arrVal, otherVal ) => arrVal.guid === otherVal.guid )

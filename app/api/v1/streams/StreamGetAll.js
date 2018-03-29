@@ -10,15 +10,11 @@ module.exports = ( req, res ) => {
   let userSelect = '_id name surname email company'
   let userOwnedStreams = [ ]
   DataStream.find( { owner: req.user._id }, '-layers -objects' )
-    .populate( { path: 'canRead', select: userSelect } )
-    .populate( { path: 'canWrite', select: userSelect } )
-    .populate( { path: 'owner', select: userSelect } )
     .then( streams => {
       userOwnedStreams = streams
-      return DataStream.find( { '$or': [ { 'canWrite': mongoose.Types.ObjectId( req.user._id ) }, { 'canRead': mongoose.Types.ObjectId( req.user._id ) } ] } , '-layers -objects' ).populate( { path: 'owner', select: userSelect } )
+      return DataStream.find( { '$or': [ { 'canWrite': mongoose.Types.ObjectId( req.user._id ) }, { 'canRead': mongoose.Types.ObjectId( req.user._id ) } ] } , '-layers -objects' )
     } )
     .then( sharedWithStreams => {
-      // res.send( { success: true, message: 'Stream list for user ' + req.user._id, streams: userOwnedStreams, sharedStreams: sharedWithStreams } )
       res.send( { success: true, message: 'Stream list for user ' + req.user._id, resources: [ ...userOwnedStreams, ...sharedWithStreams ] } )
     } )
     .catch( err => {
