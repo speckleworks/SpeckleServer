@@ -13,7 +13,7 @@ module.exports = ( req, res ) => {
   .then( result => PermissionCheck( req.user, 'read', result ) )
   .then( result => {
     if( !result ) throw new Error( 'No client found.' )
-    res.send( { success: true, message: 'Client found.', client: result } )
+    res.send( { success: true, message: 'Client found.', resource: result } )
   })
   .catch( err => {
     winston.error( err )

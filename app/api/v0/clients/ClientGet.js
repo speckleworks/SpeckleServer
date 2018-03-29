@@ -10,7 +10,7 @@ module.exports = ( req, res ) => {
   Client.findOne( { _id: req.params.clientId } ) 
   .then( result => {
     if( !result ) throw new Error( 'No client found.' )
-    res.send( { success: true, message: 'Client found.', client: result } )
+    res.send( { success: true, message: 'Client found.', resource: result } )
   })
   .catch( err => {
     res.status( 400 )

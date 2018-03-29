@@ -8,7 +8,7 @@ module.exports = ( req, res ) => {
   UserAppClient.find( { owner: req.user._id } )
     .then( clients => {
       if ( !clients ) throw new Error( 'Failed to find clients.' )
-      res.send( { success: true, message: 'Stream list for user ' + req.user._id, clients: clients } )
+      res.send( { success: true, message: 'Stream list for user ' + req.user._id, resources: clients } )
     } )
     .catch( err => {
       winston.error( err )

@@ -80,9 +80,10 @@ if ( cluster.isMaster ) {
   require( './config/passport' )( passport )
 
   // Admin app
-  app.use( express.static( __dirname + '/node_modules/speckle-admin' ) )
+  app.use( '/admin', express.static( __dirname + '/node_modules/speckle-admin' ) )
   // TODO: add viewer
   //app.use( '/view',  express.static( __dirname + '/node_modules/speckle-view' ) )
+  
   ////////////////////////////////////////////////////////////////////////
   /// Websockets & HTTP Servers                                     /////.
   ////////////////////////////////////////////////////////////////////////

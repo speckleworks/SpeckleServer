@@ -19,6 +19,8 @@ module.exports = ( req, res ) => {
       return stream.save( )
     } )
     .then( stream => {
+      stream = stream.toObject()
+      stream.objects = stream.objects.map( id => { return { type: 'Placeholder', _id: id } } )
       res.send( { success: true, resource: stream, message: 'Created stream' } )
     } )
     .catch( err => {

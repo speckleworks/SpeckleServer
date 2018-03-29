@@ -29,7 +29,7 @@ module.exports = ( req, res ) => {
         if( match ) arr.push( match )
         return arr
       }, [ ] )
-      res.send( { success: true, objects: list, message: 'Object list returned. If querying, duplication of objects in list will not be respected.' } )
+      res.send( { success: true, resources: list, message: 'Object list returned. If querying, duplication of objects in list will not be respected.' } )
     } )
     .catch( err => {
       winston.error( err )

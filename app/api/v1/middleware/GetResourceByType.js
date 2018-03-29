@@ -12,11 +12,11 @@ module.exports = ( type, id, populateFields ) => {
     case 'objects':
       return SpeckleObject.findOne( { _id: id } ).populate( populateFields )
     case 'project':
-    case 'projects':
+    case 'projects':    
       return Project.findOne( { _id: id } ).populate( populateFields )
     case 'comment':
     case 'comments':
-      return Project.findOne( { _id: id } ).populate( populateFields )
+      return Comment.findOne( { _id: id } ).populate( populateFields )
     default:
       break
   }

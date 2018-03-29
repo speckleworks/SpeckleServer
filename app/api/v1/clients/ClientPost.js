@@ -11,13 +11,13 @@ module.exports = ( req, res ) => {
   let myClient = new Client( req.body )
   
   if ( !req.user )
-    return res.send( { success: true, message: 'Anonymous client created.', clientId: 'temp-' + myClient._id } )
+    return res.send( { success: true, message: 'Anonymous client created.', resource: { clientId: 'temp-' + myClient._id } } )
   else 
     myClient.owner = req.user._id
 
     myClient.save( )
     .then( result => {
-      res.send( { success: true, message: 'Client created.', clientId: result._id } )
+      res.send( { success: true, message: 'Client created.', resource: result } )
     } )
     .catch( err => {
       winston.error( err )

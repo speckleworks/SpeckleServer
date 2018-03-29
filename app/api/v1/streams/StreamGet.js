@@ -22,7 +22,7 @@ module.exports = ( req, res ) => {
       if ( stream.objects )
         stream.objects = stream.objects.map( id => { return { type: 'Placeholder', _id: id } } )
 
-      return res.send( { success: true, message: 'Delivered stream.', stream: stream } )
+      return res.send( { success: true, message: 'Delivered stream.', resource: stream } )
     } )
     .catch( err => {
       winston.error( err )

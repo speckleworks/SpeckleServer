@@ -44,7 +44,7 @@ module.exports = function( app, express, urlRoot ) {
   r.post( '/clients', optionalAuthorisation, require( './clients/ClientPost' ) )
 
   // get a user's clients xxx
-  r.get( '/clients', mandatoryAuthorisation, require( './accounts/UserGetClients' ) )
+  r.get( '/clients', mandatoryAuthorisation, require( './clients/ClientGetAll' ) )
 
   // get a client / perm check 'read' xxx
   r.get( '/clients/:clientId', mandatoryAuthorisation, require( './clients/ClientGet' ) )
@@ -63,7 +63,7 @@ module.exports = function( app, express, urlRoot ) {
   r.post( '/streams', mandatoryAuthorisation, require( './streams/StreamPost' ) )
 
   // get a user's streams xxx
-  r.get( '/streams', mandatoryAuthorisation, require( './accounts/UserGetStreams' ) )
+  r.get( '/streams', mandatoryAuthorisation, require( './streams/StreamGetAll' ) )
 
   // get stream / perm check 'read' xxx
   r.get( '/streams/:streamId', optionalAuthorisation, require( './streams/StreamGet' ) )
