@@ -27,7 +27,7 @@ module.exports = ( req, res ) => {
       clone.createdAt = new Date
       clone.updatedAt = new Date
       clone.private = stream.private
-      
+
       if ( req.user._id.toString( ) != stream.owner.toString( ) ) {
         // new ownership
         clone.owner = req.user._id
@@ -36,7 +36,7 @@ module.exports = ( req, res ) => {
         // make it private
         clone.canWrite = [ ]
       }
-      
+
       stream.children.push( clone.streamId )
       clone.isNew = true
       return stream.save( )
@@ -46,6 +46,12 @@ module.exports = ( req, res ) => {
       return clone.save( )
     } )
     .then( result => {
+      result = result.toObject( )
+      parent = parent.toObject( )
+      delete result[ 'objects' ]
+      delete result[ 'layers' ]
+      delete parent[ 'objects' ]
+      delete parent[ 'layers' ]
       res.send( { success: true, clone: result, parent: parent } )
     } )
     .catch( err => {

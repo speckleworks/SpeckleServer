@@ -14,20 +14,18 @@ module.exports = ( req, res ) => {
     return res.send( { success: false, message: 'No streamId or stream provided.' } )
   }
 
-  if ( !req.body.objects ) req.body.objects = [ ]
-
   let stream = {}
 
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( result => PermissionCheck( req.user, 'write', result, Object.keys( req.body ) ) )
     .then( result => {
       stream = result
-      return BulkObjectSave( req.body.objects, req.user )
+      return req.body.objects ? BulkObjectSave( req.body.objects, req.user ) : true
     } )
     .then( result => {
       stream.set( req.body )
-      stream.objects = result.map( obj => obj._id )
-      return stream.save()
+      if ( req.body.objects ) stream.objects = result.map( obj => obj._id )
+      return stream.save( )
     } )
     .then( result => {
       res.send( { success: true, message: 'Patched stream fields: ' + Object.keys( req.body ) } )

@@ -9,12 +9,16 @@ module.exports = ( objects, user ) => {
   winston.debug( chalk.bgBlue( 'Bulk obj save: ' ) + ` ${objects.length} received` )
   objects.forEach( obj => {
     if ( !obj.hash && obj.type != 'Placeholder' ) obj.hash = crypto.createHash( 'md5' ).update( JSON.stringify( obj ) ).digest( 'hex' );
-    console.log( obj.hash )
   } )
 
   return new Promise( ( resolve, reject ) => {
     if ( objects.length === 0 )
       return resolve( objects )
+    
+    let notPlaceholders = objects.filter( obj => obj.type != 'Placeholder'  )
+    if( notPlaceholders.length === 0 ) 
+      return resolve(  objects )
+    
     SpeckleObject.find( { hash: { $in: objects.map( obj => obj.hash ) } }, '_id hash' )
       .then( existingObjects => {
         winston.debug( chalk.bgBlue( 'Bulk obj save: ' ) + ` ${existingObjects.length} preexisting objs.` )
