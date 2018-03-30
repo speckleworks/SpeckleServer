@@ -11,7 +11,7 @@ module.exports = ( req, res ) => {
   let myClient = new Client( req.body )
   
   if ( !req.user )
-    return res.send( { success: true, message: 'Anonymous client created.', resource: { clientId: 'temp-' + myClient._id } } )
+    return res.send( { success: true, message: 'Anonymous client created.', resource: { _id: 'temp-' + myClient._id } } )
   else 
     myClient.owner = req.user._id
 
