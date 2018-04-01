@@ -5,7 +5,7 @@ const passport = require( 'passport' )
 var tokenCheck = require( './middleware/TokenCheck' )
 var serverDescription = require( '../../../config' ).serverDescription
 
-module.exports = function( app, express,  urlRoot ) {
+module.exports = function( app, express, urlRoot ) {
   var r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
@@ -109,11 +109,13 @@ module.exports = function( app, express,  urlRoot ) {
   let count = 1
   r.stack.forEach( ( middleware ) => {
     if ( middleware.route )
-      routes.push( Object.keys( middleware.route.methods ).map( m => count++ + ":\t" + m.toUpperCase( ) ) + '\t\t /api' + middleware.route.path )
+      routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase( ) ) + ': /api' + middleware.route.path )
   } )
 
   r.get( '/', ( req, res ) => {
-    res.send( routes )
+    serverDescription.routes = routes
+    serverDescription.version = '0.x.x'
+    res.json( serverDescription )
   } )
 
   // mount all these routes up
