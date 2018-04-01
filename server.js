@@ -15,7 +15,9 @@ const CONFIG = require( './config' )
 winston.level = 'debug'
 
 if ( cluster.isMaster ) {
-  let numWorkers = require( 'os' ).cpus( ).length
+  let osCpus = require( 'os' ).cpus( ).length
+  let envCpus = process.env.MAX_PROC
+  let numWorkers = envCpus ? ( envCpus > osCpus ? osCpus : envCpus ) : osCpus
   winston.debug( `Setting up ${numWorkers} workers.` )
 
   for ( let i = 0; i < numWorkers; i++ )
@@ -34,7 +36,7 @@ if ( cluster.isMaster ) {
   /// Mongo handlers                                                /////.
   ////////////////////////////////////////////////////////////////////////
   mongoose.Promise = global.Promise
-  mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true }, ( err ) => {
+  mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true, reconnectTries: 5 }, ( err ) => {
     if ( err ) throw err
     else winston.info( 'connected to mongoose at ' + CONFIG.mongo.url )
   } )
@@ -75,8 +77,13 @@ if ( cluster.isMaster ) {
   if ( CONFIG.serverDescription.indentResponses )
     app.set( 'json spaces', 2 )
 
-  require( './.config/passport' )( passport )
+  require( './config/passport' )( passport )
 
+  // Admin app
+  app.use( '/admin', express.static( __dirname + '/node_modules/speckle-admin' ) )
+  // TODO: add viewer
+  //app.use( '/view',  express.static( __dirname + '/node_modules/speckle-view' ) )
+  
   ////////////////////////////////////////////////////////////////////////
   /// Websockets & HTTP Servers                                     /////.
   ////////////////////////////////////////////////////////////////////////
@@ -90,8 +97,6 @@ if ( cluster.isMaster ) {
 
   require( './app/ws/SpeckleSockets' )( wss )
 
-  app.use( express.static( './static' ) )
-
   const RT = require( './app/ws/RadioTower' )
   RT.initRedis( )
 
@@ -99,7 +104,9 @@ if ( cluster.isMaster ) {
   /// Routes                                                        /////.
   ////////////////////////////////////////////////////////////////////////
 
-  require( './app/api/root' )( app, express )
+  // handle api versions gracefully
+  require( './app/api/v0/index' )( app, express, '/api/v0' )
+  require( './app/api/v1/index' )( app, express, '/api/v1' )
 
   ////////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.

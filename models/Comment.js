@@ -1,13 +1,31 @@
 var mongoose = require( 'mongoose' )
 
 var commentSchema = mongoose.Schema( {
-  parent: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' },
-  children: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
-  author: { type: Object, default: {} },
-  text: { type: String, default: '' },
-  camera: { type: Object, default: {} },
-  streamId: { type: String },
-  history: [ { type:Object } ]
+  // ownership
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  // threads
+  comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
+
+  // content
+  text: { type: String, required: true },
+
+  // parent resource
+  resource: { 
+    resourceType: { type: String, required: true },
+    resourceId: { type: String, required: true }
+  },
+
+  // minimal issue-like functionality
+  closed: { type: Boolean, default: false },
+  assignedTo: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  labels: [ { type: String } ],
+
+  // camera view (can be expanded to hold other scene settings)
+  view: { type: Object, default: {} },
+
+  // screenshot
+  screenshot: { type: String }
+
 }, { timestamps: true } )
 
 module.exports = mongoose.model( 'Comment', commentSchema )

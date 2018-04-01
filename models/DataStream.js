@@ -1,19 +1,17 @@
 var mongoose = require( 'mongoose' )
 
 var dataStreamSchema = mongoose.Schema( {
-
+  // stream short id
   streamId: { type: String, index: true },
 
+  // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-
   private: { type: Boolean, default: false },
-
-  sharedWith: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-
-  // should replace 'sharedWith' in the near future
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-  canComment: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  anonymousComments: { type: Boolean, default: false },
+  // comments
+  comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
 
   name: { type: String, default: 'Speckle Stream' },
 
@@ -26,12 +24,13 @@ var dataStreamSchema = mongoose.Schema( {
   objects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'SpeckleObject' } ],
 
   layers: { type: Array, default: [ ] },
+  
+  viewerLayers: { type: Array, default: [ ] },
 
+  // versioning
   parent: { type: String, default: null },
-
   children: { type: Array, default: [ ] },
-
-  comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
+  ancestors: { type: Array, default: [ ] },
 
   deleted: { type: Boolean, default: false }
 

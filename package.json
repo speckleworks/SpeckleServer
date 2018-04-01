@@ -1,12 +1,13 @@
 {
-  "name": "speckle.streams.server",
+  "name": "speckle.server",
   "version": "0.0.1",
-  "description": "speckle streams backend server api",
+  "description": "speckle streams backend server",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "debug": "node --inspect --debug-brk server.js"
+    "local-dev": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='1' nodemon server.js ",
+    "local-dev-inspect": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='1' nodemon --inspect server.js "
   },
   "author": "Dimitrie A. Stefanescu @idid / UCL The Bartlett School of Architecture / InnoChain",
   "license": "MIT",
@@ -26,17 +27,18 @@
     "json2csv": "^3.7.3",
     "jsonwebtoken": "^7.2.1",
     "lodash": "^4.17.4",
-    "mongoose": "^4.6.8",
-    "passport": "^0.3.2",
+    "mongoose": "^5.0.11",
+    "passport": "^0.4.0",
     "passport-anonymous": "^1.0.1",
-    "passport-jwt": "^2.2.1",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "query-to-mongo": "^0.7.0",
     "recursive-iterator": "^2.0.3",
     "redis": "^2.8.0",
     "serve-static": "^1.12.4",
     "shortid": "^2.2.6",
-    "uuid": "^3.0.1",
+    "speckle-admin": "^0.2.5",
+    "uuid": "^3.2.1",
     "winston": "^2.3.0",
     "ws": "^3.0.0"
   }
