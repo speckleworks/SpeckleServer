@@ -36,11 +36,17 @@ Steps:
     $ heroku open
 
 ### Deploying on Debian-based OSes (Ubuntu etc)
+Follow this if you're using DigitalOcean for example.
 
-1) Install mongodb, redis servers and npm: 
+1) Install MongoDB, Redis servers, NodeJS and npm: 
 
-       sudo apt-get install mongodb redis npm
+       sudo apt-get install mongodb redis-server npm
 
+   also [install a supported version of NodeJS](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-16-04), running each line below separately :
+
+       curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash
+       nvm install 8.5.0
+       
 2) If you don't want both the redis and mongo servers running all the time (For ex. if you are just testing), disable both startup scripts (If you wish to leave both running automatically, skip to step 4):
 
        sudo systemctl disable mongodb
@@ -83,7 +89,7 @@ Steps:
 More detailed instructions coming soon. Simply spin off an instance of Redis & Mongo locally, make sure in `config.js` that you're connecting to them, and spin out the server with `nodemon server.js` if  you want live reloads or `node server.js` otherwise. 
 
 ## API
-[API docs are here](https://speckleworks.github.io/SpeckleOpenApi/#introduction) - they are a good overview of what you can do with the speckle server.
+[API docs are here](https://speckleworks.github.io/SpeckleSpecs/) - they are a good overview of what you can do with the speckle server.
 
 ### Current limitations
 SpeckleServer currently imposes a default payload size limit for streams, they are as detailed below.
