@@ -36,7 +36,6 @@ Steps:
     $ heroku open
 
 ### Deploying on Debian-based OSes (Ubuntu etc)
-Follow this if you're using DigitalOcean for example.
 
 1) Install MongoDB, Redis servers, NodeJS and npm: 
 
