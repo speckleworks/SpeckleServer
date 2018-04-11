@@ -1,3 +1,5 @@
+Step 0: 
+- [ ] I've  read the [contribution guidelines](https://github.com/speckleworks/SpeckleOrg/blob/master/CONTRIBUTING.md)!
 #### Expected Behaviour
 How things should actually work!
 
