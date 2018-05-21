@@ -30,7 +30,6 @@ userSchema.pre( 'save', function( next ) {
 })
 
 userSchema.methods.validatePassword = ( pw, upw, cb ) => {
-  console.log( this )
   bcrypt.compare( pw, upw, ( err, res ) => {
     if( res === true ) return cb( true )
     else return cb( false )

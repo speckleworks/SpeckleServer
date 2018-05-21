@@ -6,7 +6,6 @@ const User              = require('../../../../models/User')
 
 module.exports = function ( req, res ) {
   winston.debug('update user route')
-  console.log( req.body )
   User.findOne( { _id : req.user._id } )
   .then( myUser => {
     if( req.body.name )
