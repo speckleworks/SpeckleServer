@@ -1,26 +1,27 @@
 'use strict'
-const winston           = require('winston')
-const chalk             = require('chalk')
+const winston = require( 'winston' )
+const chalk = require( 'chalk' )
 
-const User              = require('../../../../models/User')
+const User = require( '../../../../models/User' )
 
-module.exports = function ( req, res ) {
-  if(  !req.body.email ) {
-    res.status(400)
+module.exports = function( req, res ) {
+  if ( !req.body.email ) {
+    res.status( 400 )
     return res.send( { success: false, message: "Malformed request." } )
   }
-  if( req.body.email.length < 2 ) {
-    res.status(400)
+  if ( req.body.email.length < 2 ) {
+    res.status( 400 )
     return res.send( { success: false, message: "Please provide more than two letters." } )
   }
-  User.find( { email : { "$regex": req.body.email, "$options": "i" } }, '_id name surname email company' ).limit( 5 )
-  .then( myUsers => {
-    if( !myUsers ) throw new Error( 'no users found.' )
-    res.send( { success: true, resources: myUsers } )
-  })
-  .catch( err => {
-    winston.error( err )
-    res.status( 400 )
-    res.send( { success: false, message: err.toString() } )
-  })
+  User.find( { email: { "$regex": req.body.email, "$options": "i" } }, '_id name surname company' ).limit( 5 )
+    .then( myUsers => {
+      if ( !myUsers ) throw new Error( 'no users found.' )
+      myUsers.forEach( usr => usr.email = ' ' ) // backwards compat with admin app
+      res.send( { success: true, resources: myUsers } )
+    } )
+    .catch( err => {
+      winston.error( err )
+      res.status( 400 )
+      res.send( { success: false, message: err.toString( ) } )
+    } )
 }
