@@ -7,23 +7,23 @@ var projectSchema = mongoose.Schema( {
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   anonymousComments: { type: Boolean, default: false },
-  
+
   // comments
   comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
 
   // project name
   name: { type: String, default: 'A Speckle Project' },
-  
+
   //  streams in  this project
   streams: [ { type: mongoose.Schema.Types.ObjectId, ref: 'DataStream' } ],
-  
+
   //  users in  this project
-  permissions: { 
+  permissions: {
     streamsDefaulPrivate: { type: Boolean, default: false },
     canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
     canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   },
-  
+
   //  sub projects
   subProjects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Project' } ],
 
