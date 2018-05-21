@@ -36,7 +36,7 @@ if ( cluster.isMaster ) {
   /// Mongo handlers                                                /////.
   ////////////////////////////////////////////////////////////////////////
   mongoose.Promise = global.Promise
-  mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true, reconnectTries: 5 }, ( err ) => {
+  mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
     if ( err ) throw err
     else winston.info( 'connected to mongoose at ' + CONFIG.mongo.url )
   } )

@@ -16,7 +16,7 @@
     "url": "https://github.com/speckleworks/SpeckleServer"
   },
   "dependencies": {
-    "@speckle/speckle-admin": "^0.2.8",
+    "@speckle/speckle-admin": "latest",
     "@speckle/speckle-viewer": "latest",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",

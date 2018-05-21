@@ -22,7 +22,6 @@ module.exports = ( req, res ) => {
     } )
     .catch( err => {
       res.status( 400 )
-      console.log( err )
       res.send( { success: false, message: 'Something failed.' } )
     } )
 }

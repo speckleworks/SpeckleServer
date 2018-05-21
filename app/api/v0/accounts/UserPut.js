@@ -11,7 +11,6 @@ module.exports = function ( req, res ) {
     user.name = req.body.name ? req.body.name : user.name
     user.surname = req.body.surname ? req.body.surname : user.surname
     user.company = req.body.company ? req.body.company : user.company
-    console.log( req.body )
     user.markModified('name')
     user.markModified('surname')
     user.markModified('company')

@@ -14,8 +14,6 @@ module.exports = ( user, operation, resource, mod ) => {
     if ( !resource ) return reject( new Error( 'Resource not found.' ) )
     if ( user == null ) user = { role: 'guest', _id: '' }
 
-    winston.debug( chalk.bgRed( 'checking perms' ), resource.private, '|', user.role, '|', user._id.toString( ) )
-
     // admin or owner: anything goes
     if ( user.role === 'admin' || user._id.toString( ) === resource.owner.toString( ) ) {
       winston.debug( chalk.bgGreen( 'checking perms' ), 'user is admin or owner' )

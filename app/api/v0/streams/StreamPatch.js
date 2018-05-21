@@ -27,7 +27,6 @@ module.exports = ( req, res ) => {
         if ( stream.toObject( ).hasOwnProperty( key ) ) {
           stream[ key ] = req.body[ key ]
           stream.markModified( key )
-          console.log( "patching " + key )
         }
       }
       return stream.save( )
