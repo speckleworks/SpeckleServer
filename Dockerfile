@@ -2,7 +2,7 @@
 FROM node:8-alpine
 
 # LABELS
-LABEL version="0.0.3"
+LABEL version="1.x.x"
 LABEL description="Speckle Server Docker Container Image"
 
 # CREATE DIRS

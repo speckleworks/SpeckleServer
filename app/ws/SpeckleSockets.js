@@ -11,6 +11,10 @@ const CONFIG = require( '../../config' )
 
 module.exports = function( wss ) {
 
+  // start a redis subscriber in the radio tower
+  radioTower.initRedis()
+  
+  // start a redis publisher 
   let redisPublisher = redis.createClient( CONFIG.redis.url )
 
   redisPublisher.on( 'connect', ( ) => {

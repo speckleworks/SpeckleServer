@@ -1,11 +1,9 @@
 const cluster = require( 'cluster' )
 const express = require( 'express' )
 const cors = require( 'cors' )
-const serveStatic = require( 'serve-static' )
 const cookieParser = require( 'cookie-parser' )
 const bodyParser = require( 'body-parser' )
 const passport = require( 'passport' )
-const path = require( 'path' )
 const chalk = require( 'chalk' )
 const winston = require( 'winston' )
 const expressWinston = require( 'express-winston' )
@@ -20,12 +18,14 @@ if ( cluster.isMaster ) {
   let numWorkers = envCpus ? ( envCpus > osCpus ? osCpus : envCpus ) : osCpus
   winston.debug( `Setting up ${numWorkers} workers.` )
 
+
   for ( let i = 0; i < numWorkers; i++ )
     cluster.fork( )
 
   cluster.on( 'online', worker => {
     winston.debug( `Speckle worker ${worker.process.pid} is now online.` )
   } )
+  
   cluster.on( 'exit', ( worker, code, signal ) => {
     winston.debug( `Speckle worker ${worker.process.pid} just died with code ${code} and signal ${signal}.` )
     winston.debug( `Starting a new one...` )
@@ -38,7 +38,7 @@ if ( cluster.isMaster ) {
   mongoose.Promise = global.Promise
   mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
     if ( err ) throw err
-    else winston.info( 'connected to mongoose at ' + CONFIG.mongo.url )
+    else winston.debug( 'connected to mongoose at ' + CONFIG.mongo.url )
   } )
 
   mongoose.connection.on( 'error', err => {
@@ -96,9 +96,6 @@ if ( cluster.isMaster ) {
   } )
 
   require( './app/ws/SpeckleSockets' )( wss )
-
-  const RT = require( './app/ws/RadioTower' )
-  RT.initRedis( )
 
   ////////////////////////////////////////////////////////////////////////
   /// Routes                                                        /////.
