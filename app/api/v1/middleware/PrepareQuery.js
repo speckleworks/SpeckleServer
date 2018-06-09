@@ -22,7 +22,6 @@ module.exports = ( q ) => {
         delete query.options.fields[ field ]
       }
     } )
-    winston.debug( chalk.white.bgMagenta( 'Someone is a hacker' ) )
     return query
   }
   return query

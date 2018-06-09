@@ -16,14 +16,14 @@ module.exports = {
     ws.pinger = setInterval( ws => {
       if ( !ws.alive ) {
         ws.missedPingsCount++
-        if ( ws.missedPingsCount > 20 )
+        if ( ws.missedPingsCount > 50 )
           winston.error( chalk.bgRed( 'TODO: Kicking client socket, missed too many pings: ' + ws.missedPingsCount, ws.clientId ) )
         ws.alive = false
       }
       ws.alive = false
 
       ws.send( 'ping' )
-    }, 1000 * 10, ws )
+    }, 10000, ws )
 
     // push to my amazing datastore
     this.clients.push( ws )

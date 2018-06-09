@@ -7,37 +7,42 @@ const CONFIG = require( '../../config' )
 var ClientStore = require( './ClientStore' )
 
 module.exports = {
-  publisher: null,
   subscriber: null,
 
   initRedis( ) {
     winston.debug( chalk.magenta( 'Initialising redis in radio tower.' ) )
-    this.publisher = redis.createClient( CONFIG.redis.url )
     this.subscriber = redis.createClient( CONFIG.redis.url )
-
-    this.subscriber.subscribe( 'ws-broadcast' )
-    this.subscriber.subscribe( 'ws-message' )
+    this.subscriber.subscribe( 'speckle-message' )
 
     this.subscriber.on( 'message', ( channel, message ) => {
-      let parsedMessage = JSON.parse( message )
-      switch ( channel ) {
-        case 'ws-broadcast':
-          this.broadcast( parsedMessage.streamId, parsedMessage.message, parsedMessage.senderSessionId, true )
-          break
-        case 'ws-message':
-          this.send( parsedMessage.wsSessionId, parsedMessage.message, true )
-          break
-        default:
-          winston.debug( 'Unkown event type in redis pub sub received.' )
-          break
-      }
-    } )
-
-    this.publisher.on( 'connect', ( ) => {
-      winston.debug( chalk.blue( 'Connected to redis.' ) )
+      this.parseMessage( message )
+        .then( parsedMessage => {
+          if( this.events.hasOwnProperty( parsedMessage.eventName ) ) 
+            this.events[ parsedMessage.eventName ]( parsedMessage, message )
+        } )
+        .catch( err => {
+          winston.debug( err )
+        } )
     } )
   },
 
+  parseMessage( message ) {
+    return new Promise( ( resolve, reject ) => {
+      let parsedMessage
+      try {
+        parsedMessage = JSON.parse( message )
+      } catch ( err ) {
+        return reject( 'Failed to parse message: ' + err )
+      }
+
+      if ( !parsedMessage.eventName )
+        return reject( 'Malformed message: no eventName.' )
+
+      return resolve( parsedMessage )
+    } )
+  },
+
+  // sends a message object to all clients currently connected here
   announce( message ) {
     winston.debug( chalk.bgRed( 'Server sending message to all clients' ) )
     for ( let ws of ClientStore.clients ) {
@@ -45,33 +50,46 @@ module.exports = {
     }
   },
 
-  send( wsSessionId, message, stopPropagation ) {
-    if ( !wsSessionId )
-      return winston.error( 'No wsSessionId provided [RadioTower.send]' )
-    let recipient = ClientStore.clients.find( client => client.clientId === wsSessionId )
-    if ( !recipient ) {
-      if ( !stopPropagation ) this.publisher.publish( 'ws-message', JSON.stringify( { sessionId: wsSessionId, message: message } ) )
-      return winston.error( 'No ws with that session id found [RadioTower.send]', wsSessionId )
+  events: {
+    // sends a message to a ws with a specific session id 
+    message( message, raw ) {
+      winston.debug( `✉️ message to ${message.recipientId}, ${message.args}` )
+      if ( !wsSessionId )
+        return winston.error( 'No wsSessionId provided [RadioTower.send]' )
+
+      let recipient = ClientStore.clients.find( client => client.clientId === wsSessionId )
+      if ( !recipient ) {
+        if ( !stopRedisPropagation ) this.publisher.publish( 'ws-message', JSON.stringify( { sessionId: wsSessionId, message: message } ) )
+        return winston.error( 'No ws with that session id found [RadioTower.send]', wsSessionId )
+      }
+
+      recipient.send( JSON.stringify( message ) )
+    },
+
+    // broadcasts a message to a streamId 'chat room'
+    broadcast( message, raw ) {
+      winston.debug( `📣 broadcast in ${message.streamId}, ${message.args}` )
+
+      for ( let ws of ClientStore.clients ) {
+        if ( ws.clientId != message.senderId && ws.streamId === message.streamId )
+          ws.send( raw )
+      }
+    },
+
+    // join a streamId "chat room"
+    join( message ) {
+      // NEEDS AUTHENTICATION CHECK!
+      // Flow: 
+      // Get streamId
+      // if ws.userId == null check if stream is public
+      // or just the user permission checker
+      winston.debug( 'RadioTower streamId', streamId, 'joined by', ws.clientId )
+      ws.streamId = streamId
+    },
+
+    // leaves a streamId "chat room"
+    leave( message ) {
+      // TODO
     }
-
-    recipient.send( JSON.stringify( message ) )
-  },
-
-  broadcast( streamId, message, senderSessionId, stopPropagation ) {
-    if ( !stopPropagation )
-      this.publisher.publish( 'ws-broadcast', JSON.stringify( { streamId: streamId, message: message, senderSessionId: senderSessionId } ) )
-
-    for ( let ws of ClientStore.clients ) {
-      if ( ws.clientId != senderSessionId && ws.streamId === streamId )
-        ws.send( JSON.stringify( message ), error => {
-          if ( !error ) return
-          winston.error( error )
-        } )
-    }
-  },
-
-  join( streamId, ws ) {
-    winston.debug( 'RadioTower streamId', streamId, 'joined by', ws.clientId )
-    ws.streamId = streamId
   }
 }
