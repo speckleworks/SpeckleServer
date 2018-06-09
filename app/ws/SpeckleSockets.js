@@ -27,8 +27,8 @@ module.exports = function( wss ) {
     let location = url.parse( req.url, true );
     if ( !location.query.client_id ) {
       winston.debug( chalk.red( `No client_id present, refusing.` ) )
-      ws.send('You must provide a client_id.')
-      ws.close()
+      ws.send( 'You must provide a client_id.' )
+      ws.close( )
     }
     let token = location.query.access_token
 
@@ -52,7 +52,6 @@ module.exports = function( wss ) {
       } )
 
     ws.on( 'message', message => {
-
       // check if it's a hearbeat
       if ( message === 'alive' ) {
         ws.alive = true
@@ -62,6 +61,10 @@ module.exports = function( wss ) {
 
       // pub to redis otherwise
       redisPublisher.publish( 'speckle-message', JSON.stringify( { content: message, clientId: ws.clientId } ) )
+    } )
+
+    ws.on( 'error', ( ) => {
+      winston.debug( `Ws ${ws.clientId} threw an error :/` )
     } )
 
     ws.on( 'close', ( ) => {

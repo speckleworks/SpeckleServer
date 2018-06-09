@@ -87,11 +87,6 @@ module.exports = {
 
     // join a streamId "chat room"
     join( message, raw, senderClientId ) {
-      // NEEDS AUTHENTICATION CHECK!
-      // Flow: 
-      // Get streamId
-      // if ws.userId == null check if stream is public
-      // or just the user permission checker
       winston.debug( ` ➕ join request for ${message.streamId} from ${senderClientId} in ${process.pid}` )
 
       let client = ClientStore.clients.find( cl => cl.clientId === senderClientId )
@@ -104,8 +99,10 @@ module.exports = {
         .then( stream => PermissionCheck( { _id: client.user._id }, 'read', stream ) )
         .then( res => {
           winston.debug( `Client ws joined ${message.streamId}` )
-          if ( client.rooms.indexOf( message.streamId === -1 ) )
+          if ( client.rooms.indexOf( message.streamId ) === -1 )
             client.rooms.push( message.streamId )
+          else 
+            client.send('You already joined that room.')
         } )
         .catch( err => {
           console.log( 'got an error on join' )
@@ -119,6 +116,11 @@ module.exports = {
       let client = ClientStore.clients.find( cl => cl.clientId === senderClientId )
       if ( !client )
         return winston.debug( `No client with id ${senderClientId} found on this instance.` )
+      let roomIndex = client.rooms.indexOf( message.streamId )
+      if ( roomIndex !== -1 ) {
+        client.rooms.splice( roomIndex, 1 )
+        winston.debug( `Client with id ${senderClientId} left  ${message.streamId}.` )
+      }
     }
   }
 }
