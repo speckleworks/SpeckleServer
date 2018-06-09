@@ -1,43 +1,53 @@
-'use strict'
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const redis = require( 'redis' )
 
+const ClientStore = require( './ClientStore' )
+const PermissionCheck = require( '../api/v1/middleware/PermissionCheck' )
+const DataStream = require( '../../models/DataStream' )
+
 const CONFIG = require( '../../config' )
-var ClientStore = require( './ClientStore' )
 
 module.exports = {
-  publisher: null,
   subscriber: null,
 
   initRedis( ) {
     winston.debug( chalk.magenta( 'Initialising redis in radio tower.' ) )
-    this.publisher = redis.createClient( CONFIG.redis.url )
     this.subscriber = redis.createClient( CONFIG.redis.url )
-
-    this.subscriber.subscribe( 'ws-broadcast' )
-    this.subscriber.subscribe( 'ws-message' )
+    this.subscriber.subscribe( 'speckle-message' )
 
     this.subscriber.on( 'message', ( channel, message ) => {
-      let parsedMessage = JSON.parse( message )
-      switch ( channel ) {
-        case 'ws-broadcast':
-          this.broadcast( parsedMessage.streamId, parsedMessage.message, parsedMessage.senderSessionId, true )
-          break
-        case 'ws-message':
-          this.send( parsedMessage.wsSessionId, parsedMessage.message, true )
-          break
-        default:
-          winston.debug( 'Unkown event type in redis pub sub received.' )
-          break
-      }
-    } )
-
-    this.publisher.on( 'connect', ( ) => {
-      winston.debug( chalk.blue( 'Connected to redis.' ) )
+      message = JSON.parse( message )
+      this.parseMessage( message.content )
+        .then( parsedMessage => {
+          if ( this.events.hasOwnProperty( parsedMessage.eventName ) )
+            // pass in  parsed message, raw (so we avoid a json stringify)  and the clientId of the publisher
+            this.events[ parsedMessage.eventName ]( parsedMessage, message.content, message.clientId )
+        } )
+        .catch( err => {
+          winston.debug( err )
+        } )
     } )
   },
 
+  // tries to parse gracefully
+  parseMessage( message ) {
+    return new Promise( ( resolve, reject ) => {
+      let parsedMessage
+      try {
+        parsedMessage = JSON.parse( message )
+      } catch ( err ) {
+        return reject( 'Failed to parse message: ' + err )
+      }
+
+      if ( !parsedMessage.eventName )
+        return reject( 'Malformed message: no eventName.' )
+
+      return resolve( parsedMessage )
+    } )
+  },
+
+  // sends a message object to all clients currently connected here
   announce( message ) {
     winston.debug( chalk.bgRed( 'Server sending message to all clients' ) )
     for ( let ws of ClientStore.clients ) {
@@ -45,33 +55,72 @@ module.exports = {
     }
   },
 
-  send( wsSessionId, message, stopPropagation ) {
-    if ( !wsSessionId )
-      return winston.error( 'No wsSessionId provided [RadioTower.send]' )
-    let recipient = ClientStore.clients.find( client => client.clientId === wsSessionId )
-    if ( !recipient ) {
-      if ( !stopPropagation ) this.publisher.publish( 'ws-message', JSON.stringify( { sessionId: wsSessionId, message: message } ) )
-      return winston.error( 'No ws with that session id found [RadioTower.send]', wsSessionId )
-    }
+  // holds all current top level ws events that speckle understands
+  // the actual message, event type, info & etc. should be in message.args
+  // What's what:
+  // 1) message: sends direct messages between ws clients
+  // 2) broadcast: broadcasts a message to a room (as defined by a streamId)
+  // 3) join: client joins a new room (as defined by a streamId) if it has read permissions
+  // 4) leave: client leaves a room (as defined by a streamId)
+  events: {
+    // sends a message to a ws with a specific session id 
+    message( message, raw, senderClientId ) {
+      winston.debug( `✉️ message to ${message.recipientId} from ${senderClientId}, ${message.args}` )
+      if ( !message.recipientId )
+        return winston.error( 'No recipientId provided.' )
 
-    recipient.send( JSON.stringify( message ) )
-  },
+      let recipient = ClientStore.clients.find( client => client.clientId === wsSessionId )
+      return winston.error( `No ws with ${message.recipientId} found on pid ${process.pid}` )
 
-  broadcast( streamId, message, senderSessionId, stopPropagation ) {
-    if ( !stopPropagation )
-      this.publisher.publish( 'ws-broadcast', JSON.stringify( { streamId: streamId, message: message, senderSessionId: senderSessionId } ) )
+      recipient.send( raw )
+    },
 
-    for ( let ws of ClientStore.clients ) {
-      if ( ws.clientId != senderSessionId && ws.streamId === streamId )
-        ws.send( JSON.stringify( message ), error => {
-          if ( !error ) return
-          winston.error( error )
+    // broadcasts a message to a streamId 'chat room'
+    broadcast( message, raw, senderClientId ) {
+      winston.debug( `📣 broadcast in ${message.streamId} from ${senderClientId}: ${message.args}` )
+
+      for ( let ws of ClientStore.clients ) {
+        if ( ws.clientId != senderClientId && ws.rooms.indexOf( message.streamId ) != -1 )
+          ws.send( raw )
+      }
+    },
+
+    // join a streamId "chat room"
+    join( message, raw, senderClientId ) {
+      winston.debug( ` ➕ join request for ${message.streamId} from ${senderClientId} in ${process.pid}` )
+
+      let client = ClientStore.clients.find( cl => cl.clientId === senderClientId )
+      if ( !client )
+        return winston.debug( `No client with id ${senderClientId} found on this instance.` )
+      if ( !message.streamId )
+        return winston.debug( `No streamId present, will not join anything.` )
+
+      DataStream.findOne( { streamId: message.streamId }, 'private canRead canWrite owner' ).lean( )
+        .then( stream => PermissionCheck( { _id: client.user._id }, 'read', stream ) )
+        .then( res => {
+          winston.debug( `Client ws joined ${message.streamId}` )
+          if ( client.rooms.indexOf( message.streamId ) === -1 )
+            client.rooms.push( message.streamId )
+          else 
+            client.send('You already joined that room.')
         } )
-    }
-  },
+        .catch( err => {
+          console.log( 'got an error on join' )
+          return winston.debug( `Error: ${err.toString()})` )
+        } )
+    },
 
-  join( streamId, ws ) {
-    winston.debug( 'RadioTower streamId', streamId, 'joined by', ws.clientId )
-    ws.streamId = streamId
+    // leaves a streamId "chat room"
+    leave( message, raw, senderClientId ) {
+      // TODO
+      let client = ClientStore.clients.find( cl => cl.clientId === senderClientId )
+      if ( !client )
+        return winston.debug( `No client with id ${senderClientId} found on this instance.` )
+      let roomIndex = client.rooms.indexOf( message.streamId )
+      if ( roomIndex !== -1 ) {
+        client.rooms.splice( roomIndex, 1 )
+        winston.debug( `Client with id ${senderClientId} left  ${message.streamId}.` )
+      }
+    }
   }
 }

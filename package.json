@@ -1,15 +1,15 @@
 {
   "name": "speckle.server",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "speckle streams backend server",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "local-dev": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='1' nodemon server.js ",
+    "local-dev": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='3' nodemon server.js ",
     "local-dev-inspect": "MONGO_URI='mongodb://localhost:27017/speckle_v3' REDIS_URL='redis://localhost:6379' MAX_PROC='1' nodemon --inspect server.js "
   },
-  "author": "Dimitrie A. Stefanescu @idid / UCL The Bartlett School of Architecture / InnoChain",
+  "author": "Dimitrie A. Stefanescu & Project Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
