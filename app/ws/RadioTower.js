@@ -17,7 +17,7 @@ module.exports = {
     this.subscriber.on( 'message', ( channel, message ) => {
       this.parseMessage( message )
         .then( parsedMessage => {
-          if( this.events.hasOwnProperty( parsedMessage.eventName ) ) 
+          if ( this.events.hasOwnProperty( parsedMessage.eventName ) )
             this.events[ parsedMessage.eventName ]( parsedMessage, message )
         } )
         .catch( err => {
@@ -26,6 +26,7 @@ module.exports = {
     } )
   },
 
+  // tries to parse gracefully
   parseMessage( message ) {
     return new Promise( ( resolve, reject ) => {
       let parsedMessage
@@ -50,20 +51,19 @@ module.exports = {
     }
   },
 
+  // holds all current top level ws events that speckle understands
+  // the actual message, event type, info & etc. should be in message.args
   events: {
     // sends a message to a ws with a specific session id 
     message( message, raw ) {
       winston.debug( `✉️ message to ${message.recipientId}, ${message.args}` )
-      if ( !wsSessionId )
-        return winston.error( 'No wsSessionId provided [RadioTower.send]' )
+      if ( !message.recipientId )
+        return winston.error( 'No recipientId provided.' )
 
       let recipient = ClientStore.clients.find( client => client.clientId === wsSessionId )
-      if ( !recipient ) {
-        if ( !stopRedisPropagation ) this.publisher.publish( 'ws-message', JSON.stringify( { sessionId: wsSessionId, message: message } ) )
-        return winston.error( 'No ws with that session id found [RadioTower.send]', wsSessionId )
-      }
+      return winston.error( `No ws with ${message.recipientId} found on pid ${process.pid}` )
 
-      recipient.send( JSON.stringify( message ) )
+      recipient.send( raw )
     },
 
     // broadcasts a message to a streamId 'chat room'
@@ -71,7 +71,7 @@ module.exports = {
       winston.debug( `📣 broadcast in ${message.streamId}, ${message.args}` )
 
       for ( let ws of ClientStore.clients ) {
-        if ( ws.clientId != message.senderId && ws.streamId === message.streamId )
+        if ( ws.clientId != message.senderId && ws.rooms.indexOf( message.streamId ) != -1 )
           ws.send( raw )
       }
     },
@@ -83,8 +83,7 @@ module.exports = {
       // Get streamId
       // if ws.userId == null check if stream is public
       // or just the user permission checker
-      winston.debug( 'RadioTower streamId', streamId, 'joined by', ws.clientId )
-      ws.streamId = streamId
+      winston.debug( ` ➕ join request for ${message.streamId} in ${process.pid}` )
     },
 
     // leaves a streamId "chat room"

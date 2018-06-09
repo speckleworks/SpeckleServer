@@ -27,12 +27,10 @@ module.exports = function( wss ) {
     let token = location.query.access_token
 
     ws.authorised = false
-    ws.clientId = location.query.client_id
-    ws.streamId = location.query.stream_id
-    
+    ws.clientId = location.query.client_id   
     ws.rooms = [ location.query.stream_id ]
     
-    winston.debug( chalk.bgRed( `WS` ) + `connection request in PID ${process.pid}` )
+    winston.debug( chalk.blue( `Ws connection request in PID ${process.pid}` ) )
 
     // authentication for ws sessions
     User.findOne( { apitoken: token } )
