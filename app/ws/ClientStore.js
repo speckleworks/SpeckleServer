@@ -18,11 +18,14 @@ module.exports = {
     ws.pinger = setInterval( ws => {
       if ( !ws.alive ) {
         ws.missedPingsCount++
-          if ( ws.missedPingsCount > 50 ) {
-            winston.error( chalk.red( 'Removing client socket, missed too many pings.' ) )
-            this.remove( ws )
-            return
-          }
+          if ( ws.missedPingsCount > 25 )
+            ws.send( 'Warning: you missed 25 pings. 50 missed pings will get you kicked.' )
+        if ( ws.missedPingsCount > 50 ) {
+          winston.error( chalk.red( 'Removing client socket, missed too many pings.' ) )
+          ws.send( 'You missed 50 pings. Bye!' )
+          this.remove( ws )
+          return
+        }
         ws.alive = false
       }
       ws.alive = false
@@ -31,7 +34,7 @@ module.exports = {
 
     // push to my amazing datastore
     this.clients.push( ws )
-    winston.debug( chalk.blue( `There are now ${this.clients.length} ws clients in ${process.pid}.` ) )
+    winston.debug( chalk.blue( `There are now ${this.clients.length} ws clients in ${process.pid}: ${this.clients.map( cl => cl.clientId)}` ) )
   },
 
   remove( ws ) {
@@ -41,5 +44,6 @@ module.exports = {
     this.clients.splice( this.clients.indexOf( ws ), 1 )
     ws.close( )
     winston.debug( chalk.bgRed( 'Socket removed', ws.clientId ) )
+    winston.debug( chalk.blue( `There are now ${this.clients.length} ws clients in ${process.pid}.` ) )
   }
 }

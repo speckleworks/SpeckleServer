@@ -12,8 +12,8 @@ const CONFIG = require( '../../config' )
 module.exports = function( wss ) {
 
   // start a redis subscriber in the radio tower
-  radioTower.initRedis()
-  
+  radioTower.initRedis( )
+
   // start a redis publisher 
   let redisPublisher = redis.createClient( CONFIG.redis.url )
 
@@ -22,15 +22,20 @@ module.exports = function( wss ) {
   } )
 
   wss.on( 'connection', function( ws, req ) {
+    winston.debug( chalk.blue( `Ws connection request in PID ${process.pid}` ) )
 
     let location = url.parse( req.url, true );
+    if ( !location.query.client_id ) {
+      winston.debug( chalk.red( `No client_id present, refusing.` ) )
+      ws.send('You must provide a client_id.')
+      ws.close()
+    }
     let token = location.query.access_token
 
     ws.authorised = false
-    ws.clientId = location.query.client_id   
+    ws.clientId = location.query.client_id
     ws.rooms = [ location.query.stream_id ]
-    
-    winston.debug( chalk.blue( `Ws connection request in PID ${process.pid}` ) )
+
 
     // authentication for ws sessions
     User.findOne( { apitoken: token } )
@@ -47,8 +52,7 @@ module.exports = function( wss ) {
       } )
 
     ws.on( 'message', message => {
-      // winston.debug( `Got a message from ws ${ws.clientId}, in PID ${process.pid}` )
-      
+
       // check if it's a hearbeat
       if ( message === 'alive' ) {
         ws.alive = true
@@ -57,7 +61,7 @@ module.exports = function( wss ) {
       }
 
       // pub to redis otherwise
-      redisPublisher.publish( 'speckle-message', message )
+      redisPublisher.publish( 'speckle-message', JSON.stringify( { content: message, clientId: ws.clientId } ) )
     } )
 
     ws.on( 'close', ( ) => {

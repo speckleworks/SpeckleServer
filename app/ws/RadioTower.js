@@ -1,10 +1,12 @@
-'use strict'
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const redis = require( 'redis' )
 
+const ClientStore = require( './ClientStore' )
+const PermissionCheck = require( '../api/v1/middleware/PermissionCheck' )
+const DataStream = require( '../../models/DataStream' )
+
 const CONFIG = require( '../../config' )
-var ClientStore = require( './ClientStore' )
 
 module.exports = {
   subscriber: null,
@@ -15,10 +17,12 @@ module.exports = {
     this.subscriber.subscribe( 'speckle-message' )
 
     this.subscriber.on( 'message', ( channel, message ) => {
-      this.parseMessage( message )
+      message = JSON.parse( message )
+      this.parseMessage( message.content )
         .then( parsedMessage => {
           if ( this.events.hasOwnProperty( parsedMessage.eventName ) )
-            this.events[ parsedMessage.eventName ]( parsedMessage, message )
+            // pass in  parsed message, raw (so we avoid a json stringify)  and the clientId of the publisher
+            this.events[ parsedMessage.eventName ]( parsedMessage, message.content, message.clientId )
         } )
         .catch( err => {
           winston.debug( err )
@@ -53,10 +57,15 @@ module.exports = {
 
   // holds all current top level ws events that speckle understands
   // the actual message, event type, info & etc. should be in message.args
+  // What's what:
+  // 1) message: sends direct messages between ws clients
+  // 2) broadcast: broadcasts a message to a room (as defined by a streamId)
+  // 3) join: client joins a new room (as defined by a streamId) if it has read permissions
+  // 4) leave: client leaves a room (as defined by a streamId)
   events: {
     // sends a message to a ws with a specific session id 
-    message( message, raw ) {
-      winston.debug( `✉️ message to ${message.recipientId}, ${message.args}` )
+    message( message, raw, senderClientId ) {
+      winston.debug( `✉️ message to ${message.recipientId} from ${senderClientId}, ${message.args}` )
       if ( !message.recipientId )
         return winston.error( 'No recipientId provided.' )
 
@@ -67,28 +76,49 @@ module.exports = {
     },
 
     // broadcasts a message to a streamId 'chat room'
-    broadcast( message, raw ) {
-      winston.debug( `📣 broadcast in ${message.streamId}, ${message.args}` )
+    broadcast( message, raw, senderClientId ) {
+      winston.debug( `📣 broadcast in ${message.streamId} from ${senderClientId}: ${message.args}` )
 
       for ( let ws of ClientStore.clients ) {
-        if ( ws.clientId != message.senderId && ws.rooms.indexOf( message.streamId ) != -1 )
+        if ( ws.clientId != senderClientId && ws.rooms.indexOf( message.streamId ) != -1 )
           ws.send( raw )
       }
     },
 
     // join a streamId "chat room"
-    join( message ) {
+    join( message, raw, senderClientId ) {
       // NEEDS AUTHENTICATION CHECK!
       // Flow: 
       // Get streamId
       // if ws.userId == null check if stream is public
       // or just the user permission checker
-      winston.debug( ` ➕ join request for ${message.streamId} in ${process.pid}` )
+      winston.debug( ` ➕ join request for ${message.streamId} from ${senderClientId} in ${process.pid}` )
+
+      let client = ClientStore.clients.find( cl => cl.clientId === senderClientId )
+      if ( !client )
+        return winston.debug( `No client with id ${senderClientId} found on this instance.` )
+      if ( !message.streamId )
+        return winston.debug( `No streamId present, will not join anything.` )
+
+      DataStream.findOne( { streamId: message.streamId }, 'private canRead canWrite owner' ).lean( )
+        .then( stream => PermissionCheck( { _id: client.user._id }, 'read', stream ) )
+        .then( res => {
+          winston.debug( `Client ws joined ${message.streamId}` )
+          if ( client.rooms.indexOf( message.streamId === -1 ) )
+            client.rooms.push( message.streamId )
+        } )
+        .catch( err => {
+          console.log( 'got an error on join' )
+          return winston.debug( `Error: ${err.toString()})` )
+        } )
     },
 
     // leaves a streamId "chat room"
-    leave( message ) {
+    leave( message, raw, senderClientId ) {
       // TODO
+      let client = ClientStore.clients.find( cl => cl.clientId === senderClientId )
+      if ( !client )
+        return winston.debug( `No client with id ${senderClientId} found on this instance.` )
     }
   }
 }
