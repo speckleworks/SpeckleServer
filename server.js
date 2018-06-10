@@ -87,7 +87,9 @@ if ( cluster.isMaster ) {
   app.use( '/admin', express.static( __dirname + '/node_modules/@speckle/speckle-admin' ) )
   // Viewer app
   app.use( '/view', express.static( __dirname + '/node_modules/@speckle/speckle-viewer' ) )
-
+  // Prop until we get to proper plugin system
+  app.use( '/', express.static( __dirname + '/node_modules/@speckle/speckle-admin' ) )
+  
   ////////////////////////////////////////////////////////////////////////
   /// Websockets & HTTP Servers                                     /////.
   ////////////////////////////////////////////////////////////////////////
