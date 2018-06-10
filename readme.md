@@ -1,4 +1,3 @@
-<a href="url"><img src="https://speckle.works/img/logos/2xlogo-white.png" align="left" height="128" ></a>
 # Speckle Server
 
 > This is the Speckle Server, which coordinates communications between the various SpeckleClients.
@@ -11,23 +10,24 @@ Speckle Server provides :
 - live update events
 - a basic querying mechanism
 
-## Deploy
+## 5 Minute Docker Install ™️ (with Digital Ocean)
 
-Prerequisites:  
-- A machine running [docker](https://www.docker.com/community-edition#download).
-- Have `git` installed too. 
+Head over to [Digital Ocean](https://www.digitalocean.com/) and create an account. Subsequently, create a new droplet (vm) via "One Click Apps" and select "Docker". Finally, `ssh` into your new virtual machine.
 
-Please note: the speckle server application is a clustered service that will spawn as many instances as you have CPU cores. 
+Execute the following commands:
 
-Steps: 
-1) Clone this repository and change your working path to this repository: 
-`git clone https://github.com/speckleworks/SpeckleServer.git` then `cd SpeckleServer`. 
+>1. Create a directory where the app will reside:
+>`mkdir speckle && cd speckle`
+>
+>2. Download the latest docker-compose file from the speckle server repo:
+>`curl https://raw.githubusercontent.com/speckleworks/SpeckleServer/master/docker-compose.yml … -o docker-compose.yml`
+>
+>3. Launch it! 
+>`docker-compose up`
 
-2) Run `docker-compose up -d`. This will take a bit of time at first. To stop the service, run `docker-compose down`.
+NOTE: You're not restricted to digital ocean. Any machine with docker should be ok.
 
-3) Visit your speckle server [http://localhost](http://localhost) or whatever the IP address of your VPS is.
-
-### Deploying to Heroku
+## Deploying to Heroku
 
     $ heroku create --stack cedar
     $ heroku addons:create mongolab:sandbox
@@ -35,7 +35,7 @@ Steps:
     $ git push heroku master
     $ heroku open
 
-### Deploying on Debian-based OSes (Ubuntu etc)
+## Deploying on Debian-based OSes (Ubuntu etc)
 
 1) Install mongodb, redis servers and npm: 
 
@@ -85,20 +85,13 @@ More detailed instructions coming soon. Simply spin off an instance of Redis & M
 ## API
 [API docs are here](https://speckleworks.github.io/SpeckleOpenApi/#introduction) - they are a good overview of what you can do with the speckle server.
 
-### Current limitations
-SpeckleServer currently imposes a default payload size limit for streams, they are as detailed below.
+## Current Limitations
 
-Single object payload restricted before deflation, but this can be adjusted. Current limit :
-- `2e6 bytes` : `2,000,000 bytes` or `2,000 KB` 
-
-Max total payload size is currently restricted at 
-- 1 payload of `50e6 bytes` : `50,000,000 bytes` or `50,000 KB` or `50 MB` or
-- 100 payloads of around `500KB` each
+- Because we rely on mongodb's wired tiger engine, objects larger than 16mb will cause trouble. Unfortunately, most of the defenses are on the client side. 
+- The api will refuse payloads larger than MAX_REQ, which defaults to 10mb.
 
 ## Credits
-Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) / [UCL The Bartlett](https://www.ucl.ac.uk/bartlett/) / [InnoChain](http://innochain.net) / [Jenca](http://www.jenca.org)
-
-This project has received funding from the European Union’s Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 642877.
+Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) and Project Contributors.
 
 ### License
 [MIT](https://github.com/speckleworks/SpeckleServer/blob/master/LICENSE)
