@@ -83,5 +83,5 @@ NOTE: You're not restricted to digital ocean. Any machine with docker should be 
 ## Credits
 Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) and Project Contributors.
 
-### License
+## License
 [MIT](https://github.com/speckleworks/SpeckleServer/blob/master/LICENSE)
