@@ -5,7 +5,6 @@ const uuid = require( 'uuid/v4' )
 const jwt = require( 'jsonwebtoken' )
 
 const User = require( '../../../../models/User' )
-const sessionSecret = require( '../../../../config' ).sessionSecret
 
 module.exports = function( req, res ) {
   winston.debug( 'register new user route' )
@@ -20,6 +19,8 @@ module.exports = function( req, res ) {
     surname: req.body.surname ? req.body.surname : '',
     apitoken: null
   } )
+  
+  let sessionSecret = process.env.SESSION_SECRET
 
   User.findOne( { 'email': req.body.email } )
     .then( user => {

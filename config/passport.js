@@ -6,13 +6,12 @@ var JwtStrategy = require( 'passport-jwt' ).Strategy
 var AnonymousStrategy = require( 'passport-anonymous' )
 var ExtractJwt = require( 'passport-jwt' ).ExtractJwt
 
-var sessionSecret = require( '../config' ).sessionSecret
 var User = require( '../models/User' )
 
 module.exports = function( passport ) {
   let strictOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme( 'JWT' ),
-    secretOrKey: sessionSecret
+    secretOrKey: process.env.SESSION_SECRET
   }
 
   // returns 401 Unautorized, protects sensitive routes

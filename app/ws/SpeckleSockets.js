@@ -7,7 +7,6 @@ const clientStore = require( './ClientStore' )
 const radioTower = require( './RadioTower' )
 
 const User = require( '../../models/User' )
-const CONFIG = require( '../../config' )
 
 module.exports = function( wss ) {
 
@@ -15,7 +14,7 @@ module.exports = function( wss ) {
   radioTower.initRedis( )
 
   // start a redis publisher 
-  let redisPublisher = redis.createClient( CONFIG.redis.url )
+  let redisPublisher = redis.createClient( process.env.REDIS_URL )
 
   redisPublisher.on( 'connect', ( ) => {
     winston.debug( `${process.pid} connected to redis.` )
