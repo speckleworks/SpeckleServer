@@ -2,8 +2,7 @@ const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const passport = require( 'passport' )
 
-var tokenCheck = require( './middleware/TokenCheck' )
-var serverDescription = require( '../../../config' ).serverDescription
+const tokenCheck = require( './middleware/TokenCheck' )
 
 module.exports = function( app, express, urlRoot ) {
   var r = new express.Router( )
@@ -102,7 +101,7 @@ module.exports = function( app, express, urlRoot ) {
 
   // update one properties xxx
   r.put( '/objects/:objectId/properties/', mandatoryAuthorisation, require( './objects/ObjectPutProperties' ) )
-  
+
   // delete one / perm check 'delete' xxx
   r.delete( '/objects/:objectId', mandatoryAuthorisation, require( './objects/ObjectDelete' ) )
 
@@ -110,25 +109,25 @@ module.exports = function( app, express, urlRoot ) {
   // 
   // COMMENTS
   // 
-  
+
   // get user's comments
   r.get( '/comments', mandatoryAuthorisation, require( './comments/CommentGetAll' ) )
-  
+
   // get user's assignedTo comments
   r.get( '/comments/assigned', mandatoryAuthorisation, require( './comments/CommentGetAssigned' ) )
-  
+
   // create a comment attached to a resource xxx
   r.post( '/comments/:resourceType/:resourceId', optionalAuthorisation, require( './comments/CommentPost' ) )
-  
+
   // get comments from  a resource xxx
   r.get( '/comments/:resourceType/:resourceId', optionalAuthorisation, require( './comments/CommentGetFromResource' ) )
-  
+
   // get comment by id
   r.get( '/comments/:commentId', optionalAuthorisation, require( './comments/CommentGet' ) )
-  
+
   // edit a comment xxx
   r.put( '/comments/:commentId', mandatoryAuthorisation, require( './comments/CommentPut' ) )
-  
+
   // delete a comment xxx
   r.delete( '/comments/:commentId', mandatoryAuthorisation, require( './comments/CommentDelete' ) )
 
@@ -164,7 +163,12 @@ module.exports = function( app, express, urlRoot ) {
     if ( middleware.route )
       routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase( ) ) + ': /api' + middleware.route.path )
   } )
-
+  
+  let serverDescription = {
+    serverName: process.env.SERVER_NAME,
+    maxRequestSize: process.env.REQ_SIZE
+  }
+  
   r.get( '/', ( req, res ) => {
     serverDescription.routes = routes
     serverDescription.version = '1.x.x'

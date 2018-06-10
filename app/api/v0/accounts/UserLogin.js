@@ -4,11 +4,12 @@ const chalk             = require('chalk')
 const jwt               = require('jsonwebtoken')
 
 const User              = require('../../../../models/User')
-const sessionSecret     = require('../../../../config').sessionSecret
 
 module.exports = function( req, res ) {
   if( !req.body.email ) return res.send( { success: false, message:'Do not fuck with us'} )
   if( !req.body.password ) return res.send( { success: false, message:'Do not fuck with us'} )
+
+  let sessionSecret = process.env.SESSION_SECRET
 
   User.findOne( { 'email': req.body.email.toLowerCase() } )
   .then( myUser => {

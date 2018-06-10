@@ -2,8 +2,7 @@ const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const passport = require( 'passport' )
 
-var tokenCheck = require( './middleware/TokenCheck' )
-var serverDescription = require( '../../../config' ).serverDescription
+const tokenCheck = require( './middleware/TokenCheck' )
 
 module.exports = function( app, express, urlRoot ) {
   var r = new express.Router( )
@@ -111,6 +110,11 @@ module.exports = function( app, express, urlRoot ) {
     if ( middleware.route )
       routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase( ) ) + ': /api' + middleware.route.path )
   } )
+
+  let serverDescription = {
+    serverName: process.env.SERVER_NAME,
+    maxRequestSize: process.env.REQ_SIZE
+  }
 
   r.get( '/', ( req, res ) => {
     serverDescription.routes = routes

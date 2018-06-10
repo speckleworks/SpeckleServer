@@ -6,14 +6,12 @@ const ClientStore = require( './ClientStore' )
 const PermissionCheck = require( '../api/v1/middleware/PermissionCheck' )
 const DataStream = require( '../../models/DataStream' )
 
-const CONFIG = require( '../../config' )
-
 module.exports = {
   subscriber: null,
 
   initRedis( ) {
     winston.debug( chalk.magenta( 'Initialising redis in radio tower.' ) )
-    this.subscriber = redis.createClient( CONFIG.redis.url )
+    this.subscriber = redis.createClient( process.env.REDIS_URL )
     this.subscriber.subscribe( 'speckle-message' )
 
     this.subscriber.on( 'message', ( channel, message ) => {

@@ -1,7 +1,6 @@
 const cluster = require( 'cluster' )
 const express = require( 'express' )
 const cors = require( 'cors' )
-const cookieParser = require( 'cookie-parser' )
 const bodyParser = require( 'body-parser' )
 const passport = require( 'passport' )
 const chalk = require( 'chalk' )
@@ -9,10 +8,17 @@ const winston = require( 'winston' )
 const expressWinston = require( 'express-winston' )
 const mongoose = require( 'mongoose' ).set( 'debug', false )
 
-const CONFIG = require( './config' )
 winston.level = 'debug'
 
 if ( cluster.isMaster ) {
+
+  const configResult = require( 'dotenv' ).config( )
+  if ( configResult.error ) {
+    winston.debug( 'There is an error in the .env configuration file.' )
+    winston.debug( configResult.error )
+    return
+  }
+
   let osCpus = require( 'os' ).cpus( ).length
   let envCpus = process.env.MAX_PROC
   let numWorkers = envCpus ? ( envCpus > osCpus ? osCpus : envCpus ) : osCpus
@@ -25,7 +31,7 @@ if ( cluster.isMaster ) {
   cluster.on( 'online', worker => {
     winston.debug( `Speckle worker ${worker.process.pid} is now online.` )
   } )
-  
+
   cluster.on( 'exit', ( worker, code, signal ) => {
     winston.debug( `Speckle worker ${worker.process.pid} just died with code ${code} and signal ${signal}.` )
     winston.debug( `Starting a new one...` )
@@ -36,13 +42,13 @@ if ( cluster.isMaster ) {
   /// Mongo handlers                                                /////.
   ////////////////////////////////////////////////////////////////////////
   mongoose.Promise = global.Promise
-  mongoose.connect( CONFIG.mongo.url, { auto_reconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
+  mongoose.connect( process.env.MONGODB_URI, { auto_reconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
     if ( err ) throw err
-    else winston.debug( 'connected to mongoose at ' + CONFIG.mongo.url )
+    else winston.debug( 'connected to mongoose at ' + process.env.MONGODB_URI )
   } )
 
   mongoose.connection.on( 'error', err => {
-    winston.debug( 'Failed to connect to DB ' + CONFIG.mongo + ' on startup ', err )
+    winston.debug( 'Failed to connect to DB ' + process.env.MONGODB_URI + ' on startup ', err )
   } );
 
   // When the connection is disconnected
@@ -66,15 +72,13 @@ if ( cluster.isMaster ) {
     msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} '
   } ) )
 
-  app.use( cookieParser( ) )
-
-  // throws a 413 if over 10mb (deflated)
-  app.use( bodyParser.json( { limit: CONFIG.serverDescription.maxRequestSize } ) )
+  // throws a 413 if over REQ_SIZE
+  app.use( bodyParser.json( { limit: process.env.REQ_SIZE } ) )
   app.use( bodyParser.urlencoded( { extended: true } ) )
 
   app.use( passport.initialize( ) )
 
-  if ( CONFIG.serverDescription.indentResponses )
+  if ( process.env.INDENT_RESPONSES )
     app.set( 'json spaces', 2 )
 
   require( './config/passport' )( passport )
@@ -82,8 +86,8 @@ if ( cluster.isMaster ) {
   // Admin app
   app.use( '/admin', express.static( __dirname + '/node_modules/@speckle/speckle-admin' ) )
   // Viewer app
-  app.use( '/view',  express.static( __dirname + '/node_modules/@speckle/speckle-viewer' ) )
-  
+  app.use( '/view', express.static( __dirname + '/node_modules/@speckle/speckle-viewer' ) )
+
   ////////////////////////////////////////////////////////////////////////
   /// Websockets & HTTP Servers                                     /////.
   ////////////////////////////////////////////////////////////////////////
@@ -111,6 +115,6 @@ if ( cluster.isMaster ) {
 
   var port = process.env.PORT || 3000
   server.listen( port, ( ) => {
-    winston.info( `Speckle worker process now running on port ${port}.` )
+    winston.debug( chalk.yellow( `Speckle worker process ${process.pid} now running on port ${port}.` ) )
   } )
 }
