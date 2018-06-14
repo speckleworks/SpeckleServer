@@ -67,7 +67,7 @@ module.exports = {
       if ( !message.recipientId )
         return winston.error( 'No recipientId provided.' )
 
-      let recipient = ClientStore.clients.find( client => client.clientId === wsSessionId )
+      let recipient = ClientStore.clients.find( client => client.clientId === message.recipientId )
       return winston.error( `No ws with ${message.recipientId} found on pid ${process.pid}` )
 
       recipient.send( raw )
