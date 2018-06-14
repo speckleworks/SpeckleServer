@@ -68,7 +68,8 @@ module.exports = {
         return winston.error( 'No recipientId provided.' )
 
       let recipient = ClientStore.clients.find( client => client.clientId === message.recipientId )
-      return winston.error( `No ws with ${message.recipientId} found on pid ${process.pid}` )
+      if ( !recipient )
+        return winston.error( `No ws with ${message.recipientId} found on pid ${process.pid}` )
 
       recipient.send( raw )
     },
@@ -99,8 +100,8 @@ module.exports = {
           winston.debug( `Client ws joined ${message.streamId}` )
           if ( client.rooms.indexOf( message.streamId ) === -1 )
             client.rooms.push( message.streamId )
-          else 
-            client.send('You already joined that room.')
+          else
+            client.send( 'You already joined that room.' )
         } )
         .catch( err => {
           console.log( 'got an error on join' )
