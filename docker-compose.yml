@@ -16,8 +16,7 @@ services:
       - INDENT_RESPONSES=true
       # If connecting to your own databses, uncomment & fill in the details!
       # - MONGO_URI=
-      # - REDIS_PORT=
-      # - REDIS_ADDR=
+      # - REDIS_URL=
     links:
       - redis
       - mongo
