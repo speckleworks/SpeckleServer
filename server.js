@@ -14,9 +14,7 @@ if ( cluster.isMaster ) {
 
   const configResult = require( 'dotenv' ).config( )
   if ( configResult.error ) {
-    winston.debug( 'There is an error in the .env configuration file.' )
-    winston.debug( configResult.error )
-    return
+    winston.debug( chalk.red( 'There is an error in the .env configuration file. Will use the default provided ones (if any).' ) )
   }
 
   let osCpus = require( 'os' ).cpus( ).length
