@@ -2,7 +2,8 @@ version: '3'
 services:
   # SPECKLE
   speckle:
-    image: speckle/speckleserver:latest
+    # image: speckle/speckleserver:latest
+    build: .
     ports:
       - '3000:3000'
     networks: 
@@ -13,14 +14,14 @@ services:
     environment: 
       # Change the variable underneath as it will help users differentiate 
       # between multiple accounts.
-      - SPECKLE_NAME="Docker Speckle Server"
+      - SPECKLE_NAME=Docker Speckle Server
       # This is used in the encryption of the api access tokens. 
       # Please change it to something random! 
-      - SESSION_SECRET="helloworld"
+      - SESSION_SECRET=helloworld
       - REQ_SIZE=16mb
       - INDENT_RESPONSES=false
-      - MONGO_URI="mongodb://mongo:27017/speckle"
-      - REDIS_URL="redis://redis:6379"
+      - MONGO_URI=mongodb://mongo:27017/speckle_docker
+      - REDIS_URL=redis://redis:6379
     links:
       - redis
       - mongo
