@@ -12,11 +12,9 @@ winston.level = 'debug'
 
 if ( cluster.isMaster ) {
 
-  const configResult = require( 'dotenv' ).config( )
+  const configResult = require( 'dotenv' ).config( { path: './.env' } )
   if ( configResult.error ) {
-    winston.debug( 'There is an error in the .env configuration file.' )
-    winston.debug( configResult.error )
-    return
+    winston.debug( chalk.bgRed( 'There is an error in the .env configuration file. Will use the default provided ones (if any).' ) )
   }
 
   let osCpus = require( 'os' ).cpus( ).length
@@ -42,6 +40,7 @@ if ( cluster.isMaster ) {
   /// Mongo handlers                                                /////.
   ////////////////////////////////////////////////////////////////////////
   mongoose.Promise = global.Promise
+
   mongoose.connect( process.env.MONGODB_URI, { auto_reconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
     if ( err ) throw err
     else winston.debug( 'connected to mongoose at ' + process.env.MONGODB_URI )

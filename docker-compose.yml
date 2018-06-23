@@ -11,12 +11,16 @@ services:
       - redis
       - mongo
     environment: 
-      - SPECKLE_NAME=My Speckle Server
+      # Change the variable underneath as it will help users differentiate 
+      # between multiple accounts.
+      - SPECKLE_NAME=Docker Speckle Server
+      # This is used in the encryption of the api access tokens. 
+      # Please change it to something random! 
+      - SESSION_SECRET=helloworld
       - REQ_SIZE=16mb
-      - INDENT_RESPONSES=true
-      # If connecting to your own databses, uncomment & fill in the details!
-      # - MONGO_URI=
-      # - REDIS_URL=
+      - INDENT_RESPONSES=false
+      - MONGODB_URI=mongodb://mongo:27017/speckle_docker
+      - REDIS_URL=redis://redis:6379
     links:
       - redis
       - mongo
