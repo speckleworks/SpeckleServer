@@ -20,7 +20,7 @@ services:
       - SESSION_SECRET=helloworld
       - REQ_SIZE=16mb
       - INDENT_RESPONSES=false
-      - MONGO_URI=mongodb://mongo:27017/speckle_docker
+      - MONGODB_URI=mongodb://mongo:27017/speckle_docker
       - REDIS_URL=redis://redis:6379
     links:
       - redis

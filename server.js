@@ -40,6 +40,7 @@ if ( cluster.isMaster ) {
   /// Mongo handlers                                                /////.
   ////////////////////////////////////////////////////////////////////////
   mongoose.Promise = global.Promise
+
   mongoose.connect( process.env.MONGODB_URI, { auto_reconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
     if ( err ) throw err
     else winston.debug( 'connected to mongoose at ' + process.env.MONGODB_URI )
