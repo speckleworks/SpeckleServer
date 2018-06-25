@@ -25,7 +25,7 @@ Execute the following commands:
 
 ![screenshot](https://user-images.githubusercontent.com/7696515/41862603-4972fcc0-789c-11e8-8a79-268280376a1a.png)
 
-*Note(: You're not restricted to digital ocean. Any machine with docker should be ok.
+Note: You're not restricted to digital ocean. Any machine with docker should be ok.
 
 ## Deploying to Heroku
 
