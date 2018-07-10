@@ -9,7 +9,7 @@ module.exports = function( req, res ) {
     res.status( 400 )
     res.send( { success: false, message: "Malformed request." } )
   }
-  User.findOne( { _id: req.params.userId }, '_id name surname email company' )
+  User.findOne( { _id: req.params.userId }, '_id name surname company' )
     .then( user => {
       if ( !user ) throw new Error( 'no users found.' )
       res.send( { success: true, resource: user } )
