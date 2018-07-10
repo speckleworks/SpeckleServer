@@ -4,16 +4,16 @@ const chalk = require( 'chalk' )
 
 const User = require( '../../../../models/User' )
 
+// from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+const escapeRegExp = ( string ) => string.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ) // $& means the whole matched string
+
 module.exports = function( req, res ) {
-  if ( !req.body.email ) {
-    res.status( 400 )
-    return res.send( { success: false, message: "Malformed request." } )
-  }
-  if ( req.body.email.length < 2 ) {
-    res.status( 400 )
-    return res.send( { success: false, message: "Please provide more than two letters." } )
-  }
-  User.find( { email: { "$regex": req.body.email, "$options": "i" } }, '_id name surname company' ).limit( 5 )
+  let conditions = {}
+  if ( req.body.name ) conditions.name = { '$regex': escapeRegExp( req.body.name ), '$options': 'i' }
+  if ( req.body.surname ) conditions.surname = { '$regex': escapeRegExp( req.body.surname ), '$options': 'i' }
+  if ( req.body.company ) conditions.company = { '$regex': escapeRegExp( req.body.company ), '$options': 'i' }
+
+  User.find( conditions, '_id name surname company' ).limit( 5 )
     .then( myUsers => {
       if ( !myUsers ) throw new Error( 'no users found.' )
       myUsers.forEach( usr => usr.email = ' ' ) // backwards compat with admin app
