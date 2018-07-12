@@ -9,7 +9,10 @@ module.exports = function( req, res ) {
     res.status( 400 )
     res.send( { success: false, message: "Malformed request." } )
   }
-  User.findOne( { _id: req.params.userId }, '_id name surname company' )
+
+  let projection = '_id name surname company' + ( req.app.get( 'expose emails' ) ? ' email' : '' )
+
+  User.findOne( { _id: req.params.userId }, projection )
     .then( user => {
       if ( !user ) throw new Error( 'no users found.' )
       res.send( { success: true, resource: user } )

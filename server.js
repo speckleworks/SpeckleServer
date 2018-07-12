@@ -80,6 +80,9 @@ if ( cluster.isMaster ) {
   if ( process.env.INDENT_RESPONSES === 'true' )
     app.set( 'json spaces', 2 )
 
+  if ( process.env.EXPOSE_EMAILS === 'true' )
+    app.enable( 'expose emails' )
+
   require( './config/passport' )( passport )
 
   // Admin app

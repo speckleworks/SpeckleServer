@@ -13,10 +13,12 @@ module.exports = function( req, res ) {
   if ( req.body.surname ) conditions.surname = { '$regex': escapeRegExp( req.body.surname ), '$options': 'i' }
   if ( req.body.company ) conditions.company = { '$regex': escapeRegExp( req.body.company ), '$options': 'i' }
 
-  User.find( conditions, '_id name surname company' ).limit( 5 )
+  let projection = '_id name surname company' + ( req.app.get( 'expose emails' ) ? ' email' : '' )
+
+  User.find( conditions, projection ).limit( 5 )
     .then( myUsers => {
       if ( !myUsers ) throw new Error( 'no users found.' )
-      myUsers.forEach( usr => usr.email = ' ' ) // backwards compat with admin app
+      myUsers.forEach( usr => usr.email = usr.email || ' ' ) // backwards compat with admin app
       res.send( { success: true, resources: myUsers } )
     } )
     .catch( err => {

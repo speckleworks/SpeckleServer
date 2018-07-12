@@ -21,6 +21,7 @@ services:
       - INDENT_RESPONSES=false
       - MONGODB_URI=mongodb://mongo:27017/speckle_docker
       - REDIS_URL=redis://redis:6379
+      - EXPOSE_EMAILS=false
     links:
       - redis
       - mongo
