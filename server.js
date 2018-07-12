@@ -77,7 +77,7 @@ if ( cluster.isMaster ) {
 
   app.use( passport.initialize( ) )
 
-  if ( process.env.INDENT_RESPONSES )
+  if ( process.env.INDENT_RESPONSES === 'true' )
     app.set( 'json spaces', 2 )
 
   require( './config/passport' )( passport )
