@@ -18,7 +18,6 @@ module.exports = function( req, res ) {
   User.find( conditions, projection ).limit( 5 )
     .then( myUsers => {
       if ( !myUsers ) throw new Error( 'no users found.' )
-      myUsers.forEach( usr => usr.email = usr.email || ' ' ) // backwards compat with admin app
       res.send( { success: true, resources: myUsers } )
     } )
     .catch( err => {
