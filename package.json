@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "eslint": "eslint ."
   },
   "author": "Dimitrie Stefanescu & Project Contributors",
   "license": "MIT",
@@ -36,5 +37,8 @@
     "uuid": "^3.2.1",
     "winston": "^2.3.0",
     "ws": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.1.0"
   }
 }
