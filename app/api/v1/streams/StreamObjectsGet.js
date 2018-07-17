@@ -1,7 +1,5 @@
 'use strict'
 const winston = require( 'winston' )
-const passport = require( 'passport' )
-const chalk = require( 'chalk' )
 const q2m = require( 'query-to-mongo' )
 
 const DataStream = require( '../../../../models/DataStream' )

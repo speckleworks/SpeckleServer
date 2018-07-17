@@ -1,5 +1,4 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 
 const User = require( '../../../../models/User' )
 

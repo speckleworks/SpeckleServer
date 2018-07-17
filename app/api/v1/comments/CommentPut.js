@@ -1,5 +1,4 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 
 const Comment = require( '../../../../models/Comment' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
@@ -14,7 +13,7 @@ module.exports = function( req, res ) {
   Comment.findOne( { _id: req.params.commentId } )
     .then( resource => PermissionCheck( req.user, 'write', resource, Object.keys( req.body ) ) )
     .then( resource => resource.set( req.body ).save() )
-    .then( result => {
+    .then( ( ) => {
       return res.send( { success: true, message: 'Comment edited', fields: Object.keys( req.body ) } )
     } )
     .catch( err => {

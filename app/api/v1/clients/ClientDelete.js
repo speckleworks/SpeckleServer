@@ -1,6 +1,5 @@
 'use strict'
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 
 const Client = require( '../../../../models/UserAppClient' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
@@ -16,7 +15,7 @@ module.exports = ( req, res ) => {
     .then( client => {
       return client.remove( )
     } )
-    .then( result => {
+    .then( ( ) => {
       return res.send( { success: true, message: 'Client was deleted! Bye bye data.' } )
     } )
     .catch( err => {

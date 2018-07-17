@@ -1,9 +1,7 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 const shortId = require( 'shortid' )
 
 const DataStream = require( '../../../../models/DataStream' )
-const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const BulkObjectSave = require( '../middleware/BulkObjectSave' )
 
 module.exports = ( req, res ) => {

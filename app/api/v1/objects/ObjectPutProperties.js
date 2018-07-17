@@ -1,5 +1,4 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 const _ = require( 'lodash' )
 
 const SpeckleObject = require( '../../../../models/SpeckleObject' )
@@ -17,7 +16,7 @@ module.exports = ( req, res ) => {
       result.markModified( 'properties' )
       result.save( )
     } )
-    .then( result => {
+    .then( ( ) => {
       res.send( { success: true, message: 'Object properties updated.' } )
     } )
     .catch( err => {

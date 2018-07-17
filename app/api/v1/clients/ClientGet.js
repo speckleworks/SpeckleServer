@@ -1,5 +1,4 @@
 const winston           = require('winston')
-const chalk             = require('chalk')
 
 const Client            = require( '../../../../models/UserAppClient')
 const PermissionCheck = require( '../middleware/PermissionCheck' )
@@ -9,7 +8,7 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.'} )
   }
-  Client.findOne( { _id: req.params.clientId } ) 
+  Client.findOne( { _id: req.params.clientId } )
   .then( result => PermissionCheck( req.user, 'read', result ) )
   .then( result => {
     if( !result ) throw new Error( 'No client found.' )

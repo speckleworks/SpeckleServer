@@ -1,6 +1,5 @@
 'use strict'
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 
 const User = require( '../../../../models/User' )
 
@@ -19,7 +18,7 @@ module.exports = function( req, res ) {
       user.markModified( 'email' )
       return user.save( )
     } )
-    .then( result => {
+    .then( ( ) => {
       res.send( { success: true, message: 'User profile updated.' } )
     } )
     .catch( err => {

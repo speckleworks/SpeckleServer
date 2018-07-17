@@ -1,5 +1,4 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 const Client = require( '../../../../models/UserAppClient' )
 
 module.exports = ( req, res ) => {
@@ -9,10 +8,10 @@ module.exports = ( req, res ) => {
   }
 
   let myClient = new Client( req.body )
-  
+
   if ( !req.user )
     return res.send( { success: true, message: 'Anonymous client created.', resource: { _id: 'temp-' + myClient._id } } )
-  else 
+  else
     myClient.owner = req.user._id
 
     myClient.save( )

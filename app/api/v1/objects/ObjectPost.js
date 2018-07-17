@@ -1,8 +1,5 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
-const _ = require( 'lodash' )
 
-const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const BulkObjectSave = require( '../middleware/BulkObjectSave' )
 
 module.exports = ( req, res ) => {

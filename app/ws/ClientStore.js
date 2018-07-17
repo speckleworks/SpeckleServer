@@ -2,15 +2,13 @@
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 
-const crypto = require( 'crypto' )
-
-// this is where we keep track on each process what clients are connected. 
+// this is where we keep track on each process what clients are connected.
 module.exports = {
   clients: [ ],
 
   // adds a ws to the local store, and initialises a heartbeat pinger
   add( ws ) {
-    // setup vars 
+    // setup vars
     ws.alive = true
     ws.missedPingsCount = 0
 

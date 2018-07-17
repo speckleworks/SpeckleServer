@@ -1,8 +1,6 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 
 const Project = require( '../../../../models/Project' )
-const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
 

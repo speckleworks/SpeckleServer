@@ -1,6 +1,5 @@
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
-const mongoose = require( 'mongoose' )
 
 const DataStream = require( '../../../../models/DataStream' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
@@ -27,7 +26,7 @@ module.exports = ( req, res ) => {
       if ( req.body.objects ) stream.objects = result.map( obj => obj._id )
       return stream.save( )
     } )
-    .then( result => {
+    .then( ( ) => {
       res.send( { success: true, message: 'Patched stream fields: ' + Object.keys( req.body ) } )
     } )
     .catch( err => {
