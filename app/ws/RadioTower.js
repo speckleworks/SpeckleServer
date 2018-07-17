@@ -61,7 +61,7 @@ module.exports = {
   // 3) join: client joins a new room (as defined by a streamId) if it has read permissions
   // 4) leave: client leaves a room (as defined by a streamId)
   events: {
-    // sends a message to a ws with a specific session id 
+    // sends a message to a ws with a specific session id
     message( message, raw, senderClientId ) {
       winston.debug( `✉️ message to ${message.recipientId} from ${senderClientId}, ${message.args}` )
       if ( !message.recipientId )
@@ -96,7 +96,7 @@ module.exports = {
 
       DataStream.findOne( { streamId: message.streamId }, 'private canRead canWrite owner' ).lean( )
         .then( stream => PermissionCheck( { _id: client.user._id }, 'read', stream ) )
-        .then( res => {
+        .then( ( ) => {
           winston.debug( `Client ws joined ${message.streamId}` )
           if ( client.rooms.indexOf( message.streamId ) === -1 )
             client.rooms.push( message.streamId )

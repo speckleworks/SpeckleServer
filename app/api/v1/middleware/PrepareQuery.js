@@ -1,5 +1,3 @@
-const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 const q2m = require( 'query-to-mongo' )
 
 /*
@@ -10,15 +8,13 @@ let enforcedFields = [ 'type', 'private', 'canRead', 'canWrite', 'owner' ]
 
 module.exports = ( q ) => {
   let query = q2m( q )
-  let isHacker = false;
   if ( query.options.fields ) {
-    if ( q.omit === undefined ) {
+    if ( q.omit === undefined ) { // TODO: check this makes sense - should it be query.options.omit?
       enforcedFields.forEach( field => query.options.fields[ field ] = 1 )
       return query
     }
     enforcedFields.forEach( field => {
       if ( query.options.fields[ field ] != undefined ) {
-        isHacker = true
         delete query.options.fields[ field ]
       }
     } )

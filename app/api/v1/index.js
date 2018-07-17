@@ -1,8 +1,4 @@
-const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 const passport = require( 'passport' )
-
-const tokenCheck = require( './middleware/TokenCheck' )
 
 module.exports = function( app, express, urlRoot ) {
   var r = new express.Router( )
@@ -14,7 +10,7 @@ module.exports = function( app, express, urlRoot ) {
 
   //
   // ACCOUNTS & USERS
-  // 
+  //
 
   // create a new account xxx
   r.post( '/accounts/register', require( './accounts/UserCreate' ) )
@@ -25,7 +21,7 @@ module.exports = function( app, express, urlRoot ) {
   // get profile xxx
   r.get( '/accounts', mandatoryAuthorisation, require( './accounts/UserGet' ) )
 
-  // update profile xxx 
+  // update profile xxx
   r.put( '/accounts', mandatoryAuthorisation, require( './accounts/UserPut' ) )
 
   // get other user's display profile xxx
@@ -35,9 +31,9 @@ module.exports = function( app, express, urlRoot ) {
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
 
 
-  // 
+  //
   // CLIENTS
-  // 
+  //
 
   // create a new client xxx
   r.post( '/clients', optionalAuthorisation, require( './clients/ClientPost' ) )
@@ -54,9 +50,9 @@ module.exports = function( app, express, urlRoot ) {
   // delete a client / perm check 'delete' xxx
   r.delete( '/clients/:clientId', mandatoryAuthorisation, require( './clients/ClientDelete' ) )
 
-  // 
-  // STREAMS 
-  // 
+  //
+  // STREAMS
+  //
 
   // create a new stream xxx
   r.post( '/streams', mandatoryAuthorisation, require( './streams/StreamPost' ) )
@@ -84,8 +80,8 @@ module.exports = function( app, express, urlRoot ) {
 
 
   //
-  // OBJECTS 
-  // 
+  // OBJECTS
+  //
 
   // Create an object or more!
   r.post( '/objects', mandatoryAuthorisation, require( './objects/ObjectPost' ) )
@@ -106,9 +102,9 @@ module.exports = function( app, express, urlRoot ) {
   r.delete( '/objects/:objectId', mandatoryAuthorisation, require( './objects/ObjectDelete' ) )
 
 
-  // 
+  //
   // COMMENTS
-  // 
+  //
 
   // get user's comments
   r.get( '/comments', mandatoryAuthorisation, require( './comments/CommentGetAll' ) )
@@ -132,9 +128,9 @@ module.exports = function( app, express, urlRoot ) {
   r.delete( '/comments/:commentId', mandatoryAuthorisation, require( './comments/CommentDelete' ) )
 
 
-  // 
-  // PROJECTS 
-  // 
+  //
+  // PROJECTS
+  //
 
   // create a project  xxx
   r.post( '/projects', mandatoryAuthorisation, require( './projects/ProjectPost' ) )
@@ -158,17 +154,16 @@ module.exports = function( app, express, urlRoot ) {
 
   // generate routes doc
   let routes = [ ]
-  let count = 1
   r.stack.forEach( ( middleware ) => {
     if ( middleware.route )
       routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase( ) ) + ': /api' + middleware.route.path )
   } )
-  
+
   let serverDescription = {
     serverName: process.env.SERVER_NAME,
     maxRequestSize: process.env.REQ_SIZE
   }
-  
+
   r.get( '/', ( req, res ) => {
     serverDescription.routes = routes
     serverDescription.version = '1.x.x'

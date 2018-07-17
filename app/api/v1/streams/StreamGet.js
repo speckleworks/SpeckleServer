@@ -1,5 +1,4 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 const uuid = require( 'uuid/v4' )
 
 const DataStream = require( '../../../../models/DataStream' )

@@ -55,7 +55,7 @@ if ( cluster.isMaster ) {
     winston.debug( 'Mongoose default was disconnected' )
   } );
 
-  mongoose.connection.on( 'connected', ref => {
+  mongoose.connection.on( 'connected', ( ) => {
     winston.debug( chalk.red( 'Connected to mongo.' ) )
   } )
 
@@ -91,7 +91,7 @@ if ( cluster.isMaster ) {
   app.use( '/view', express.static( __dirname + '/node_modules/@speckle/speckle-viewer' ) )
   // Prop until we get to proper plugin system
   app.use( '/', express.static( __dirname + '/node_modules/@speckle/speckle-admin' ) )
-  
+
   ////////////////////////////////////////////////////////////////////////
   /// Websockets & HTTP Servers                                     /////.
   ////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,7 @@ module.exports = function( wss ) {
   // start a redis subscriber in the radio tower
   radioTower.initRedis( )
 
-  // start a redis publisher 
+  // start a redis publisher
   let redisPublisher = redis.createClient( process.env.REDIS_URL )
 
   redisPublisher.on( 'connect', ( ) => {
@@ -45,7 +45,7 @@ module.exports = function( wss ) {
         ws.user = user
         clientStore.add( ws )
       } )
-      .catch( err => {
+      .catch( ( ) => {
         winston.debug( 'Socket connection is not auhtorised, will add him as an anonymous client.' )
         clientStore.add( ws )
       } )

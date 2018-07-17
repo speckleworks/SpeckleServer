@@ -1,10 +1,6 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 
 const Comment = require( '../../../../models/Comment' )
-const DataStream = require( '../../../../models/DataStream' )
-const SpeckleObject = require( '../../../../models/SpeckleObject' )
-const Project = require( '../../../../models/Project' )
 
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 const GetResource = require( '../middleware/GetResourceByType' )

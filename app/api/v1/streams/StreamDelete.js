@@ -1,10 +1,7 @@
 'use strict'
 const winston = require( 'winston' )
-const passport = require( 'passport' )
-const chalk = require( 'chalk' )
 
 const DataStream = require( '../../../../models/DataStream' )
-const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
@@ -18,7 +15,7 @@ module.exports = ( req, res ) => {
     .then( stream => {
       return stream.remove( )
     } )
-    .then( result => {
+    .then( ( ) => {
       return res.send( { success: true, message: 'Stream was deleted! Bye bye data.' } )
     } )
     .catch( err => {

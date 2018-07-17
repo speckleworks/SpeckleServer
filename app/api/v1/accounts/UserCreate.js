@@ -1,5 +1,4 @@
 const winston = require( 'winston' )
-const chalk = require( 'chalk' )
 const jwt = require( 'jsonwebtoken' )
 
 const User = require( '../../../../models/User' )
@@ -17,7 +16,7 @@ module.exports = function( req, res ) {
     surname: req.body.surname ? req.body.surname : '',
     apitoken: null
   } )
-  
+
   let sessionSecret = process.env.SESSION_SECRET
 
   User.findOne( { 'email': req.body.email } )
