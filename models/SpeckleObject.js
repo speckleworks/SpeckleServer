@@ -24,13 +24,13 @@ var speckleObjectSchema = mongoose.Schema( {
   // Geometry hash
   geometryHash: { type: String, default: null, index: true },
 
-  // Object hash (= GeometryHash + Properties) 
-  hash: { type: String, default: null, required: true, index: true, required: true },
+  // Object hash (= GeometryHash + Properties)
+  hash: { type: String, default: null, required: true, index: true },
 
   // Application's object id, whatever form it takes
   applicationId: { type: String, default: null },
 
-  // All the extra properties 
+  // All the extra properties
   properties: { type: Object, default: null },
 
   // Flag for deletion
