@@ -22,7 +22,6 @@ if ( cluster.isMaster ) {
   let numWorkers = envCpus ? ( envCpus > osCpus ? osCpus : envCpus ) : osCpus
   winston.debug( `Setting up ${numWorkers} workers.` )
 
-
   for ( let i = 0; i < numWorkers; i++ )
     cluster.fork( )
 

@@ -147,7 +147,6 @@ module.exports = function( app, express, urlRoot ) {
   // crushkilldestroy a project xxx
   r.delete( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectDelete' ) )
 
-
   //
   // FINAL ROUTES & MOUNT
   //
