@@ -104,7 +104,7 @@ module.exports = {
             client.send( 'You already joined that room.' )
         } )
         .catch( err => {
-          console.log( 'got an error on join' )
+          winston.error( 'got an error on join' )
           return winston.debug( `Error: ${err.toString()})` )
         } )
     },

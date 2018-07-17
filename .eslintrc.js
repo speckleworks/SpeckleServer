@@ -9,7 +9,6 @@ module.exports = {
     "sourceType": "module"
   },
   "rules": {
-    "no-console": "off",
     "no-dupe-keys": "off"
   }
 };
