@@ -1,7 +1,7 @@
 'use strict'
-const winston           = require( 'winston' )
+const winston = require( 'winston' )
 
-const SpeckleObject     = require( '../../../../models/SpeckleObject' )
+const SpeckleObject = require( '../../../../models/SpeckleObject' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {

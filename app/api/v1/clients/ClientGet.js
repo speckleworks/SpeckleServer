@@ -1,6 +1,6 @@
-const winston           = require( 'winston' )
+const winston = require( 'winston' )
 
-const Client            = require( '../../../../models/UserAppClient' )
+const Client = require( '../../../../models/UserAppClient' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {

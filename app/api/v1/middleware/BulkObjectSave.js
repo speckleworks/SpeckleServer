@@ -15,9 +15,9 @@ module.exports = ( objects, user ) => {
     if ( objects.length === 0 )
       return resolve( objects )
 
-    let notPlaceholders = objects.filter( obj => obj.type != 'Placeholder'  )
+    let notPlaceholders = objects.filter( obj => obj.type != 'Placeholder' )
     if ( notPlaceholders.length === 0 )
-      return resolve(  objects )
+      return resolve( objects )
 
     SpeckleObject.find( { hash: { $in: objects.map( obj => obj.hash ) } }, '_id hash' )
       .then( existingObjects => {

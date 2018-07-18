@@ -1,8 +1,8 @@
 'use strict'
-const winston     = require( 'winston' )
-const chalk       = require( 'chalk' )
-const url         = require( 'url' )
-const User        = require( '../../../models/User' )
+const winston = require( 'winston' )
+const chalk = require( 'chalk' )
+const url = require( 'url' )
+const User = require( '../../../models/User' )
 
 module.exports = function( info, cb ) {
   let location = url.parse( info.req.url, true );

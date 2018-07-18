@@ -12,7 +12,7 @@ module.exports = function( req, res ) {
   Comment.findOne( { _id: req.params.commentId } )
     .then( resource => PermissionCheck( req.user, 'delete', resource ) )
     .then( resource => resource.remove() )
-    .then( ( ) => {
+    .then( () => {
       res.send( { success: true, message: 'Comment deleted.' } )
     } )
     .catch( err => {

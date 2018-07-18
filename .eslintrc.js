@@ -15,6 +15,7 @@ module.exports = {
     "block-spacing": [2, "always"],
     "camelcase": [1, {"properties": "always"}],
     "space-in-parens": [2, "always"],
-    "keyword-spacing": 2
+    "keyword-spacing": 2,
+    "no-multi-spaces": 2
   }
 };
