@@ -21,7 +21,7 @@ module.exports = function( req, res ) {
 
   User.findOne( { 'email': req.body.email } )
     .then( user => {
-      if ( user ) throw new Error( 'Email taken. Please login. Thanks!')
+      if ( user ) throw new Error( 'Email taken. Please login. Thanks!' )
       myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, sessionSecret, { expiresIn: '2y' } )
       return myUser.save( )
     } )

@@ -4,7 +4,7 @@ const Client = require( '../../../../models/UserAppClient' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
-  if ( !req.params.clientId || !req.body) {
+  if ( !req.params.clientId || !req.body ) {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
   }

@@ -14,7 +14,7 @@ module.exports = function( req, res ) {
     .then( resource => resource.remove() )
     .then( ( ) => {
       res.send( { success: true, message: 'Comment deleted.' } )
-    })
+    } )
     .catch( err => {
       winston.error( err )
       res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )

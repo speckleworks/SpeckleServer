@@ -35,7 +35,7 @@ module.exports = ( req, res ) => {
       let objects = { common: null, inA: null, inB: null }
       first.objects = first.objects.map( o => o.toString( ) )
       second.objects = second.objects.map( o => o.toString( ) )
-      
+
       objects.common = first.objects.filter( id => second.objects.includes( id ) )
       objects.inA = first.objects.filter( id => !second.objects.includes( id ) )
       objects.inB = second.objects.filter( id => !first.objects.includes( id ) )

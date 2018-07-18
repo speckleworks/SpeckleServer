@@ -19,12 +19,12 @@ var dataStreamSchema = mongoose.Schema( {
 
   globalMeasures: { type: Object, default: {} },
 
-  isComputedResult: { type: Boolean, default: false },  
+  isComputedResult: { type: Boolean, default: false },
 
   objects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'SpeckleObject' } ],
 
   layers: { type: Array, default: [ ] },
-  
+
   viewerLayers: { type: Array, default: [ ] },
 
   // versioning

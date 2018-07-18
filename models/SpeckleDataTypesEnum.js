@@ -1,4 +1,4 @@
-module.exports = [ 
+module.exports = [
 'Null',
 'Boolean',
 'Number',
@@ -21,5 +21,5 @@ module.exports = [
 'Brep',
 'Annotation',
 'Extrusion',
-'Block', 
+'Block',
 'Abstract' ]
