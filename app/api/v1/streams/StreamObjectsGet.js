@@ -24,7 +24,7 @@ module.exports = ( req, res ) => {
     .then( objects => {
       let list = streamObjects.reduce( ( arr, o ) => {
         let match = objects.find( oo => oo._id == o )
-        if( match ) arr.push( match )
+        if ( match ) arr.push( match )
         return arr
       }, [ ] )
       res.send( { success: true, resources: list, message: 'Object list returned. If querying, duplication of objects in list will not be respected.' } )

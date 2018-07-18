@@ -10,7 +10,7 @@ var commentSchema = mongoose.Schema( {
   text: { type: String, required: true },
 
   // parent resource
-  resource: { 
+  resource: {
     resourceType: { type: String, required: true },
     resourceId: { type: String, required: true }
   },

@@ -15,8 +15,8 @@ module.exports = function( passport ) {
   }
 
   // returns 401 Unautorized, protects sensitive routes
-  passport.use( 'jwt-strict', new JwtStrategy( strictOptions, ( jwt_payload, done ) => {
-    User.findOne( { _id: jwt_payload._id } )
+  passport.use( 'jwt-strict', new JwtStrategy( strictOptions, ( jwtPayload, done ) => {
+    User.findOne( { _id: jwtPayload._id } )
       .then( user => {
         if ( !user ) throw new Error( 'No user found' )
         winston.debug( chalk.bgBlue( 'Strict authentication' ), chalk.bgGreen( 'OK' ) )
