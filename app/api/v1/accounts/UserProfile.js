@@ -1,24 +1,24 @@
 'use strict'
-const winston = require( 'winston' )
+const winston = require('winston')
 
-const User = require( '../../../../models/User' )
+const User = require('../../../../models/User')
 
-module.exports = function( req, res ) {
-  if ( !req.params.userId ) {
-    res.status( 400 )
-    res.send( { success: false, message: "Malformed request." } )
+module.exports = function (req, res) {
+  if (!req.params.userId) {
+    res.status(400)
+    res.send({ success: false, message: 'Malformed request.' })
   }
 
-  let projection = '_id name surname company' + ( req.app.get( 'expose emails' ) ? ' email' : '' )
+  let projection = '_id name surname company' + (req.app.get('expose emails') ? ' email' : '')
 
-  User.findOne( { _id: req.params.userId }, projection )
-    .then( user => {
-      if ( !user ) throw new Error( 'no users found.' )
-      res.send( { success: true, resource: user } )
-    } )
-    .catch( err => {
-      winston.error( err )
-      res.status( 400 )
-      res.send( { success: false, message: err.toString( ) } )
-    } )
+  User.findOne({ _id: req.params.userId }, projection)
+    .then(user => {
+      if (!user) throw new Error('no users found.')
+      res.send({ success: true, resource: user })
+    })
+    .catch(err => {
+      winston.error(err)
+      res.status(400)
+      res.send({ success: false, message: err.toString() })
+    })
 }

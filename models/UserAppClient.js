@@ -1,6 +1,6 @@
-var mongoose = require( 'mongoose' )
+var mongoose = require('mongoose')
 
-var clientSchema = mongoose.Schema( {
+var clientSchema = mongoose.Schema({
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   private: { type: Boolean, default: false },
@@ -24,6 +24,6 @@ var clientSchema = mongoose.Schema( {
 
   online: { type: Boolean, default: true, strict: false }
 
-}, { timestamps: true } )
+}, { timestamps: true })
 
-module.exports = mongoose.model( 'UserAppClient', clientSchema )
+module.exports = mongoose.model('UserAppClient', clientSchema)

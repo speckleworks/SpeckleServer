@@ -1,6 +1,6 @@
-var mongoose = require( 'mongoose' )
+var mongoose = require('mongoose')
 
-var commentSchema = mongoose.Schema( {
+var commentSchema = mongoose.Schema({
   // ownership
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   // threads
@@ -26,6 +26,6 @@ var commentSchema = mongoose.Schema( {
   // screenshot
   screenshot: { type: String }
 
-}, { timestamps: true } )
+}, { timestamps: true })
 
-module.exports = mongoose.model( 'Comment', commentSchema )
+module.exports = mongoose.model('Comment', commentSchema)

@@ -1,7 +1,7 @@
-const mongoose = require( 'mongoose' )
-const DataTypes = require( './SpeckleDataTypesEnum' )
+const mongoose = require('mongoose')
+const DataTypes = require('./SpeckleDataTypesEnum')
 
-var speckleObjectSchema = mongoose.Schema( {
+var speckleObjectSchema = mongoose.Schema({
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   private: { type: Boolean, default: false },
@@ -45,12 +45,12 @@ var speckleObjectSchema = mongoose.Schema( {
   ancestors: [ { type: mongoose.Schema.Types.ObjectId, ref: 'SpeckleObject' } ]
 
   // strict: false as we store some random extras in here
-}, { timestamps: true, strict: false } )
+}, { timestamps: true, strict: false })
 
-speckleObjectSchema.pre( 'save', next => {
-  next( )
-} )
+speckleObjectSchema.pre('save', next => {
+  next()
+})
 
-var SpeckleObject = mongoose.model( 'SpeckleObject', speckleObjectSchema )
+var SpeckleObject = mongoose.model('SpeckleObject', speckleObjectSchema)
 
 module.exports = SpeckleObject
