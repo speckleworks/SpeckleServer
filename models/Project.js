@@ -1,6 +1,6 @@
-var mongoose = require('mongoose')
+var mongoose = require( 'mongoose' )
 
-var projectSchema = mongoose.Schema({
+var projectSchema = mongoose.Schema( {
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   private: { type: Boolean, default: false },
@@ -28,6 +28,6 @@ var projectSchema = mongoose.Schema({
   subProjects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Project' } ]
 
   // strict false so peeps can expand the schema if they wanna add shit 💩
-}, { timestamps: true, strict: false })
+}, { timestamps: true, strict: false } )
 
-module.exports = mongoose.model('Project', projectSchema)
+module.exports = mongoose.model( 'Project', projectSchema )

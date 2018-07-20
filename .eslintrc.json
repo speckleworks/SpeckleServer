@@ -1,0 +1,6 @@
+{
+  "extends": "standard",
+  "rules": {
+    "space-in-parens": [ "error", "always" ]
+  }
+}

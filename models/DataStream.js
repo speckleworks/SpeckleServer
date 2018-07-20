@@ -1,6 +1,6 @@
-var mongoose = require('mongoose')
+var mongoose = require( 'mongoose' )
 
-var dataStreamSchema = mongoose.Schema({
+var dataStreamSchema = mongoose.Schema( {
   // stream short id
   streamId: { type: String, index: true },
 
@@ -34,6 +34,6 @@ var dataStreamSchema = mongoose.Schema({
 
   deleted: { type: Boolean, default: false }
 
-}, { timestamps: true })
+}, { timestamps: true } )
 
-module.exports = mongoose.model('DataStream', dataStreamSchema)
+module.exports = mongoose.model( 'DataStream', dataStreamSchema )
