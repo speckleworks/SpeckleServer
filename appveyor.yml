@@ -1,0 +1,13 @@
+version: '{build}'
+
+image: Ubuntu
+
+stack: node 9
+
+install:
+- sh: npm install
+
+test_script:
+- sh: ./node_modules/.bin/eslint "**/*.js"
+
+build: off
