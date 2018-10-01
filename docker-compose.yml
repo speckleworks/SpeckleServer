@@ -13,7 +13,7 @@ services:
     environment: 
       # Change the variable underneath as it will help users differentiate 
       # between multiple accounts.
-      - SPECKLE_NAME=Docker Speckle Server
+      - SERVER_NAME=Docker Speckle Server
       # This is used in the encryption of the api access tokens. 
       # Please change it to something random! 
       - SESSION_SECRET=helloworld
