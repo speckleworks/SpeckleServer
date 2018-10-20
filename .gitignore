@@ -7,3 +7,5 @@ npm-debug.log
 # keep only the data folder
 data/*
 !data/.gitkeep
+cloc_output.txt
+tree_out.txt
