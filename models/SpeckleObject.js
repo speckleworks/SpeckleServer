@@ -15,11 +15,12 @@ var speckleObjectSchema = mongoose.Schema( {
   type: {
     type: String,
     enum: DataTypes,
-    required: true
+    required: true,
+    index: true
   },
 
   // Object name
-  name: { type: String, default: 'Object Doe' },
+  name: { type: String, default: null },
 
   // Geometry hash
   geometryHash: { type: String, default: null, index: true },

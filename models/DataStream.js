@@ -6,7 +6,7 @@ var dataStreamSchema = mongoose.Schema( {
 
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  private: { type: Boolean, default: false },
+  private: { type: Boolean, default: process.env.PUBLIC_STREAMS },
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   anonymousComments: { type: Boolean, default: false },

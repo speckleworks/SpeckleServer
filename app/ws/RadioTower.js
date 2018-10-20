@@ -3,7 +3,7 @@ const chalk = require( 'chalk' )
 const redis = require( 'redis' )
 
 const ClientStore = require( './ClientStore' )
-const PermissionCheck = require( '../api/v1/middleware/PermissionCheck' )
+const PermissionCheck = require( '../api/middleware/PermissionCheck' )
 const DataStream = require( '../../models/DataStream' )
 
 module.exports = {
