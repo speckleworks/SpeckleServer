@@ -9,7 +9,7 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'No object id provided.' } )
   }
-  
+
   let query = PrepareQuery( req.query )
 
   SpeckleObject.findOne( { _id: req.params.objectId }, query.options.fields )
@@ -20,6 +20,6 @@ module.exports = ( req, res ) => {
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

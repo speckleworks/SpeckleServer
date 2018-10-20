@@ -24,14 +24,14 @@ module.exports = ( req, res ) => {
     .then( result => {
       stream.set( req.body )
       if ( req.body.objects ) stream.objects = result.map( obj => obj._id )
-      return stream.save( )
+      return stream.save()
     } )
-    .then( ( ) => {
+    .then( () => {
       res.send( { success: true, message: 'Patched stream fields: ' + Object.keys( req.body ) } )
     } )
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

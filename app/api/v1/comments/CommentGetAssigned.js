@@ -3,7 +3,6 @@ const winston = require( 'winston' )
 const Comment = require( '../../../../models/Comment' )
 
 module.exports = ( req, res ) => {
-
   Comment.find( { assignedTo: req.user._id.toString() } )
     .then( resources => {
       res.send( { success: true, resources: resources } )

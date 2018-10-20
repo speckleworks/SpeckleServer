@@ -3,9 +3,8 @@ const winston = require( 'winston' )
 const Comment = require( '../../../../models/Comment' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
-module.exports = function( req, res ) {
-
-  if ( !req.params.commentId || ! req.body ) {
+module.exports = function ( req, res ) {
+  if ( !req.params.commentId || !req.body ) {
     res.status( 400 )
     return res.send( { success: false, message: 'No commentId or comment provided.' } )
   }
@@ -13,7 +12,7 @@ module.exports = function( req, res ) {
   Comment.findOne( { _id: req.params.commentId } )
     .then( resource => PermissionCheck( req.user, 'write', resource, Object.keys( req.body ) ) )
     .then( resource => resource.set( req.body ).save() )
-    .then( ( ) => {
+    .then( () => {
       return res.send( { success: true, message: 'Comment edited', fields: Object.keys( req.body ) } )
     } )
     .catch( err => {

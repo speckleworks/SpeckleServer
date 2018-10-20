@@ -11,11 +11,11 @@ module.exports = ( req, res ) => {
   let project = new Project( req.body )
   project.owner = req.user._id
 
-  project.save( )
+  project.save()
     .then( resource => res.send( { success: true, resource: resource } ) )
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      return res.send( { success: false, message: err.toString( ) } )
+      return res.send( { success: false, message: err.toString() } )
     } )
 }

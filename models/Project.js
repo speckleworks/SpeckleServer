@@ -21,11 +21,11 @@ var projectSchema = mongoose.Schema( {
   permissions: {
     streamsDefaulPrivate: { type: Boolean, default: false },
     canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-    canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+    canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ]
   },
 
   //  sub projects
-  subProjects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Project' } ],
+  subProjects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Project' } ]
 
   // strict false so peeps can expand the schema if they wanna add shit 💩
 }, { timestamps: true, strict: false } )

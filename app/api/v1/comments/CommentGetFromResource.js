@@ -3,7 +3,7 @@ const winston = require( 'winston' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 const GetResource = require( '../middleware/GetResourceByType' )
 
-module.exports = function( req, res ) {
+module.exports = function ( req, res ) {
   if ( !req.params.resourceType || !req.params.resourceId ) {
     res.status( 400 )
     return res.send( { success: false, message: 'No resource type, resourceId, or comment provided.' } )

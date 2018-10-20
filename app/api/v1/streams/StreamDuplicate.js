@@ -19,16 +19,16 @@ module.exports = ( req, res ) => {
     .then( stream => {
       if ( !stream ) throw new Error( 'Database fail.' )
       clone = new DataStream( stream )
-      clone._id = mongoose.Types.ObjectId( )
-      clone.streamId = shortId.generate( )
+      clone._id = mongoose.Types.ObjectId()
+      clone.streamId = shortId.generate()
       clone.parent = stream.streamId
       clone.children = [ ]
       clone.name += ' Clone'
-      clone.createdAt = new Date
-      clone.updatedAt = new Date
+      clone.createdAt = new Date()
+      clone.updatedAt = new Date()
       clone.private = stream.private
 
-      if ( req.user._id.toString( ) != stream.owner.toString( ) ) {
+      if ( req.user._id.toString() !== stream.owner.toString() ) {
         // new ownership
         clone.owner = req.user._id
         //  grant original owner read access
@@ -39,15 +39,15 @@ module.exports = ( req, res ) => {
 
       stream.children.push( clone.streamId )
       clone.isNew = true
-      return stream.save( )
+      return stream.save()
     } )
     .then( result => {
       parent = result
-      return clone.save( )
+      return clone.save()
     } )
     .then( result => {
-      result = result.toObject( )
-      parent = parent.toObject( )
+      result = result.toObject()
+      parent = parent.toObject()
       delete result[ 'objects' ]
       delete result[ 'layers' ]
       delete parent[ 'objects' ]
@@ -59,5 +59,4 @@ module.exports = ( req, res ) => {
       res.status( 400 )
       res.send( { success: false, message: err, streamId: req.streamId } )
     } )
-
 }

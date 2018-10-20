@@ -13,13 +13,11 @@ module.exports = ( req, res ) => {
 
   let query = PrepareQuery( req.query )
 
-  DataStream.findOne( { streamId: req.params.streamId }, query.options.fields ).lean( )
+  DataStream.findOne( { streamId: req.params.streamId }, query.options.fields ).lean()
     .then( stream => PermissionCheck( req.user, 'read', stream ) )
     .then( stream => {
-      if ( ( !stream.layers || stream.layers.length === 0 ) )
-        stream.layers = stream.objects ? [ getDefaultLayer( stream.objects.length ) ] : [ ]
-      if ( stream.objects )
-        stream.objects = stream.objects.map( id => { return { type: 'Placeholder', _id: id } } )
+      if ( ( !stream.layers || stream.layers.length === 0 ) ) { stream.layers = stream.objects ? [ getDefaultLayer( stream.objects.length ) ] : [ ] }
+      if ( stream.objects ) { stream.objects = stream.objects.map( id => { return { type: 'Placeholder', _id: id } } ) }
 
       return res.send( { success: true, message: 'Delivered stream.', resource: stream } )
     } )
@@ -31,10 +29,10 @@ module.exports = ( req, res ) => {
 }
 
 // creats a default speckle layer
-function getDefaultLayer( length ) {
+function getDefaultLayer ( length ) {
   return {
     name: 'Default Generated Speckle Layer',
-    guid: uuid( ),
+    guid: uuid(),
     orderIndex: 0,
     startIndex: 0,
     objectCount: length,

@@ -13,14 +13,14 @@ module.exports = ( req, res ) => {
   DataStream.findOne( { streamId: req.params.streamId } )
     .then( stream => PermissionCheck( req.user, 'delete', stream ) )
     .then( stream => {
-      return stream.remove( )
+      return stream.remove()
     } )
-    .then( ( ) => {
+    .then( () => {
       return res.send( { success: true, message: 'Stream was deleted! Bye bye data.' } )
     } )
     .catch( err => {
       winston.error( err )
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

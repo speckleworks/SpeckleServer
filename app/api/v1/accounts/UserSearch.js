@@ -6,7 +6,7 @@ const User = require( '../../../../models/User' )
 // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 const escapeRegExp = ( string ) => string.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ) // $& means the whole matched string
 
-module.exports = function( req, res ) {
+module.exports = function ( req, res ) {
   let conditions = {}
   if ( req.body.name ) conditions.name = { '$regex': escapeRegExp( req.body.name ), '$options': 'i' }
   if ( req.body.surname ) conditions.surname = { '$regex': escapeRegExp( req.body.surname ), '$options': 'i' }
@@ -22,6 +22,6 @@ module.exports = function( req, res ) {
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

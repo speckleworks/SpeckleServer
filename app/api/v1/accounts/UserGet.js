@@ -2,7 +2,7 @@ const winston = require( 'winston' )
 
 const User = require( '../../../../models/User' )
 
-module.exports = function( req, res ) {
+module.exports = function ( req, res ) {
   User.findOne( { _id: req.user._id }, '-password' )
     .then( myUser => {
       if ( !myUser ) throw new Error( 'no user found.' )
@@ -11,6 +11,6 @@ module.exports = function( req, res ) {
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

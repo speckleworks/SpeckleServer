@@ -14,15 +14,14 @@ module.exports = ( req, res ) => {
     .then( result => {
       _.assign( result.properties, req.body )
       result.markModified( 'properties' )
-      result.save( )
+      result.save()
     } )
-    .then( ( ) => {
+    .then( () => {
       res.send( { success: true, message: 'Object properties updated.' } )
     } )
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      return res.send( { success: false, message: err.toString( ) } )
+      return res.send( { success: false, message: err.toString() } )
     } )
-
 }

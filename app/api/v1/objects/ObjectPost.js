@@ -3,7 +3,6 @@ const winston = require( 'winston' )
 const BulkObjectSave = require( '../middleware/BulkObjectSave' )
 
 module.exports = ( req, res ) => {
-
   if ( !req.body ) {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
@@ -16,6 +15,6 @@ module.exports = ( req, res ) => {
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

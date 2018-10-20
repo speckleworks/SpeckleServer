@@ -1,7 +1,7 @@
 const passport = require( 'passport' )
 
-module.exports = function( app, express, urlRoot ) {
-  var r = new express.Router( )
+module.exports = function ( app, express, urlRoot ) {
+  var r = new express.Router()
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
   let mandatoryAuthorisation = passport.authenticate( 'jwt-strict', { session: false } )
@@ -29,7 +29,6 @@ module.exports = function( app, express, urlRoot ) {
 
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
-
 
   //
   // CLIENTS
@@ -78,7 +77,6 @@ module.exports = function( app, express, urlRoot ) {
   // Get stream objects / perm check 'read' xxx
   r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './streams/StreamObjectsGet' ) )
 
-
   //
   // OBJECTS
   //
@@ -100,7 +98,6 @@ module.exports = function( app, express, urlRoot ) {
 
   // delete one / perm check 'delete' xxx
   r.delete( '/objects/:objectId', mandatoryAuthorisation, require( './objects/ObjectDelete' ) )
-
 
   //
   // COMMENTS
@@ -126,7 +123,6 @@ module.exports = function( app, express, urlRoot ) {
 
   // delete a comment xxx
   r.delete( '/comments/:commentId', mandatoryAuthorisation, require( './comments/CommentDelete' ) )
-
 
   //
   // PROJECTS
@@ -154,8 +150,7 @@ module.exports = function( app, express, urlRoot ) {
   // generate routes doc
   let routes = [ ]
   r.stack.forEach( ( middleware ) => {
-    if ( middleware.route )
-      routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase( ) ) + ': /api' + middleware.route.path )
+    if ( middleware.route ) { routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase() ) + ': /api' + middleware.route.path ) }
   } )
 
   let serverDescription = {

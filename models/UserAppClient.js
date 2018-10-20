@@ -14,7 +14,7 @@ var clientSchema = mongoose.Schema( {
 
   documentName: { type: String },
 
-  documentGuid: { type: String }, // document unique id. 
+  documentGuid: { type: String }, // document unique id.
 
   documentType: { type: String }, // Rhino, Grasshopper, Node, Browser, etc.
 
@@ -22,7 +22,7 @@ var clientSchema = mongoose.Schema( {
 
   streamId: { type: String }, // stream that we're connected to
 
-  online: { type: Boolean, default: true, strict: false } 
+  online: { type: Boolean, default: true, strict: false }
 
 }, { timestamps: true } )
 

@@ -17,7 +17,7 @@ module.exports = ( req, res, next ) => {
         throw new Error( 'No user with this token found. Are ye fooling us?' )
       }
       req.user = myUser
-      return next( )
+      return next()
     } )
     .catch( err => {
       res.status( 401 )

@@ -4,7 +4,7 @@ const Comment = require( '../../../../models/Comment' )
 
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
-module.exports = function( req, res ) {
+module.exports = function ( req, res ) {
   if ( !req.params.commentId ) {
     res.status( 400 )
     return res.send( { success: false, message: 'No resource type, resourceId, or comment provided.' } )

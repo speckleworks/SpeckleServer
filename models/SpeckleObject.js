@@ -48,7 +48,7 @@ var speckleObjectSchema = mongoose.Schema( {
 }, { timestamps: true, strict: false } )
 
 speckleObjectSchema.pre( 'save', next => {
-  next( )
+  next()
 } )
 
 var SpeckleObject = mongoose.model( 'SpeckleObject', speckleObjectSchema )

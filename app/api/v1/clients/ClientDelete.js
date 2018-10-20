@@ -13,14 +13,14 @@ module.exports = ( req, res ) => {
   Client.findOne( { _id: req.params.clientId } )
     .then( client => PermissionCheck( req.user, 'delete', client ) )
     .then( client => {
-      return client.remove( )
+      return client.remove()
     } )
-    .then( ( ) => {
+    .then( () => {
       return res.send( { success: true, message: 'Client was deleted! Bye bye data.' } )
     } )
     .catch( err => {
       winston.error( err )
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

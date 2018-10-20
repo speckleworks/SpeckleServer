@@ -3,7 +3,6 @@ const winston = require( 'winston' )
 const Comment = require( '../../../../models/Comment' )
 
 module.exports = ( req, res ) => {
-
   Comment.find( { owner: req.user._id } )
     .then( resources => {
       res.send( { success: true, resources: resources } )

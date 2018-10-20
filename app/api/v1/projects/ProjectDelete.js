@@ -11,8 +11,8 @@ module.exports = ( req, res ) => {
 
   Project.findOne( { _id: req.params.projectId } )
     .then( resource => PermissionCheck( req.user, 'delete', resource ) )
-    .then( resource => resource.remove( ) )
-    .then( ( ) => {
+    .then( resource => resource.remove() )
+    .then( () => {
       res.send( { success: true, message: 'Project deleted. Bye bye data.' } )
     } )
     .catch( err => {

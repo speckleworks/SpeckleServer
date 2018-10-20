@@ -3,7 +3,7 @@ const winston = require( 'winston' )
 
 const User = require( '../../../../models/User' )
 
-module.exports = function( req, res ) {
+module.exports = function ( req, res ) {
   User.findOne( { _id: req.user._id }, '-password' )
     .then( user => {
       if ( !user ) throw new Error( 'no user found.' )
@@ -16,14 +16,14 @@ module.exports = function( req, res ) {
       user.markModified( 'surname' )
       user.markModified( 'company' )
       user.markModified( 'email' )
-      return user.save( )
+      return user.save()
     } )
-    .then( ( ) => {
+    .then( () => {
       res.send( { success: true, message: 'User profile updated.' } )
     } )
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString( ) } )
+      res.send( { success: false, message: err.toString() } )
     } )
 }

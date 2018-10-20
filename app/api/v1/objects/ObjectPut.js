@@ -10,14 +10,13 @@ module.exports = ( req, res ) => {
   }
   SpeckleObject.findOne( { _id: req.params.objectId } )
     .then( result => PermissionCheck( req.user, 'write', result, Object.keys( req.body ) ) )
-    .then( result => result.set( req.body ).save( ) )
-    .then( ( ) => {
+    .then( result => result.set( req.body ).save() )
+    .then( () => {
       res.send( { success: true, message: 'Object updated.' } )
     } )
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      return res.send( { success: false, message: err.toString( ) } )
+      return res.send( { success: false, message: err.toString() } )
     } )
-
 }
