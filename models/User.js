@@ -13,10 +13,12 @@ var userSchema = mongoose.Schema( {
   role: { type: String, default: 'user' }
 }, { timestamps: true } )
 
-userSchema.pre( 'save', function ( next ) {
+
+userSchema.pre( 'save', function( next ) {
   var user = this
   if ( this.isModified( 'password' ) || this.isNew ) {
-    if ( user.password.length < 8 ) { return next( new Error( 'Password too short.' ) ) }
+    if ( user.password.length < 8 )
+      return next( new Error( 'Password too short.' ) )
     bcrypt.genSalt( 10, function ( err, salt ) {
       if ( err ) return next( err )
       bcrypt.hash( user.password, salt, null, function ( err, hash ) {
@@ -30,9 +32,8 @@ userSchema.pre( 'save', function ( next ) {
 
 userSchema.methods.validatePassword = ( pw, upw, cb ) => {
   bcrypt.compare( pw, upw, ( err, res ) => {
-    if ( err ) throw err
-    if ( res === true ) return cb( true ) // eslint-disable-line standard/no-callback-literal
-    else return cb( false ) // eslint-disable-line standard/no-callback-literal
+    if ( res === true ) return cb( true )
+    else return cb( false )
   } )
 }
 
