@@ -1,6 +1,6 @@
 const winston = require( 'winston' )
 const _ = require( 'lodash' )
-const DataStream = require( '../../../../models/DataStream' )
+const DataStream = require( '../../../models/DataStream' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {

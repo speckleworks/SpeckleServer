@@ -2,8 +2,8 @@
 const winston = require( 'winston' )
 const q2m = require( 'query-to-mongo' )
 
-const DataStream = require( '../../../../models/DataStream' )
-const SpeckleObject = require( '../../../../models/SpeckleObject' )
+const DataStream = require( '../../../models/DataStream' )
+const SpeckleObject = require( '../../../models/SpeckleObject' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {

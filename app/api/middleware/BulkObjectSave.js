@@ -1,7 +1,7 @@
 const winston = require( 'winston' )
 const chalk = require( 'chalk' )
 const crypto = require( 'crypto' )
-const SpeckleObject = require( '../../../../models/SpeckleObject' )
+const SpeckleObject = require( '../../../models/SpeckleObject' )
 /*
 HIC SVNT DRACONES
  */
