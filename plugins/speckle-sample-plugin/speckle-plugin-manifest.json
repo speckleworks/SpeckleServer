@@ -1,0 +1,9 @@
+{
+  "name": "Sample Plugin",
+  "version":"0.1.0",
+  "desc": "This plugin tests plugins",
+  "serveFrom": "/sample-plugin",
+  "author": "DAS",
+  "contact":"test@dimitrie.org",
+  "homepage":"https://dimitrie.org"
+}

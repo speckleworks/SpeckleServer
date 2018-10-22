@@ -155,14 +155,11 @@ module.exports = function ( app, express, urlRoot ) {
 
   let serverDescription = {
     serverName: process.env.SERVER_NAME,
-    maxRequestSize: process.env.REQ_SIZE
+    version: '1.x.x',
+    api: routes,
   }
 
-  r.get( '/', ( req, res ) => {
-    serverDescription.routes = routes
-    serverDescription.version = '1.x.x'
-    res.json( serverDescription )
-  } )
+  r.get( '/', ( req, res ) => res.json( serverDescription ) )
 
   // mount all these routes up
   app.use( urlRoot, r )
