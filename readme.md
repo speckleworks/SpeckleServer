@@ -77,7 +77,7 @@ Note: You're not restricted to digital ocean. Any machine with docker should be 
        $ node server.js
 
 ## API
-[API docs are here](https://speckleworks.github.io/SpeckleOpenApi/#introduction) - they are a good overview of what you can do with the speckle server.
+[API docs are here](https://speckleworks.github.io/SpeckleSpecs/) - they are a good overview of what you can do with the speckle server.
 
 ## Current Limitations
 
