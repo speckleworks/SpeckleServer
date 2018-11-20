@@ -77,6 +77,9 @@ module.exports = function ( app, express, urlRoot ) {
   // Get stream objects / perm check 'read' xxx
   r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './streams/StreamObjectsGet' ) )
 
+  // Get stream clients / perm check 'read'
+  r.get( '/streams/:streamId/clients', optionalAuthorisation, require( './streams/StreamClientsGet' ) )
+
   //
   // OBJECTS
   //

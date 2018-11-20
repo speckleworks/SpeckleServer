@@ -20,7 +20,7 @@ var clientSchema = mongoose.Schema( {
 
   documentLocation: { type: String }, // Location
 
-  streamId: { type: String }, // stream that we're connected to
+  streamId: { type: String, index: true}, // stream that we're connected to
 
   online: { type: Boolean, default: true, strict: false }
 
