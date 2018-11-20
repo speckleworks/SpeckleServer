@@ -111,6 +111,7 @@ if ( cluster.isMaster ) {
   // handle api versions gracefully
   app.use( '/api/v0', ( req, res ) => res.status( 410 ).json( { error: 'The v0 API has been removed' } ) )
   require( './app/api/index' )( app, express, '/api' )
+  require( './app/api/index' )( app, express, '/api/v1' )
 
   /// /////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.

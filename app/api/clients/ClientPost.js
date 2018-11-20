@@ -9,7 +9,7 @@ module.exports = ( req, res ) => {
 
   let myClient = new Client( req.body )
 
-  if ( !req.user ) { return res.send( { success: true, message: 'Anonymous client created.', resource: { _id: 'temp-' + myClient._id } } ) } else { myClient.owner = req.user._id }
+  if ( !req.user || req.body.isAnonymous === true ) { return res.send( { success: true, message: 'Anonymous client created.', resource: { _id: 'temp-' + myClient._id } } ) } else { myClient.owner = req.user._id }
 
   myClient.save()
     .then( result => {

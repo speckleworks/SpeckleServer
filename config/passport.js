@@ -18,7 +18,7 @@ module.exports = function ( passport ) {
   passport.use( 'jwt-strict', new JwtStrategy( strictOptions, ( jwtPayload, done ) => {
     User.findOne( { _id: jwtPayload._id } )
       .then( user => {
-        if ( !user ) throw new Error( 'No user found' )
+        if ( !user ) done( err, false ) // not ok
         winston.debug( chalk.bgBlue( 'Strict authentication' ), chalk.bgGreen( 'OK' ) )
         done( null, user )
       } )
