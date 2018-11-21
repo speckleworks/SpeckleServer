@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 const chalk = require( 'chalk' )
 const crypto = require( 'crypto' )
 const SpeckleObject = require( '../../../models/SpeckleObject' )

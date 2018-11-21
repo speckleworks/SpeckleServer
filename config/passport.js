@@ -1,5 +1,5 @@
 'use strict'
-const winston = require( 'winston' )
+const winston = require( '../config/logger' )
 const chalk = require( 'chalk' )
 
 var JwtStrategy = require( 'passport-jwt' ).Strategy
@@ -19,11 +19,11 @@ module.exports = function ( passport ) {
     User.findOne( { _id: jwtPayload._id } )
       .then( user => {
         if ( !user ) throw new Error( 'No user found.' )
-        winston.debug( chalk.bgBlue( 'Strict authentication' ), chalk.bgGreen( 'OK' ) )
+        // winston.debug( chalk.bgBlue( 'Strict authentication' ), chalk.bgGreen( 'OK' ) )
         done( null, user )
       } )
       .catch( err => {
-        winston.debug( chalk.bgBlue( 'Strict authentication' ), chalk.bgRed( 'FAILED' ) )
+        // winston.debug( chalk.bgBlue( 'Strict authentication' ), chalk.bgRed( 'FAILED' ) )
         done( err, false ) // not ok
       } )
   } ) )

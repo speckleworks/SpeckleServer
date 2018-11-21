@@ -1,5 +1,4 @@
-'use strict'
-const winston = require( 'winston' )
+const winston = require( '../../config/logger' )
 const chalk = require( 'chalk' )
 
 // this is where we keep track on each process what clients are connected.

@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 const uuid = require( 'uuid/v4' )
 
 const DataStream = require( '../../../models/DataStream' )

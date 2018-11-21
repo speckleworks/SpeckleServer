@@ -6,14 +6,16 @@ var dataStreamSchema = mongoose.Schema( {
 
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  private: { type: Boolean, default: process.env.PUBLIC_STREAMS },
+  private: { type: Boolean, default: !process.env.PUBLIC_STREAMS },
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   anonymousComments: { type: Boolean, default: false },
+
   // comments
   comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
 
   name: { type: String, default: 'Speckle Stream' },
+  description: { type: String, default: 'This is a simple speckle stream.' },
 
   baseProperties: { type: Object, default: {} },
 

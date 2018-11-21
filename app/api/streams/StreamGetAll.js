@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 const chalk = require( 'chalk' )
 const mongoose = require( 'mongoose' )
 
@@ -25,7 +25,7 @@ module.exports = ( req, res ) => {
           stream.canWrite = stream.canWrite.map( u => u._id )
         } )
       }
-      res.send( { success: true, message: 'Stream list for user ' + req.user._id, resources: resources } )
+      res.send( { success: true, message: 'Stream list returned. Contains both owned and shared with streams.', resources: resources } )
     } )
     .catch( err => {
       winston.error( err )

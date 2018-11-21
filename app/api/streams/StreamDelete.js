@@ -1,5 +1,5 @@
 'use strict'
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 
 const DataStream = require( '../../../models/DataStream' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )

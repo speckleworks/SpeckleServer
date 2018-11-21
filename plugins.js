@@ -1,6 +1,6 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
-const winston = require( 'winston' )
+const winston = require( './config/logger' )
 
 const isDirectory = source => fs.lstatSync( source ).isDirectory( )
 const getDirectories = source => fs.readdirSync( source ).map( name => path.join( source, name ) ).filter( isDirectory )

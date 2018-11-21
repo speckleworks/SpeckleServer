@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 const Client = require( '../../../models/UserAppClient' )
 
 module.exports = ( req, res ) => {

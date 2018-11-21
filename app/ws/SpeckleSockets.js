@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../config/logger' )
 const chalk = require( 'chalk' )
 const url = require( 'url' )
 const redis = require( 'redis' )
@@ -8,27 +8,36 @@ const radioTower = require( './RadioTower' )
 
 const User = require( '../../models/User' )
 
-module.exports = function ( wss ) {
+module.exports = function( wss ) {
   // start a redis subscriber in the radio tower
-  radioTower.initRedis()
+  radioTower.initRedis( )
 
   // start a redis publisher
   let redisPublisher = redis.createClient( process.env.REDIS_URL )
+  let redisSubscriber = redis.createClient( process.env.REDIS_URL )
+  redisSubscriber.subscribe( 'id-check-response' )
 
-  redisPublisher.on( 'connect', () => {
+  redisPublisher.on( 'connect', ( ) => {
     winston.debug( `${process.pid} connected to redis.` )
   } )
 
-  wss.on( 'connection', function ( ws, req ) {
+  wss.on( 'connection', function( ws, req ) {
     winston.debug( chalk.blue( `Ws connection request in PID ${process.pid}` ) )
 
     let location = url.parse( req.url, true )
     if ( !location.query.client_id ) {
       winston.debug( chalk.red( `No client_id present, refusing.` ) )
       ws.send( 'You must provide a client_id.' )
-      ws.close()
+      ws.close( )
     }
     let token = location.query.access_token
+
+    redisPublisher.publish( 'id-check', location.query.client_id )
+    redisSubscriber.on( 'message', ( channel, message ) => {
+      if ( channel !== 'id-check-response' ) return
+      ws.send('Bad boy, dupe ids and all that.')
+      ws.close( )
+    } )
 
     ws.authorised = false
     ws.clientId = location.query.client_id
@@ -42,7 +51,7 @@ module.exports = function ( wss ) {
         ws.user = user
         clientStore.add( ws )
       } )
-      .catch( () => {
+      .catch( ( ) => {
         winston.debug( 'Socket connection is not auhtorised, will add him as an anonymous client.' )
         clientStore.add( ws )
       } )
@@ -59,11 +68,11 @@ module.exports = function ( wss ) {
       redisPublisher.publish( 'speckle-message', JSON.stringify( { content: message, clientId: ws.clientId } ) )
     } )
 
-    ws.on( 'error', () => {
+    ws.on( 'error', ( ) => {
       winston.debug( `Ws ${ws.clientId} threw an error :/` )
     } )
 
-    ws.on( 'close', () => {
+    ws.on( 'close', ( ) => {
       clientStore.remove( ws )
     } )
   } )

@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 
 const Project = require( '../../../models/Project' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
@@ -13,7 +13,7 @@ module.exports = ( req, res ) => {
     .then( resource => PermissionCheck( req.user, 'read', resource ) )
     .then( resource => resource.set( req.body ).save() )
     .then( resource => {
-      res.send( { success: true, resource: resource } )
+      res.send( { success: true, message: `Patched ${Object.keys(req.body)} for ${req.params.projectId}.` } )
     } )
     .catch( err => {
       winston.error( err )

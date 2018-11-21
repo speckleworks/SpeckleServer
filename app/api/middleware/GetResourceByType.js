@@ -1,9 +1,11 @@
+const winston = require( '../../../config/logger' )
 const Comment = require( '../../../models/Comment' )
 const DataStream = require( '../../../models/DataStream' )
 const SpeckleObject = require( '../../../models/SpeckleObject' )
 const Project = require( '../../../models/Project' )
 
 module.exports = ( type, id, populateFields ) => {
+  populateFields = populateFields ? populateFields : ''
   switch ( type ) {
     case 'stream':
     case 'streams':
@@ -18,6 +20,7 @@ module.exports = ( type, id, populateFields ) => {
     case 'comments':
       return Comment.findOne( { _id: id } ).populate( populateFields )
     default:
+      winston.error( `Dunno what resource that is, eh? ${type}` )
       break
   }
 }

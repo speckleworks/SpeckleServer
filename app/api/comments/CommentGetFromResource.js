@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 const GetResource = require( '../middleware/GetResourceByType' )

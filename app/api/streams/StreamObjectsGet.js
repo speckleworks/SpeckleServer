@@ -1,5 +1,5 @@
 'use strict'
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 const q2m = require( 'query-to-mongo' )
 
 const DataStream = require( '../../../models/DataStream' )

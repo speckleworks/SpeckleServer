@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 
 const SpeckleObject = require( '../../../models/SpeckleObject' )
 const PrepareQuery = require( '../middleware/PrepareQuery' )

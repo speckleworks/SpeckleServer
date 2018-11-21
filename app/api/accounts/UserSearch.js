@@ -1,20 +1,26 @@
 'use strict'
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 
 const User = require( '../../../models/User' )
 
 // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 const escapeRegExp = ( string ) => string.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ) // $& means the whole matched string
 
-module.exports = function ( req, res ) {
-  let conditions = {}
-  if ( req.body.name ) conditions.name = { '$regex': escapeRegExp( req.body.name ), '$options': 'i' }
-  if ( req.body.surname ) conditions.surname = { '$regex': escapeRegExp( req.body.surname ), '$options': 'i' }
-  if ( req.body.company ) conditions.company = { '$regex': escapeRegExp( req.body.company ), '$options': 'i' }
+module.exports = function( req, res ) {
+  let conditions = [ ]
+  if ( !req.body.searchString || req.body.searchString === '' || req.body.searchString.length < 3 ) {
+    return res.status( 400 ).send( { success: false, message: 'no search criteria present, or too short search string (must be > 2).' } )
+  }
 
-  let projection = '_id name surname company' + ( req.app.get( 'expose emails' ) ? ' email' : '' )
+  if ( req.body.searchString ) {
+    conditions.push( { name: { '$regex': escapeRegExp( req.body.searchString ), '$options': 'i' } } )
+    conditions.push( { surname: { '$regex': escapeRegExp( req.body.searchString ), '$options': 'i' } } )
+    conditions.push( { company: { '$regex': escapeRegExp( req.body.searchString ), '$options': 'i' } } )
+  }
 
-  User.find( conditions, projection ).limit( 5 )
+  let projection = '_id name surname company' + ( process.env.EXPOSE_EMAILS ? ' email' : '' )
+
+  User.find( { $or: conditions }, projection ).limit( 10 )
     .then( myUsers => {
       if ( !myUsers ) throw new Error( 'no users found.' )
       res.send( { success: true, resources: myUsers } )
@@ -22,6 +28,6 @@ module.exports = function ( req, res ) {
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString() } )
+      res.send( { success: false, message: err.toString( ) } )
     } )
 }

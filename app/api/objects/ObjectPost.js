@@ -1,4 +1,4 @@
-const winston = require( 'winston' )
+const winston = require( '../../../config/logger' )
 
 const BulkObjectSave = require( '../middleware/BulkObjectSave' )
 
