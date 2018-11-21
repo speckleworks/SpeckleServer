@@ -23,8 +23,8 @@
     "cors": "^2.8.1",
     "dotenv": "^6.1.0",
     "express": "^4.16.4",
-    "express-winston": "^2.6.0",
-    "jsonwebtoken": "^7.2.1",
+    "express-winston": "^3.0.0",
+    "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.3.4",
     "passport": "^0.4.0",
@@ -35,7 +35,8 @@
     "redis": "^2.8.0",
     "shortid": "^2.2.13",
     "uuid": "^3.3.2",
-    "winston": "^2.4.4",
+    "winston": "^3.0.0",
+    "winston-daily-rotate-file": "^3.5.1",
     "ws": "^3.0.0"
   },
   "devDependencies": {

@@ -31,6 +31,7 @@ module.exports = {
 
     // push to my amazing datastore
     this.clients.push( ws )
+    winston.debug( chalk.green("(add) Clients: " + this.clients.length + ".") )
     winston.debug( chalk.blue( `There are now ${this.clients.length} ws clients in ${process.pid}: ${this.clients.map( cl => cl.clientId )}` ) )
   },
 
@@ -40,6 +41,7 @@ module.exports = {
     // cut him out
     this.clients.splice( this.clients.indexOf( ws ), 1 )
     ws.close()
+
     winston.debug( chalk.bgRed( 'Socket removed', ws.clientId ) )
     winston.debug( chalk.blue( `There are now ${this.clients.length} ws clients in ${process.pid}.` ) )
   }

@@ -1,5 +1,6 @@
 #standard ignores
 node_modules/
+logs/
 *.sublime-project
 *.sublime-workspace
 npm-debug.log

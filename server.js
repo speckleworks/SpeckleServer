@@ -5,14 +5,14 @@ const cors = require( 'cors' )
 const bodyParser = require( 'body-parser' )
 const passport = require( 'passport' )
 const chalk = require( 'chalk' )
-const winston = require( 'winston' )
-const expressWinston = require( 'express-winston' )
 const mongoose = require( 'mongoose' ).set( 'debug', false )
+const expressWinston = require( 'express-winston' )
+const logger = require( './config/logger' )
 
 // load up .env
 const configResult = require( 'dotenv' ).config( { path: './.env' } )
 if ( configResult.error ) {
-  winston.debug( chalk.bgRed( 'There is an error in the .env configuration file. Will use the default provided ones (if any).' ) )
+  logger.debug( chalk.bgRed( 'There is an error in the .env configuration file. Will use the default provided ones (if any).' ) )
 }
 
 // front-end plugins discovery registration
@@ -22,23 +22,23 @@ const plugins = require( './plugins' )( )
 /// MASTER process                                                 /////.
 /////////////////////////////////////////////////////////////////////////
 if ( cluster.isMaster ) {
-  winston.level = 'debug'
-  winston.info( chalk.bgBlue( `Speckle is starting up.` ) )
+  logger.level = 'debug'
+  logger.info( chalk.bgBlue( `Speckle is starting up.` ) )
 
   let osCpus = require( 'os' ).cpus( ).length
   let envCpus = process.env.MAX_PROC
   let numWorkers = envCpus ? ( envCpus > osCpus ? osCpus : envCpus ) : osCpus
-  winston.debug( `Setting up ${numWorkers} workers.` )
+  logger.debug( `Setting up ${numWorkers} workers.\n` )
 
   for ( let i = 0; i < numWorkers; i++ ) { cluster.fork( ) }
 
   cluster.on( 'online', worker => {
-    winston.debug( `Speckle worker ${worker.process.pid} is now online.` )
+    logger.debug( `Speckle worker ${worker.process.pid} is now online.\n` )
   } )
 
   cluster.on( 'exit', ( worker, code, signal ) => {
-    winston.debug( `Speckle worker ${worker.process.pid} just died with code ${code} and signal ${signal}.` )
-    winston.debug( `Starting a new one...` )
+    logger.debug( `Speckle worker ${worker.process.pid} just died with code ${code} and signal ${signal}.` )
+    logger.debug( `Starting a new one...` )
     cluster.fork( )
   } )
 
@@ -47,36 +47,37 @@ if ( cluster.isMaster ) {
   /////////////////////////////////////////////////////////////////////////
 } else {
 
-  // Mongo handlers
-  mongoose.Promise = global.Promise
-
-  mongoose.connect( process.env.MONGODB_URI, { autoReconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
-    if ( err ) throw err
-    else winston.debug( 'connected to mongoose at ' + process.env.MONGODB_URI )
-  } )
-
-  mongoose.connection.on( 'error', err => {
-    winston.debug( 'Failed to connect to DB ' + process.env.MONGODB_URI + ' on startup ', err )
-  } )
-
-  // When the connection is disconnected
-  mongoose.connection.on( 'disconnected', ( ) => {
-    winston.debug( 'Mongoose default was disconnected' )
-  } )
-
-  mongoose.connection.on( 'connected', ( ) => {
-    winston.debug( chalk.red( 'Connected to mongo.' ) )
-  } )
-
   // Express inits
   var app = express( )
   app.use( cors( ) ) // allow cors
 
   app.use( expressWinston.logger( {
-    transports: [ new winston.transports.Console( { json: false, colorize: true, timestamp: true } ) ],
-    meta: false,
-    msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} '
+    winstonInstance: logger,
+    colorize: true,
+    msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms'
   } ) )
+
+  // Mongo handlers
+  mongoose.Promise = global.Promise
+
+  mongoose.connect( process.env.MONGODB_URI, { useNewUrlParser: true, autoReconnect: true, reconnectTries: 5, keepAlive: 10 }, ( err ) => {
+    if ( err ) throw err
+    else logger.debug( 'connected to mongoose at ' + process.env.MONGODB_URI )
+  } )
+
+  mongoose.connection.on( 'error', err => {
+    logger.debug( 'Failed to connect to DB ' + process.env.MONGODB_URI + ' on startup ', err )
+  } )
+
+  // When the connection is disconnected
+  mongoose.connection.on( 'disconnected', ( ) => {
+    logger.debug( 'Mongoose default was disconnected' )
+  } )
+
+  mongoose.connection.on( 'connected', ( ) => {
+    logger.debug( chalk.red( 'Connected to mongo.' ) )
+  } )
+
 
   // throws a 413 if over REQ_SIZE
   app.use( bodyParser.json( { limit: process.env.REQ_SIZE } ) )
@@ -119,6 +120,6 @@ if ( cluster.isMaster ) {
 
   var port = process.env.PORT || 3000
   server.listen( port, ( ) => {
-    winston.debug( chalk.yellow( `Speckle worker process ${process.pid} now running on port ${port}.` ) )
+    logger.debug( chalk.yellow( `Speckle worker process ${process.pid} now running on port ${port}.` ) )
   } )
 }
