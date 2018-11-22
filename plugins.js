@@ -41,6 +41,7 @@ module.exports = ( ) => {
         It will load from ${pl.serveFrom + '-dupe'} instead.` )
       pl.serveFrom += '-dupe'
     }
+    pl.canonicalUrl = process.env.CANONICAL_URL + pl.serveFrom
   } )
   winston.debug( `Found ${plugins.length} plugin(s):${plugins.map( p => ' ' + p.name )}` )
 

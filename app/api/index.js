@@ -1,7 +1,7 @@
 const passport = require( 'passport' )
 
-module.exports = function ( app, express, urlRoot ) {
-  var r = new express.Router()
+module.exports = function( app, express, urlRoot, plugins ) {
+  var r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
   let mandatoryAuthorisation = passport.authenticate( 'jwt-strict', { session: false } )
@@ -153,13 +153,24 @@ module.exports = function ( app, express, urlRoot ) {
   // generate routes doc
   let routes = [ ]
   r.stack.forEach( ( middleware ) => {
-    if ( middleware.route ) { routes.push( Object.keys( middleware.route.methods ).map( m => m.toUpperCase() ) + ': /api' + middleware.route.path ) }
+    if ( middleware.route ) { routes.push( { method: Object.keys( middleware.route.methods ).map( m => m.toUpperCase( ) )[ 0 ], route: process.env.CANONICAL_URL + '/api' + middleware.route.path } ) }
+  } )
+
+  let grouped = { projects: [ ], clients: [ ], streams: [ ], accounts: [ ], comments: [ ], objects: [ ] }
+  routes.forEach( r => {
+    if ( r.route.includes( 'projects' ) ) grouped.projects.push( r )
+    if ( r.route.includes( 'clients' ) ) grouped.clients.push( r )
+    if ( r.route.includes( 'comments' ) ) grouped.comments.push( r )
+    if ( r.route.includes( 'streams' ) ) grouped.streams.push( r )
+    if ( r.route.includes( 'accounts' ) ) grouped.accounts.push( r )
+    if ( r.route.includes( 'objects' ) ) grouped.objects.push( r )
   } )
 
   let serverDescription = {
     serverName: process.env.SERVER_NAME,
     version: '1.x.x',
-    api: routes,
+    api: grouped,
+    plugins: plugins
   }
 
   r.get( '/', ( req, res ) => res.json( serverDescription ) )

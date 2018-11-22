@@ -102,8 +102,9 @@ if ( cluster.isMaster ) {
   plugins.forEach( plugin => {
     app.use( plugin.serveFrom, express.static( path.join( __dirname, plugin.sourceDir ) ) )
   } )
+
   // expose an api
-  app.use( '/plugins', ( req, res ) => res.json( plugins ) )
+  app.use( '/api/plugins', ( req, res ) => res.json( plugins ) )
 
   // Websockets & HTTP Servers
   var http = require( 'http' )
@@ -118,9 +119,9 @@ if ( cluster.isMaster ) {
 
   // Routes
   // handle api versions gracefully
-  app.use( '/api/v0', ( req, res ) => res.status( 410 ).json( { error: 'The v0 API has been removed' } ) )
-  require( './app/api/index' )( app, express, '/api' )
-  require( './app/api/index' )( app, express, '/api/v1' )
+  app.use( '/api/v0', ( req, res ) => res.status( 410 ).json( { error: 'The v0 API has been removed.' } ) )
+  require( './app/api/index' )( app, express, '/api', plugins )
+  require( './app/api/index' )( app, express, '/api/v1', plugins )
 
   /// /////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.
