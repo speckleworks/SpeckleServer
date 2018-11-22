@@ -27,6 +27,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // get other user's display profile xxx
   r.get( '/accounts/:userId', mandatoryAuthorisation, require( './accounts/UserProfile' ) )
 
+  // modify an account's role  (needs to be admin)
+  r.put( '/accounts/:userId', mandatoryAuthorisation, require( './accounts/UserPutByParam' ) )
+
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
 

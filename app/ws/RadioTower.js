@@ -82,10 +82,12 @@ module.exports = {
     // broadcasts a message to a streamId 'chat room'
     // TODO: implement non-streamId rooms
     broadcast( message, raw, senderClientId ) {
+      if ( message.streamId && message.streamId.trim( ) !== '' ) {}
+
       winston.debug( `📣 broadcast in ${message.streamId} from ${senderClientId}.` )
 
       for ( let ws of ClientStore.clients ) {
-        if ( ws.clientId !== senderClientId && ws.rooms.indexOf( message.streamId ) !== -1 ) { ws.send( raw ) }
+        if ( ws.clientId !== senderClientId && ws.rooms.indexOf( message.roomName ) !== -1 ) { ws.send( raw ) }
       }
     },
 
@@ -100,6 +102,7 @@ module.exports = {
       // This is for backwards compatibility, as the .NET clients implement this as such
       // In the future, all should switch to the "else" part below
       if ( message.streamId && message.streamId.trim( ) !== '' ) {
+        let roomName = `stream-${message.streamId}`
         DataStream.findOne( { streamId: message.streamId }, 'private canRead canWrite owner' ).lean( )
           .then( stream => {
             if ( !stream.private ) return true
@@ -107,11 +110,12 @@ module.exports = {
             return PermissionCheck( { _id: client.user._id }, 'read', stream )
           } )
           .then( ( ) => {
-            winston.debug( `Client ws joined ${message.streamId}` )
-            if ( client.rooms.indexOf( message.streamId ) === -1 ) { client.rooms.push( message.streamId ) } else { client.send( 'You already joined that room.' ) }
+            winston.debug( `Client ws joined ${roomName}` )
+            if ( client.rooms.indexOf( roomName ) === -1 ) { client.rooms.push( roomName ) } else { client.send( 'You already joined that room.' ) }
           } )
           .catch( err => {
             winston.error( 'got an error on join: ' + err.message )
+            client.send( `Failed to join room ${roomName}` )
             return winston.debug( `Error: ${err.toString()})` )
           } )
       } else if ( message.resourceId && message.resourceId.trim( ) !== '' && message.resourceType && message.resourceId.trim( ) !== '' ) {
@@ -143,7 +147,7 @@ module.exports = {
       if ( !client ) { return winston.debug( `No client with id ${senderClientId} found in pid ${process.pid} (this is fine, it might be on another pid).` ) }
 
       // again, backwards compatibility
-      if ( message.streamId ) message.roomName = message.streamId
+      if ( message.streamId ) message.roomName = `stream-${message.streamId}`
       // just in case, if no room name, assemble it from resourceid and resource type
       if ( !message.roomName && message.resourceId && message.resourceId.trim( ) !== '' && message.resourceType && message.resourceId.trim( ) !== '' )
         message.roomName = `${message.resourceType}-${message.resourceId}`

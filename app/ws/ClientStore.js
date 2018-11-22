@@ -2,8 +2,6 @@ const winston = require( '../../config/logger' )
 const chalk = require( 'chalk' )
 const redis = require( 'redis' )
 
-
-
 // this is where we keep track on each process what clients are connected.
 module.exports = {
   clients: [ ],

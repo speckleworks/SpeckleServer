@@ -3,7 +3,7 @@ const jwt = require( 'jsonwebtoken' )
 
 const User = require( '../../../models/User' )
 
-module.exports = function ( req, res ) {
+module.exports = function( req, res ) {
   winston.debug( 'register new user route' )
   if ( !req.body.email ) { res.status( 400 ); return res.send( { success: false, message: 'Do not fuck with us. Give us your email.' } ) }
   if ( !req.body.password ) { res.status( 400 ); return res.send( { success: false, message: 'Passwords are a necessary evil, fam.' } ) }
@@ -18,12 +18,19 @@ module.exports = function ( req, res ) {
   } )
 
   let sessionSecret = process.env.SESSION_SECRET
+  let userCount = 1 // do not default to 0
 
-  User.findOne( { 'email': req.body.email } )
+  User.count( {} )
+    .then( count => {
+      userCount = count
+      return User.findOne( { 'email': req.body.email } )
+    } )
     .then( user => {
       if ( user ) throw new Error( 'Email taken. Please login. Thanks!' )
       myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, sessionSecret, { expiresIn: '2y' } )
-      return myUser.save()
+      if ( userCount === 0 )
+        myUser.role = 'admin'
+      return myUser.save( )
     } )
     .then( savedUser => {
       let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )

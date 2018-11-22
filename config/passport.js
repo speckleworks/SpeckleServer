@@ -5,7 +5,7 @@ var ExtractJwt = require( 'passport-jwt' ).ExtractJwt
 
 var User = require( '../models/User' )
 
-module.exports = function ( passport ) {
+module.exports = function( passport ) {
   let strictOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme( 'JWT' ),
     secretOrKey: process.env.SESSION_SECRET
@@ -15,7 +15,9 @@ module.exports = function ( passport ) {
   passport.use( 'jwt-strict', new JwtStrategy( strictOptions, ( jwtPayload, done ) => {
     User.findOne( { _id: jwtPayload._id } )
       .then( user => {
-        if ( !user ) throw new Error( 'No user found.' )
+        if ( !user ) {
+          done( new Error( 'No user with these credentials found.' ), false )
+        } else
         done( null, user )
       } )
       .catch( err => {
@@ -23,5 +25,5 @@ module.exports = function ( passport ) {
       } )
   } ) )
 
-  passport.use( new AnonymousStrategy() )
+  passport.use( new AnonymousStrategy( ) )
 }
