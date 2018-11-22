@@ -1,11 +1,8 @@
 'use strict'
 const fs = require( 'fs' )
-const path = require( 'path' )
 const { createLogger, format, transports } = require( 'winston' )
-const drf = require( 'winston-daily-rotate-file' )
+require( 'winston-daily-rotate-file' )
 
-
-const env = process.env.NODE_ENV || 'dev'
 const logDir = 'logs'
 
 if ( !fs.existsSync( logDir ) ) {
@@ -26,10 +23,7 @@ const logger = createLogger( {
   transports: [
     new transports.Console( {
       level: 'debug',
-      format: format.combine(
-        format.colorize( ),
-        format.timestamp( { format: 'YYYY-MM-DD HH:mm:ss' } ),
-        format.printf( info => `${info.timestamp} ${info.level}: ${info.message}` ), )
+      format: format.combine( format.colorize( ), format.timestamp( { format: 'YYYY-MM-DD HH:mm:ss' } ), format.printf( info => `${info.timestamp} ${info.level}: ${info.message}` ) )
     } ),
     drfTransport
   ]

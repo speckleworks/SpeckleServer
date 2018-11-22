@@ -8,18 +8,15 @@ const radioTower = require( './RadioTower' )
 
 const User = require( '../../models/User' )
 
+// start a redis publisher & subscriber
+let redisPublisher = redis.createClient( process.env.REDIS_URL )
+redisPublisher.on( 'connect', ( ) => {
+  winston.debug( `${process.pid} connected to redis.` )
+} )
+
 module.exports = function( wss ) {
   // start a redis subscriber in the radio tower
   radioTower.initRedis( )
-
-  // start a redis publisher
-  let redisPublisher = redis.createClient( process.env.REDIS_URL )
-  let redisSubscriber = redis.createClient( process.env.REDIS_URL )
-  redisSubscriber.subscribe( 'id-check-response' )
-
-  redisPublisher.on( 'connect', ( ) => {
-    winston.debug( `${process.pid} connected to redis.` )
-  } )
 
   wss.on( 'connection', function( ws, req ) {
     winston.debug( chalk.blue( `Ws connection request in PID ${process.pid}` ) )
@@ -31,13 +28,6 @@ module.exports = function( wss ) {
       ws.close( )
     }
     let token = location.query.access_token
-
-    redisPublisher.publish( 'id-check', location.query.client_id )
-    redisSubscriber.on( 'message', ( channel, message ) => {
-      if ( channel !== 'id-check-response' ) return
-      ws.send('Bad boy, dupe ids and all that.')
-      ws.close( )
-    } )
 
     ws.authorised = false
     ws.clientId = location.query.client_id
@@ -63,7 +53,6 @@ module.exports = function( wss ) {
         ws.missedPingsCount = 0
         return
       }
-
       // pub to redis otherwise
       redisPublisher.publish( 'speckle-message', JSON.stringify( { content: message, clientId: ws.clientId } ) )
     } )

@@ -33,17 +33,6 @@ module.exports = {
             winston.error( err.message )
           } )
       }
-      if ( channel === 'id-check' ) {
-        //  TODO
-        console.log( 'id checking bot', message )
-        let existingClient = ClientStore.clients.find( client => client.clientId === message )
-        if ( existingClient ) {
-          console.log( 'Heya boy.' )
-          this.publisher.publish( 'id-check-response', 'true' )
-        }
-
-        //return existingClient === null
-      }
     } )
   },
 

@@ -7,6 +7,7 @@ const passport = require( 'passport' )
 const chalk = require( 'chalk' )
 const mongoose = require( 'mongoose' ).set( 'debug', false )
 const expressWinston = require( 'express-winston' )
+const redis = require( 'redis' )
 const logger = require( './config/logger' )
 
 // load up .env
@@ -40,6 +41,13 @@ if ( cluster.isMaster ) {
     logger.debug( `Speckle worker ${worker.process.pid} just died with code ${code} and signal ${signal}.` )
     logger.debug( `Starting a new one...` )
     cluster.fork( )
+  } )
+
+  // flush redis
+  let redisClient = redis.createClient( process.env.REDIS_URL )
+  redisClient.on( 'connect', ( ) => {
+    logger.debug( `Flushing redis database.` )
+    redisClient.flushdb( )
   } )
 
   /////////////////////////////////////////////////////////////////////////
