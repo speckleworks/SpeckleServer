@@ -9,9 +9,11 @@ module.exports = ( req, res ) => {
   winston.debug( chalk.bgGreen( 'Patching stream', req.params.streamId ) )
 
   if ( !req.params.streamId || !req.body ) {
-    res.status( 400 )
-    return res.send( { success: false, message: 'No streamId or stream provided.' } )
+    return res.status( 400 ).send( { success: false, message: 'No streamId or stream provided.' } )
   }
+
+  if ( Object.keys( req.body ).indexOf( 'streamId' ) )
+    return res.status( 400 ).send( { success: false, message: 'You are trying to modify the streamId; that is not allowed. Sorry!' } )
 
   let stream = {}
 
@@ -24,14 +26,14 @@ module.exports = ( req, res ) => {
     .then( result => {
       stream.set( req.body )
       if ( req.body.objects ) stream.objects = result.map( obj => obj._id )
-      return stream.save()
+      return stream.save( )
     } )
-    .then( () => {
+    .then( ( ) => {
       res.send( { success: true, message: 'Patched stream fields: ' + Object.keys( req.body ) } )
     } )
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString() } )
+      res.send( { success: false, message: err.toString( ) } )
     } )
 }
