@@ -8,7 +8,6 @@ const DataStream = require( '../../../models/DataStream' )
 module.exports = ( req, res ) => {
   winston.debug( chalk.bgGreen( 'Getting *all* streams for user.' ) )
   let userSelect = '_id name surname email company'
-  let userOwnedStreams = [ ]
 
   let query = q2m( req.query )
 
@@ -25,7 +24,9 @@ module.exports = ( req, res ) => {
             stream.canWrite = stream.canWrite.map( u => u._id )
           } )
         }
-      } catch( e ) { }
+      } catch ( e ) {
+        winston.debug( e.message )
+      }
       res.send( { success: true, message: 'Stream list returned. Contains both owned and shared with streams.', resources: resources } )
     } )
     .catch( err => {
