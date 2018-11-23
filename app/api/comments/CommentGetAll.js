@@ -1,9 +1,11 @@
 const winston = require( '../../../config/logger' )
-
+const q2m = require( 'query-to-mongo' )
 const Comment = require( '../../../models/Comment' )
 
 module.exports = ( req, res ) => {
-  Comment.find( { owner: req.user._id } )
+  let query = q2m( req.query )
+
+  Comment.find( { owner: req.user._id }, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
     .then( resources => {
       res.send( { success: true, resources: resources } )
     } )
