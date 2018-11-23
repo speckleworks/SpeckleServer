@@ -31,7 +31,11 @@ module.exports = function( wss ) {
 
     ws.authorised = false
     ws.clientId = location.query.client_id
-    ws.rooms = [ location.query.stream_id ]
+    ws.rooms = []
+    if ( location.query.stream_id ) {
+      winston.debug(`${ws.clientId} joined room stream-${location.query.stream_id} from connection start.`)
+      ws.rooms = [ `stream-${location.query.stream_id}` ]
+    }
 
     // authentication for ws sessions
     User.findOne( { apitoken: token } )

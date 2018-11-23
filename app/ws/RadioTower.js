@@ -82,12 +82,18 @@ module.exports = {
     // broadcasts a message to a streamId 'chat room'
     // TODO: implement non-streamId rooms
     broadcast( message, raw, senderClientId ) {
-      if ( message.streamId && message.streamId.trim( ) !== '' ) {}
+      let roomName = ''
+      if ( message.streamId && message.streamId.trim( ) !== '' ) {
+        roomName = `stream-${message.streamId}`
+      } else if ( !( !message.resourceId || !message.resourceType ) )
+        roomName = `${message.resourceType}-${message.resourceId}`
 
-      winston.debug( `📣 broadcast in ${message.streamId} from ${senderClientId}.` )
+      if ( roomName === '' )
+        return winston.debug( `Failed to deliver broadcast from ${senderClientId} (no room name).` )
 
+      winston.debug( `📣 broadcast in ${roomName} from ${senderClientId}.` )
       for ( let ws of ClientStore.clients ) {
-        if ( ws.clientId !== senderClientId && ws.rooms.indexOf( message.roomName ) !== -1 ) { ws.send( raw ) }
+        if ( ws.clientId !== senderClientId && ws.rooms.indexOf( roomName ) !== -1 ) { ws.send( raw ) }
       }
     },
 

@@ -16,6 +16,7 @@ var dataStreamSchema = mongoose.Schema( {
 
   name: { type: String, default: 'Speckle Stream' },
   description: { type: String, default: 'This is a simple speckle stream.' },
+  tags: [ { type: String } ],
 
   baseProperties: { type: Object, default: {} },
 
