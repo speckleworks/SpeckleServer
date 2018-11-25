@@ -10,14 +10,11 @@ const DataStream = require( '../../models/DataStream' )
 
 module.exports = {
   subscriber: null,
-  publisher: null,
 
   initRedis( ) {
     winston.debug( chalk.magenta( 'Initialising redis in radio tower.' ) )
     this.subscriber = redis.createClient( process.env.REDIS_URL )
     this.subscriber.subscribe( 'speckle-message' )
-    this.subscriber.subscribe( 'id-check' )
-    this.publisher = redis.createClient( process.env.REDIS_URL )
 
     this.subscriber.on( 'message', ( channel, message ) => {
       if ( channel === 'speckle-message' ) {
@@ -60,13 +57,17 @@ module.exports = {
     }
   },
 
-  // holds all current top level ws events that speckle understands
-  // the actual message, event type, info & etc. should be in message.args
+  // Holds all current top level ws events that speckle understands.
+  // The actual message, client-facing event type, info & etc.
+  // should be in **message.args**.
+  // NB: A room is defined by a resourceType (can be project, stream, etc.) and
+  // a resourceId (its database id, or in the case of streams, its streamId).
+  // Thereafter the roomName is constructed as `${resourceType}-${resourceId}.
   // What's what:
-  // 1) message: sends direct messages between ws clients
-  // 2) broadcast: broadcasts a message to a room (as defined by a streamId)
-  // 3) join: client joins a new room (as defined by a streamId) if it has read permissions
-  // 4) leave: client leaves a room (as defined by a streamId)
+  // 1) message: sends direct messages between ws clients, based on their client id.
+  // 2) broadcast: broadcasts a message to a room.
+  // 3) join: client joins a new room if it has read permissions on that resource.
+  // 4) leave: client leaves a room.
   events: {
     // sends a message to a ws with a specific session id
     message( message, raw, senderClientId ) {
@@ -79,8 +80,7 @@ module.exports = {
       recipient.send( raw )
     },
 
-    // broadcasts a message to a streamId 'chat room'
-    // TODO: implement non-streamId rooms
+    // Broadcasts a message to a 'chat room'. See description above on how a room is defined.
     broadcast( message, raw, senderClientId ) {
       let roomName = ''
       if ( message.streamId && message.streamId.trim( ) !== '' ) {
@@ -97,7 +97,7 @@ module.exports = {
       }
     },
 
-    // join a streamId "chat room"
+    // Join a "chat room". See description above on how a room is defined.
     join( message, raw, senderClientId ) {
       winston.debug( ` ➕ join request from ${senderClientId} in ${process.pid}` )
 
@@ -128,8 +128,12 @@ module.exports = {
         GetResourceByType( message.resourceType, message.resourceId )
           .then( resource => {
             if ( !resource.private ) return true
-            if ( resource.private )
+            if ( resource.private && client.authorised )
               return PermissionCheck( { _id: client.user._id }, 'read', resource )
+            else {
+              client.send('You are an anonymous client. You cannot access this resource.')
+              throw new Error('Anonymous room join for private resource.')
+            }
           } )
           .then( ( ) => {
             if ( client.rooms.indexOf( `${message.resourceType}-${message.resourceId}` ) === -1 ) {
@@ -141,12 +145,13 @@ module.exports = {
             }
           } )
           .catch( err => {
-            winston.error( err.message )
+            client.send( err.message )
+            winston.error( `WS join room: ` + err.message )
           } )
       }
     },
 
-    // leaves a streamId "chat room"
+    // Leaves a "chat room". See description above on how a room is defined.
     leave( message, raw, senderClientId ) {
       // TODO
       let client = ClientStore.clients.find( cl => cl.clientId === senderClientId )

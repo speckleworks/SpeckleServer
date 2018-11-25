@@ -28,10 +28,10 @@ module.exports = {
       ws.pinger = setInterval( ws => {
         if ( !ws.alive ) {
           ws.missedPingsCount++
-          if ( ws.missedPingsCount > 25 ) { ws.send( 'Warning: you missed 25 pings. 50 missed pings will get you kicked.' ) }
-          if ( ws.missedPingsCount > 50 ) {
-            winston.error( chalk.red( 'Removing client socket, missed too many pings.' ) )
-            ws.send( 'You missed 50 pings. Bye!' )
+          if ( ws.missedPingsCount > 5 ) { ws.send( 'Warning: you missed 5 mins of pings. After 10, you will be kicked!' ) }
+          if ( ws.missedPingsCount > 10 ) {
+            winston.error( chalk.red( 'Removing client socket after 10 mins of inactivity.' ) )
+            ws.send( 'You missed 10 minutes of pings. Bye!' )
             this.remove( ws )
             return
           }
@@ -39,7 +39,7 @@ module.exports = {
         }
         ws.alive = false
         ws.send( 'ping' )
-      }, 10000, ws ) // ping every 10 seconds, after 500 seconds of no pingbacks we kick the socket
+      }, 60000, ws ) // ping every mimute.
 
       // push to my amazing datastore
       this.clients.push( ws )

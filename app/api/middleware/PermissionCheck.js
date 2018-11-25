@@ -2,6 +2,8 @@
 const winston = require( '../../../config/logger' )
 const chalk = require( 'chalk' )
 
+const UserModel = require( '../../../models/User' )
+
 const ProtectedFields = require( './ProtectedFields' )
 /*
 Takes in user, operatin scope, resource and optionally modifier keys
@@ -13,8 +15,16 @@ module.exports = ( user, operation, resource, mod ) => {
     if ( !resource ) return reject( new Error( 'Resource not found.' ) )
     if ( user == null ) user = { role: 'guest', _id: '' }
 
+    // handle users as a special case
+    if ( resource instanceof UserModel ) {
+      if ( user.role === 'admin' || user._id.toString( ) === resource._id.toString( ) )
+        return resolve( resource, 'full' )
+      else
+        return reject( new Error( 'Not authorised' ) )
+    }
+
     // admin or owner: anything goes
-    if ( user.role === 'admin' || user._id.toString() === resource.owner.toString() ) {
+    if ( user.role === 'admin' || user._id.toString( ) === resource.owner.toString( ) ) {
       // winston.debug( chalk.bgGreen( 'checking perms' ), 'user is admin or owner' )
       return resolve( resource, 'full' )
     }
@@ -31,12 +41,12 @@ module.exports = ( user, operation, resource, mod ) => {
     }
 
     // let's get basic
-    let canRead = resource.canRead.map( x => x.toString() )
-    let canWrite = resource.canWrite.map( x => x.toString() )
+    let canRead = resource.canRead.map( x => x.toString( ) )
+    let canWrite = resource.canWrite.map( x => x.toString( ) )
 
     switch ( operation ) {
       case 'write':
-        if ( canWrite.indexOf( user._id.toString() ) >= 0 ) {
+        if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           // winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
           return resolve( resource, 'normal' )
         }
@@ -48,11 +58,11 @@ module.exports = ( user, operation, resource, mod ) => {
           // winston.debug( chalk.bgGreen( 'checking perms' ), `${operation} ok, resource is public` )
           return resolve( resource, 'normal' )
         }
-        if ( canWrite.indexOf( user._id.toString() ) >= 0 ) {
+        if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           // winston.debug( chalk.bgGreen( 'checking perms' ), `user has write & ${operation} access` )
           return resolve( resource, 'normal' )
         }
-        if ( canRead.indexOf( user._id.toString() ) >= 0 ) {
+        if ( canRead.indexOf( user._id.toString( ) ) >= 0 ) {
           // winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
           return resolve( resource, 'normal' )
         }
@@ -66,11 +76,11 @@ module.exports = ( user, operation, resource, mod ) => {
         }
         if ( user.role === 'guest' && resource.anonymousComments === false ) { return reject( new Error( `You are not authorised to ${operation}.` ) ) }
 
-        if ( canWrite.indexOf( user._id.toString() ) >= 0 ) {
+        if ( canWrite.indexOf( user._id.toString( ) ) >= 0 ) {
           // winston.debug( chalk.bgGreen( 'checking perms' ), `user has write & ${operation} access` )
           return resolve( resource, 'normal' )
         }
-        if ( canRead.indexOf( user._id.toString() ) >= 0 ) {
+        if ( canRead.indexOf( user._id.toString( ) ) >= 0 ) {
           // winston.debug( chalk.bgGreen( 'checking perms' ), `user has ${operation} access` )
           return resolve( resource, 'normal' )
         }
