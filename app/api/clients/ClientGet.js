@@ -8,7 +8,7 @@ module.exports = ( req, res ) => {
     res.status( 400 )
     return res.send( { success: false, message: 'Malformed request.' } )
   }
-  Client.findOne( { _id: req.params.clientId } )
+  Client.findOne( { _id: req.params.clientId } ).populate( 'owner', 'name surname email company' )
     .then( result => PermissionCheck( req.user, 'read', result ) )
     .then( result => {
       if ( !result ) throw new Error( 'No client found.' )
@@ -17,6 +17,6 @@ module.exports = ( req, res ) => {
     .catch( err => {
       winston.error( err )
       res.status( 400 )
-      res.send( { success: false, message: err.toString() } )
+      res.send( { success: false, message: err.toString( ) } )
     } )
 }

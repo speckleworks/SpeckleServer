@@ -131,8 +131,8 @@ module.exports = {
             if ( resource.private && client.authorised )
               return PermissionCheck( { _id: client.user._id }, 'read', resource )
             else {
-              client.send('You are an anonymous client. You cannot access this resource.')
-              throw new Error('Anonymous room join for private resource.')
+              client.send( 'You are an anonymous client. You cannot access this resource.' )
+              throw new Error( 'Anonymous room join for private resource.' )
             }
           } )
           .then( ( ) => {
