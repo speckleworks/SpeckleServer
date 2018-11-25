@@ -5,5 +5,6 @@
   "serveFrom": "/sample-plugin",
   "author": "DAS",
   "contact":"test@dimitrie.org",
-  "homepage":"https://dimitrie.org"
+  "homepage":"https://dimitrie.org",
+  "git":"https://github.com/speckleworks/SpeckleViewer"
 }

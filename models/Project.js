@@ -3,7 +3,7 @@ var mongoose = require( 'mongoose' )
 var projectSchema = mongoose.Schema( {
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  private: { type: Boolean, default: false },
+  private: { type: Boolean, default: true },
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   anonymousComments: { type: Boolean, default: false },
@@ -13,12 +13,12 @@ var projectSchema = mongoose.Schema( {
 
   // project name
   name: { type: String, default: 'A Simple Speckle Project' },
-  description: { type: String, default: 'This is a project.' },
+  description: { type: String, default: 'This is a project, which basically helps you share a set a of streams with a set of users.' },
 
   //  streams in  this project
   streams: [ { type: String } ],
 
-  teamMembers: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
+  // teamMembers: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
 
   //  users in  this project
   permissions: {
