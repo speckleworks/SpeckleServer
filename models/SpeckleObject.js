@@ -15,22 +15,23 @@ var speckleObjectSchema = mongoose.Schema( {
   type: {
     type: String,
     enum: DataTypes,
-    required: true
+    required: true,
+    index: true
   },
 
   // Object name
-  name: { type: String, default: 'Object Doe' },
+  name: { type: String, default: null },
 
   // Geometry hash
   geometryHash: { type: String, default: null, index: true },
 
-  // Object hash (= GeometryHash + Properties) 
-  hash: { type: String, default: null, required: true, index: true, required: true },
+  // Object hash (= GeometryHash + Properties)
+  hash: { type: String, default: null, required: true, index: true },
 
   // Application's object id, whatever form it takes
   applicationId: { type: String, default: null },
 
-  // All the extra properties 
+  // All the extra properties
   properties: { type: Object, default: null },
 
   // Flag for deletion
@@ -48,7 +49,7 @@ var speckleObjectSchema = mongoose.Schema( {
 }, { timestamps: true, strict: false } )
 
 speckleObjectSchema.pre( 'save', next => {
-  next( )
+  next()
 } )
 
 var SpeckleObject = mongoose.model( 'SpeckleObject', speckleObjectSchema )

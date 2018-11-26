@@ -6,25 +6,28 @@ var dataStreamSchema = mongoose.Schema( {
 
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  private: { type: Boolean, default: false },
+  private: { type: Boolean, default: !process.env.PUBLIC_STREAMS },
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   anonymousComments: { type: Boolean, default: false },
+
   // comments
   comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
 
   name: { type: String, default: 'Speckle Stream' },
+  description: { type: String, default: 'This is a simple speckle stream.' },
+  tags: [ { type: String } ],
 
   baseProperties: { type: Object, default: {} },
 
   globalMeasures: { type: Object, default: {} },
 
-  isComputedResult: { type: Boolean, default: false },  
+  isComputedResult: { type: Boolean, default: false },
 
   objects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'SpeckleObject' } ],
 
   layers: { type: Array, default: [ ] },
-  
+
   viewerLayers: { type: Array, default: [ ] },
 
   // versioning

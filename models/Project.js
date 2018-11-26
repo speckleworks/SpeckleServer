@@ -3,7 +3,7 @@ var mongoose = require( 'mongoose' )
 var projectSchema = mongoose.Schema( {
   // ownership & permissions
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  private: { type: Boolean, default: false },
+  private: { type: Boolean, default: true },
   canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
   anonymousComments: { type: Boolean, default: false },
@@ -12,20 +12,19 @@ var projectSchema = mongoose.Schema( {
   comments: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' } ],
 
   // project name
-  name: { type: String, default: 'A Speckle Project' },
+  name: { type: String, default: 'A Simple Speckle Project' },
+  description: { type: String, default: 'This is a project, which basically helps you share a set a of streams with a set of users.' },
 
   //  streams in  this project
-  streams: [ { type: mongoose.Schema.Types.ObjectId, ref: 'DataStream' } ],
+  streams: [ { type: String } ],
+
+  // teamMembers: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
 
   //  users in  this project
   permissions: {
-    streamsDefaulPrivate: { type: Boolean, default: false },
     canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-    canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
-  },
-
-  //  sub projects
-  subProjects: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Project' } ],
+    canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ]
+  }
 
   // strict false so peeps can expand the schema if they wanna add shit 💩
 }, { timestamps: true, strict: false } )

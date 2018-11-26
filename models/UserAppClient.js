@@ -12,17 +12,17 @@ var clientSchema = mongoose.Schema( {
 
   role: { type: String }, // Receiver, Sender, Hybrid
 
-  documentName: { type: String },
+  documentName: { type: String, index: true },
 
-  documentGuid: { type: String }, // document unique id. 
+  documentGuid: { type: String }, // document unique id.
 
   documentType: { type: String }, // Rhino, Grasshopper, Node, Browser, etc.
 
   documentLocation: { type: String }, // Location
 
-  streamId: { type: String }, // stream that we're connected to
+  streamId: { type: String, index: true}, // stream that we're connected to
 
-  online: { type: Boolean, default: true, strict: false } 
+  online: { type: Boolean, default: true, strict: false }
 
 }, { timestamps: true } )
 

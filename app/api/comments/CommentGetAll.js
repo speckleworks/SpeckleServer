@@ -1,0 +1,17 @@
+const winston = require( '../../../config/logger' )
+const q2m = require( 'query-to-mongo' )
+const Comment = require( '../../../models/Comment' )
+
+module.exports = ( req, res ) => {
+  let query = q2m( req.query )
+
+  Comment.find( { owner: req.user._id }, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+    .then( resources => {
+      res.send( { success: true, resources: resources } )
+    } )
+    .catch( err => {
+      winston.error( err )
+      res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )
+      res.send( { success: false, message: err.message, streamId: req.streamId } )
+    } )
+}
