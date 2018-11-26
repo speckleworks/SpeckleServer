@@ -11,7 +11,7 @@ module.exports = ( req, res ) => {
 
   let query = q2m( req.query )
 
-  DataStream.find( { '$or': [ { owner: req.user._id }, { 'canWrite': mongoose.Types.ObjectId( req.user._id ) }, { 'canRead': mongoose.Types.ObjectId( req.user._id ) } ] }, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+  DataStream.find( { '$or': [ { owner: req.user._id }, { 'canWrite': mongoose.Types.ObjectId( req.user._id ) }, { 'canRead': mongoose.Types.ObjectId( req.user._id ) } ] }, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } ).lean()
     .populate( { path: 'canRead', select: userSelect } )
     .populate( { path: 'canWrite', select: userSelect } )
     .then( myStreams => {
@@ -27,6 +27,13 @@ module.exports = ( req, res ) => {
       } catch ( e ) {
         winston.debug( e.message )
       }
+
+      if ( resources[ 0 ].objects !== null ) {
+        resources.forEach( stream => {
+          stream.objects = stream.objects.map( o => { return { _id: o, type: 'Placeholder' } } )
+        } )
+      }
+
       res.send( { success: true, message: 'Stream list returned. Contains both owned and shared with streams.', resources: resources } )
     } )
     .catch( err => {
