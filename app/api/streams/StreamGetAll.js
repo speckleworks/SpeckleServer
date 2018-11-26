@@ -11,7 +11,7 @@ module.exports = ( req, res ) => {
 
   let query = q2m( req.query )
 
-  DataStream.find( { '$or': [ { owner: req.user._id }, { 'canWrite': mongoose.Types.ObjectId( req.user._id ) }, { 'canRead': mongoose.Types.ObjectId( req.user._id ) } ] }, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+  DataStream.find( { '$or': [ { owner: req.user._id }, { 'canWrite': mongoose.Types.ObjectId( req.user._id ) }, { 'canRead': mongoose.Types.ObjectId( req.user._id ) } ] }, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } ).lean( )
     .populate( { path: 'canRead', select: userSelect } )
     .populate( { path: 'canWrite', select: userSelect } )
     .then( myStreams => {
@@ -19,14 +19,18 @@ module.exports = ( req, res ) => {
       try {
         if ( !req.query.populatePermissions ) {
           resources.forEach( stream => {
-            stream.owner = stream.owner._id
-            stream.canRead = stream.canRead.map( u => u._id )
-            stream.canWrite = stream.canWrite.map( u => u._id )
+            if ( stream.owner ) stream.owner = stream.owner._id
+            if ( stream.canRead ) stream.canRead = stream.canRead.map( u => u._id )
+            if ( stream.canWrite ) stream.canWrite = stream.canWrite.map( u => u._id )
           } )
         }
       } catch ( e ) {
         winston.debug( e.message )
       }
+      resources.forEach( stream => {
+        if ( stream.objects ) stream.objects = stream.objects.map( o => { return { _id: o, type: 'Placeholder' } } )
+      } )
+
       res.send( { success: true, message: 'Stream list returned. Contains both owned and shared with streams.', resources: resources } )
     } )
     .catch( err => {
