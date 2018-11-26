@@ -91,7 +91,7 @@ module.exports = {
       if ( roomName === '' )
         return winston.debug( `Failed to deliver broadcast from ${senderClientId} (no room name).` )
 
-      winston.debug( `📣 broadcast in ${roomName} from ${senderClientId}.` )
+      winston.debug( `📣 broadcast in ${roomName} from ${senderClientId}: ${message.args.eventType}` )
       for ( let ws of ClientStore.clients ) {
         if ( ws.clientId !== senderClientId && ws.rooms.indexOf( roomName ) !== -1 ) { ws.send( raw ) }
       }

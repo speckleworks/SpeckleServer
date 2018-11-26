@@ -12,7 +12,7 @@ var clientSchema = mongoose.Schema( {
 
   role: { type: String }, // Receiver, Sender, Hybrid
 
-  documentName: { type: String },
+  documentName: { type: String, index: true },
 
   documentGuid: { type: String }, // document unique id.
 
