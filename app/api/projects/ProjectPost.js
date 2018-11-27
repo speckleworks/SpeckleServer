@@ -14,7 +14,7 @@ module.exports = ( req, res ) => {
   project.save()
     .then( resource => res.send( { success: true, resource: resource } ) )
     .catch( err => {
-      winston.error( err )
+      winston.error( JSON.stringify( err ) )
       res.status( 400 )
       return res.send( { success: false, message: err.toString() } )
     } )

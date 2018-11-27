@@ -13,7 +13,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, message: 'Saved objects to database.', resources: objects.map( o => { return { type: 'Placeholder', _id: o._id } } ) } )
     } )
     .catch( err => {
-      winston.error( err )
+      winston.error( JSON.stringify( err ) )
       res.status( 400 )
       res.send( { success: false, message: err.toString() } )
     } )

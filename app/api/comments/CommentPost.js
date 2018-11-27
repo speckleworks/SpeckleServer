@@ -27,7 +27,7 @@ module.exports = function ( req, res ) {
       res.send( { success: true, message: 'Stop talking and chatting and do some work.', resource: result[ 1 ] } )
     } )
     .catch( err => {
-      winston.error( err )
+      winston.error( JSON.stringify( err ) )
       res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )
       res.send( { success: false, message: err.message, streamId: req.streamId } )
     } )

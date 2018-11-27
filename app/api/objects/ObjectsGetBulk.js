@@ -29,7 +29,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, resources: list } )
     } )
     .catch( err => {
-      winston.error( err )
+      winston.error( JSON.stringify( err ) )
       res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
       res.send( { success: false, message: err.message, streamId: req.streamId } )
     } )

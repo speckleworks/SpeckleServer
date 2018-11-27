@@ -25,7 +25,7 @@ module.exports = function( req, res ) {
       res.send( { success: true, message: 'User profile updated.' } )
     } )
     .catch( err => {
-      winston.error( err.message )
+      winston.error( JSON.stringify( err ) )
       res.status( 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )

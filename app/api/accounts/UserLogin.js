@@ -30,7 +30,7 @@ module.exports = function( req, res ) {
       } )
     } )
     .catch( err => {
-      winston.error( err )
+      winston.error( JSON.stringify( err ) )
       res.status( 401 ).send( { success: false, message: err } )
     } )
 }
