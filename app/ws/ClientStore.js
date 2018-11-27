@@ -39,7 +39,9 @@ module.exports = {
         }
         ws.alive = false
         ws.send( 'ping' )
-      }, 60000, ws ) // ping every mimute.
+        // HIC SVNT DRACONES: when ping was every 60s, socket connections would get dropped
+        // on the deploted server. Perhaps due to a TTL in nginx on hestia.
+      }, 30000, ws ) // ping every 30s.
 
       // push to my amazing datastore
       this.clients.push( ws )
