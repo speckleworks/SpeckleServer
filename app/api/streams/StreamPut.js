@@ -36,7 +36,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, message: 'Patched stream fields: ' + Object.keys( req.body ) } )
     } )
     .catch( err => {
-      winston.error( err.message )
+      winston.error( JSON.stringify( err ) )
       res.status( 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )

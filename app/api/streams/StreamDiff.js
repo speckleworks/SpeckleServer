@@ -48,7 +48,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, objects: objects, layers: layers } )
     } )
     .catch( err => {
-      winston.error( err )
+      winston.error( JSON.stringify( err ) )
       res.status( 400 )
       res.send( { success: false, message: err.toString( ) } )
     } )

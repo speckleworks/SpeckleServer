@@ -22,7 +22,7 @@ module.exports = ( req, res ) => {
       res.send( { success: true, resources: clients, message: `Client list for stream ${req.params.streamId} returned.` } )
     } )
     .catch( err => {
-      winston.error( err )
+      winston.error( JSON.stringify( err ) )
       res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )
       res.send( { success: false, message: err.message, streamId: req.streamId } )
     } )
