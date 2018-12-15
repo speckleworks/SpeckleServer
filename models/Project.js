@@ -14,6 +14,7 @@ var projectSchema = mongoose.Schema( {
   // project name
   name: { type: String, default: 'A Simple Speckle Project' },
   description: { type: String, default: 'This is a project, which basically helps you share a set a of streams with a set of users.' },
+  tags: [ { type: String } ],
 
   //  streams in  this project
   streams: [ { type: String } ],
