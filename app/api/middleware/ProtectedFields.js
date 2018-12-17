@@ -2,8 +2,8 @@
 
 module.exports = [
   'owner',
-  'canRead',
-  'canWrite',
-  'private',
+  // 'canRead',
+  // 'canWrite',
+  // 'private',
   'email'
 ]
