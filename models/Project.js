@@ -25,7 +25,9 @@ var projectSchema = mongoose.Schema( {
   permissions: {
     canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
     canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ]
-  }
+  },
+
+  deleted: { type: Boolean, default: false }
 
   // strict false so peeps can expand the schema if they wanna add shit 💩
 }, { timestamps: true, strict: false } )

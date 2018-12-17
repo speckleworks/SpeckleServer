@@ -10,7 +10,7 @@ module.exports = ( req, res ) => {
   }
 
   Project.findOne( { _id: req.params.projectId } )
-    .then( resource => PermissionCheck( req.user, 'read', resource ) )
+    .then( resource => PermissionCheck( req.user, 'write', resource ) )
     .then( resource => resource.set( req.body ).save( ) )
     .then( ( ) => {
       res.send( { success: true, message: `Patched ${Object.keys( req.body )} for ${req.params.projectId}.` } )
