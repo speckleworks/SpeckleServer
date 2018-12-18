@@ -37,6 +37,6 @@ var dataStreamSchema = mongoose.Schema( {
 
   deleted: { type: Boolean, default: false }
 
-}, { timestamps: true } )
+}, { timestamps: true, strict: false } )
 
 module.exports = mongoose.model( 'DataStream', dataStreamSchema )
