@@ -20,19 +20,21 @@ module.exports = ( ) => {
   } )
 
   // read in manifest files
-  let plugins = []
+  let plugins = [ ]
   pluginDirs.forEach( dir => {
     let file = path.normalize( `${dir}//speckle-plugin-manifest.json` )
     if ( fs.existsSync( file ) ) {
       let obj = JSON.parse( fs.readFileSync( file, 'utf8' ) )
       obj.sourceDir = dir
+      if ( obj.serveSource )
+        obj.serveSource = path.normalize( `${dir}//${obj.serveSource}` )
       plugins.push( obj )
     } else
       winston.warn( `No plugin manifest file found in ${dir}.` )
   } )
 
   // check for conflicts
-  let serveLocations = []
+  let serveLocations = [ ]
   plugins.forEach( pl => {
     if ( serveLocations.indexOf( pl.serveFrom ) < 0 )
       serveLocations.push( pl.serveFrom )

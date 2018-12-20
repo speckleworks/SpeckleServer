@@ -16,6 +16,7 @@ var dataStreamSchema = mongoose.Schema( {
 
   name: { type: String, default: 'Speckle Stream' },
   description: { type: String, default: 'This is a simple speckle stream.' },
+  commitMessage: { type: String },
   tags: [ { type: String } ],
 
   baseProperties: { type: Object, default: {} },
@@ -35,8 +36,11 @@ var dataStreamSchema = mongoose.Schema( {
   children: { type: Array, default: [ ] },
   ancestors: { type: Array, default: [ ] },
 
-  deleted: { type: Boolean, default: false }
+  deleted: { type: Boolean, default: false },
 
+  // keeps track wether this stream can be edited from the online ui or not.
+  // it's set by default to NOPE
+  onlineEditable: { type: Boolean, default: false }
 }, { timestamps: true, strict: false } )
 
 module.exports = mongoose.model( 'DataStream', dataStreamSchema )

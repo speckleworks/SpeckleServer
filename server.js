@@ -100,7 +100,7 @@ if ( cluster.isMaster ) {
 
   // register plugins with express
   plugins.forEach( plugin => {
-    app.use( plugin.serveFrom, express.static( path.join( __dirname, plugin.sourceDir ) ) )
+    app.use( plugin.serveFrom, express.static( path.join( __dirname, plugin.serveSource ? plugin.serveSource : plugin.sourceDir ) ) )
   } )
 
   // expose an api
