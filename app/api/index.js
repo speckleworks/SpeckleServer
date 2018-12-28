@@ -146,6 +146,12 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // update a project xxx
   r.put( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectPut' ) )
 
+  r.put( '/projects/:projectId/addstream/:streamId', mandatoryAuthorisation, require( './projects/ProjectPutAddStream' ) )
+  r.delete( '/projects/:projectId/removestream/:streamId', mandatoryAuthorisation, require( './projects/ProjectDeleteStream' ) )
+
+  r.put( '/projects/:projectId/adduser/:userId', mandatoryAuthorisation, require( './projects/ProjectPutAddUser' ) )
+  r.delete( '/projects/:projectId/removeuser/:userId', mandatoryAuthorisation, require( './projects/ProjectDeleteUser' ) )
+
   // crushkilldestroy a project xxx
   r.delete( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectDelete' ) )
 
