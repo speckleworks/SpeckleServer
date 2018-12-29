@@ -46,7 +46,7 @@ module.exports = async ( req, res ) => {
     operations.push( project.save( ) )
 
     await Promise.all( operations )
-    return res.send( { success: true, project: project } )
+    return res.send( { success: true, project: project, streamsToPullWriteFrom: streamsToPullWriteFrom, streamsToPullReadFrom: streamsToPullReadFrom } )
   } catch ( err ) {
     winston.error( JSON.stringify( err ) )
     res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 ).send( { success: false, message: err.message } )
