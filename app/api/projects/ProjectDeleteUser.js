@@ -16,21 +16,23 @@ module.exports = async ( req, res ) => {
     let streamsToPullWriteFrom = [ ]
     let streamsToPullReadFrom = [ ]
 
-    project.streams.forEach( async ( streamId ) => {
-      let otherProjects = await Project.find( { 'streams': streamId, _id: { $ne: project._id } } )
-      let stream = await DataStream.findOne( { streamId: streamId }, 'canWrite canRead streamId owner' )
-      let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite ) )
-      let otherCR = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canRead ) )
+    let allOtherProjects = await Project.find( { 'streams': { $in: project.streams }, _id: { $ne: project._id } } )
+    let allStreams = await DataStream.find( { streamId: { $in: project.streams } }, 'canWrite canRead streamId owner name' )
+
+    for ( let streamId of project.streams ) {
+      // let otherProjects = await Project.find( { 'streams': streamId, _id: { $ne: project._id } } )
+      let otherProjects = allOtherProjects.filter( project => project.streams.indexOf( streamId ) > -1 )
+      // let stream = await DataStream.findOne( { streamId: streamId }, 'canWrite canRead streamId owner' )
+      let stream = allStreams.find( s => s.streamId === streamId )
+
+      let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite.map( id => id.toString( ) ) ) )
+      let otherCR = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canRead.map( id => id.toString( ) ) ) )
 
       if ( otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1 )
-        // stream.canWrite.splice( stream.canWrite.indexOf( req.params.userId ), 1 )
         streamsToPullWriteFrom.push( stream.streamId )
       if ( otherCR.indexOf( req.params.userId ) === -1 && stream.canRead.indexOf( req.params.userId ) > -1 )
-        // stream.canRead.splice( stream.canRead.indexOf( req.params.userId ), 1 )
         streamsToPullReadFrom.push( stream.streamId )
-
-      // operations.push( stream.save( ) )
-    } )
+    }
 
     if ( streamsToPullWriteFrom.length > 0 )
       operations.push( DataStream.updateMany( { streamId: { $in: streamsToPullWriteFrom } }, { $pull: { canWrite: req.params.userId } } ) )

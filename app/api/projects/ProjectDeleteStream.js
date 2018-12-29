@@ -33,7 +33,7 @@ module.exports = async ( req, res ) => {
         stream.canWrite.splice( index, 1 )
       }
     } )
-    await Promise.all( stream.save( ), project.save( ) )
+    await Promise.all( [ stream.save( ), project.save( ) ] )
     return res.send( { success: true, project: project, stream: stream } )
   } catch ( err ) {
     winston.error( JSON.stringify( err ) )

@@ -24,10 +24,10 @@ module.exports = async ( req, res ) => {
       stream.canWrite.indexOf( id ) === -1 ? stream.canWrite.push( id ) : null
     } )
 
-    await Promise.all( stream.save( ), project.save( ) )
+    await Promise.all( [ stream.save( ), project.save( ) ] )
     return res.send( { success: true, project: project, stream: stream } )
   } catch ( err ) {
     winston.error( JSON.stringify( err ) )
-    res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 ).send( { success: false, message: err.message } )
+    res.status( 400 ).send( { success: false, message: err.message } )
   }
 }

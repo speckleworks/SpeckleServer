@@ -162,7 +162,7 @@ module.exports = function( app, express, urlRoot, plugins ) {
   r.put( '/projects/:projectId/upgradeuser/:userId', mandatoryAuthorisation, require( './projects/ProjectPutUpgradeUser' ) )
 
   // moves a user to canRead on all project streams, if no conflicts with other projects
-  r.put( '/projects/:projectId/downgrade/:userId', mandatoryAuthorisation, require( './projects/ProjectPutDowngradeUser' ) )
+  r.put( '/projects/:projectId/downgradeuser/:userId', mandatoryAuthorisation, require( './projects/ProjectPutDowngradeUser' ) )
 
   // crushkilldestroy a project xxx
   // TODO: remove permissions from streams if no conflicts with other projects

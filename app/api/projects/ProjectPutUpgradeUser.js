@@ -13,10 +13,8 @@ module.exports = async ( req, res ) => {
 
     await Promise.all( [
       DataStream.updateMany( { streamId: { $in: project.streams } }, { $addToSet: { canWrite: req.params.userId } } ),
-      // push into permissions.canWrite
       Project.updateOne( { _id: req.params.projectId }, { $addToSet: { 'permissions.canWrite': req.params.userId } } )
     ] )
-
     return res.send( { success: true, project: project } )
   } catch ( err ) {
     winston.error( JSON.stringify( err ) )

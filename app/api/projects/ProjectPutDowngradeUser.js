@@ -14,16 +14,20 @@ module.exports = async ( req, res ) => {
     let operations = [ ],
       streamsToModify = [ ]
 
-    project.streams.forEach( async ( streamId ) => {
-      let otherProjects = await Project.find( { 'streams': streamId, _id: { $ne: project._id } } )
-      let stream = await DataStream.findOne( { streamId: streamId }, 'canWrite canRead streamId owner' )
-      let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite ) )
+    let allOtherProjects = await Project.find( { 'streams': { $in: project.streams }, _id: { $ne: project._id } } )
+    let allStreams = await DataStream.find( { streamId: { $in: project.streams } }, 'canWrite canRead streamId owner' )
 
+    for ( let streamId of project.streams ) {
+      let otherProjects = allOtherProjects.filter( project => project.streams.indexOf( streamId ) > -1 )
+      let stream = allStreams.find( s => s.streamId === streamId )
+
+      let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite.map( id => id.toString( ) ) ) )
       // if userId is not in other's write permissions, if it is in the stream's current write permissions, and if it's not in the stream's current read permissions already
-      if ( otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1 && stream.canRead.indexOf( req.params.userId ) === -1 ) {
-        streamsToModify.push( stream )
+      if ( otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1 ) {
+        streamsToModify.push( streamId )
       }
-    } )
+    }
+
     // The following pulls the userId from canWrite, and adds it to its canRead array.
     if ( streamsToModify.length > 0 )
       operations.push( DataStream.updateMany( { streamId: { $in: streamsToModify } }, { $pull: { canWrite: req.params.userId }, $addToSet: { canRead: req.params.userId } } ) )
