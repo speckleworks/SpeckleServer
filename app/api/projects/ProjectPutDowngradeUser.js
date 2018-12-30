@@ -12,7 +12,8 @@ module.exports = async ( req, res ) => {
     let project = await PermissionCheck( req.user, 'write', await Project.findOne( { _id: req.params.projectId } ) )
 
     let operations = [ ],
-      streamsToModify = [ ]
+      streamsToModify = [ ],
+      streamsToAddToRead = [ ]
 
     let allOtherProjects = await Project.find( { 'streams': { $in: project.streams }, _id: { $ne: project._id } } )
     let allStreams = await DataStream.find( { streamId: { $in: project.streams } }, 'canWrite canRead streamId owner' )
@@ -22,16 +23,18 @@ module.exports = async ( req, res ) => {
       let stream = allStreams.find( s => s.streamId === streamId )
 
       let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite.map( id => id.toString( ) ) ) )
-      // if userId is not in other's write permissions, if it is in the stream's current write permissions, and if it's not in the stream's current read permissions already
+      // if userId is not in other's write permissions, if it is in the stream's current write permissions, remove him
       if ( otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1 ) {
         streamsToModify.push( streamId )
-      }
+      } else if ( stream.canRead.indexOf( req.params.userId ) > -1 ) // lower key operation: will just add user to read in case he was not there
+        streamsToAddToRead.push( streamId )
     }
 
     // The following pulls the userId from canWrite, and adds it to its canRead array.
     if ( streamsToModify.length > 0 )
       operations.push( DataStream.updateMany( { streamId: { $in: streamsToModify } }, { $pull: { canWrite: req.params.userId }, $addToSet: { canRead: req.params.userId } } ) )
-
+    if ( streamsToAddToRead.length > 0 )
+      operations.push( DataStream.updateMany( { streamId: { $in: streamsToModify } }, { $addToSet: { canRead: req.params.userId } } ) )
     // project update stream permissions: pull out of canWrite, push into canRead
     project.permissions.canWrite.indexOf( req.params.userId ) > -1 ? project.permissions.canWrite.splice( project.permissions.canWrite.indexOf( req.params.userId ), 1 ) : null
     project.permissions.canRead.indexOf( req.params.userId ) === -1 ? project.permissions.canRead.push( req.params.userId ) : null

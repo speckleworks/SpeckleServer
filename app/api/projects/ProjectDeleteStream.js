@@ -18,6 +18,7 @@ module.exports = async ( req, res ) => {
     project.streams.indexOf( stream.streamId ) === -1 ? null : project.streams.splice( project.streams.indexOf( stream.streamId ), 1 )
 
     let otherProjects = await Project.find( { 'streams': stream.streamId, _id: { $ne: project._id } } )
+
     let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite ) )
     let otherCR = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canRead ) )
 
@@ -27,6 +28,7 @@ module.exports = async ( req, res ) => {
         stream.canRead.splice( index, 1 )
       }
     } )
+
     project.permissions.canWrite.forEach( id => {
       let index = stream.canWrite.indexOf( id )
       if ( otherCW.indexOf( id ) === -1 && index > -1 ) {
@@ -34,6 +36,7 @@ module.exports = async ( req, res ) => {
       }
     } )
     await Promise.all( [ stream.save( ), project.save( ) ] )
+
     return res.send( { success: true, project: project, stream: stream } )
   } catch ( err ) {
     winston.error( JSON.stringify( err ) )
