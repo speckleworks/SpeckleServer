@@ -47,24 +47,12 @@ module.exports = async ( req, res ) => {
     }
 
     await Promise.all( [
-      ...modifiedStreams.map( s => s.save( ) )
-      // Project.deleteOne( { _id: project._id } )
+      ...modifiedStreams.map( s => s.save( ) ),
+      Project.deleteOne( { _id: project._id } )
     ] )
 
     res.send( { success: true, message: 'Project was permanently deleted.', modifiedStreams: modifiedStreams.map( s => s.streamId ) } )
   } catch ( err ) {
     res.status( 400 ).send( { success: false, message: err } )
   }
-
-  // Project.findOne( { _id: req.params.projectId } )
-  //   .then( resource => PermissionCheck( req.user, 'delete', resource ) )
-  //   .then( resource => resource.remove() )
-  //   .then( () => {
-  //     res.send( { success: true, message: 'Project deleted. Bye bye data.' } )
-  //   } )
-  //   .catch( err => {
-  //     winston.error( JSON.stringify( err ) )
-  //     res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 )
-  //     res.send( { success: false, message: err.message } )
-  //   } )
 }

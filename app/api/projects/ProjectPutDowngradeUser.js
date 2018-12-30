@@ -23,10 +23,10 @@ module.exports = async ( req, res ) => {
       let stream = allStreams.find( s => s.streamId === streamId )
 
       let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite.map( id => id.toString( ) ) ) )
-      // if userId is not in other's write permissions, if it is in the stream's current write permissions, and if it's not in the stream's current read permissions already
+      // if userId is not in other's write permissions, if it is in the stream's current write permissions, remove him
       if ( otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1 ) {
         streamsToModify.push( streamId )
-      } else if ( stream.canRead.indexOf( req.params.userId ) > -1 )
+      } else if ( stream.canRead.indexOf( req.params.userId ) > -1 ) // lower key operation: will just add user to read in case he was not there
         streamsToAddToRead.push( streamId )
     }
 
