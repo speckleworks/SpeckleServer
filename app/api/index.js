@@ -146,6 +146,24 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // update a project xxx
   r.put( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectPut' ) )
 
+  // adds a stream to a project and propagates permissions
+  r.put( '/projects/:projectId/addstream/:streamId', mandatoryAuthorisation, require( './projects/ProjectPutAddStream' ) )
+
+  // removes a stream from a project, and takes user permissions out if no conflicts with other projects
+  r.delete( '/projects/:projectId/removestream/:streamId', mandatoryAuthorisation, require( './projects/ProjectDeleteStream' ) )
+
+  // adds a user to a project (defaults to canWrite for streams of this project, and canRead for the project itself)
+  r.put( '/projects/:projectId/adduser/:userId', mandatoryAuthorisation, require( './projects/ProjectPutAddUser' ) )
+
+  // removes a user from a project, and propagates perms on streams if no conflicts with other projects
+  r.delete( '/projects/:projectId/removeuser/:userId', mandatoryAuthorisation, require( './projects/ProjectDeleteUser' ) )
+
+  // moves a user to canWrite on all project streams
+  r.put( '/projects/:projectId/upgradeuser/:userId', mandatoryAuthorisation, require( './projects/ProjectPutUpgradeUser' ) )
+
+  // moves a user to canRead on all project streams, if no conflicts with other projects
+  r.put( '/projects/:projectId/downgradeuser/:userId', mandatoryAuthorisation, require( './projects/ProjectPutDowngradeUser' ) )
+
   // crushkilldestroy a project xxx
   r.delete( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectDelete' ) )
 

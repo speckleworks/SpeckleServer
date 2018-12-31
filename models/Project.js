@@ -14,6 +14,7 @@ var projectSchema = mongoose.Schema( {
   // project name
   name: { type: String, default: 'A Simple Speckle Project' },
   description: { type: String, default: 'This is a project, which basically helps you share a set a of streams with a set of users.' },
+  tags: [ { type: String } ],
 
   //  streams in  this project
   streams: [ { type: String } ],
@@ -24,7 +25,9 @@ var projectSchema = mongoose.Schema( {
   permissions: {
     canRead: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ],
     canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ]
-  }
+  },
+
+  deleted: { type: Boolean, default: false }
 
   // strict false so peeps can expand the schema if they wanna add shit 💩
 }, { timestamps: true, strict: false } )

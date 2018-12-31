@@ -23,7 +23,7 @@ module.exports = ( req, res ) => {
       clone.streamId = shortId.generate()
       clone.parent = stream.streamId
       clone.children = [ ]
-      clone.name += ' Clone'
+      clone.name = req.body.name ? req.body.name : clone.name + ' (clone)'
       clone.createdAt = new Date()
       clone.updatedAt = new Date()
       clone.private = stream.private
