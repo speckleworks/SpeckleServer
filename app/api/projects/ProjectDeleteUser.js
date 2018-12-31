@@ -13,8 +13,9 @@ module.exports = async ( req, res ) => {
 
     let operations = [ ]
 
-    let streamsToPullWriteFrom = [ ]
-    let streamsToPullReadFrom = [ ]
+    let streamsToPullWriteFrom = [ ],
+      streamsToPullReadFrom = [ ],
+      streamsToPullBothFrom = [ ]
 
     let allOtherProjects = await Project.find( { 'streams': { $in: project.streams }, _id: { $ne: project._id } } )
     let allStreams = await DataStream.find( { streamId: { $in: project.streams } }, 'canWrite canRead streamId owner name' )
@@ -26,12 +27,19 @@ module.exports = async ( req, res ) => {
       let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite.map( id => id.toString( ) ) ) ) // to string here as we're doing ops with string ids, not ObjectIds
       let otherCR = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canRead.map( id => id.toString( ) ) ) ) // same as above
 
-      if ( otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1 )
+      let pullWrite = otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1,
+        pullRead = otherCR.indexOf( req.params.userId ) === -1 && stream.canRead.indexOf( req.params.userId ) > -1
+
+      if ( pullWrite && pullRead )
+        streamsToPullBothFrom.push( streamId )
+      else if ( pullWrite )
         streamsToPullWriteFrom.push( stream.streamId )
-      if ( otherCR.indexOf( req.params.userId ) === -1 && stream.canRead.indexOf( req.params.userId ) > -1 )
+      else if ( pullRead )
         streamsToPullReadFrom.push( stream.streamId )
     }
 
+    if ( streamsToPullBothFrom.length > 0 )
+      operations.push( DataStream.updateMany( { streamId: { $in: streamsToPullBothFrom } }, { $pull: { canWrite: req.params.userId, canRead: req.params.userId } } ) )
     if ( streamsToPullWriteFrom.length > 0 )
       operations.push( DataStream.updateMany( { streamId: { $in: streamsToPullWriteFrom } }, { $pull: { canWrite: req.params.userId } } ) )
     if ( streamsToPullReadFrom.length > 0 )
@@ -46,7 +54,7 @@ module.exports = async ( req, res ) => {
     operations.push( project.save( ) )
 
     await Promise.all( operations )
-    return res.send( { success: true, project: project, streamsToPullWriteFrom: streamsToPullWriteFrom, streamsToPullReadFrom: streamsToPullReadFrom } )
+    return res.send( { success: true, project: project, streamsToPullBothFrom: streamsToPullBothFrom, streamsToPullWriteFrom: streamsToPullWriteFrom, streamsToPullReadFrom: streamsToPullReadFrom } )
   } catch ( err ) {
     winston.error( JSON.stringify( err ) )
     res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 ).send( { success: false, message: err.message } )

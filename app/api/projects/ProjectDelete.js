@@ -51,7 +51,7 @@ module.exports = async ( req, res ) => {
       Project.deleteOne( { _id: project._id } )
     ] )
 
-    res.send( { success: true, message: 'Project was permanently deleted.', modifiedStreams: modifiedStreams.map( s => s.streamId ) } )
+    res.send( { success: true, message: 'Project was permanently deleted.', modifiedStreams: modifiedStreams } )
   } catch ( err ) {
     winston.error( err )
     res.status( 400 ).send( { success: false, message: err } )

@@ -12,10 +12,10 @@ module.exports = async ( req, res ) => {
     let project = await PermissionCheck( req.user, 'write', await Project.findOne( { _id: req.params.projectId } ) )
 
     await Promise.all( [
-      DataStream.updateMany( { streamId: { $in: project.streams } }, { $addToSet: { canWrite: req.params.userId } } ),
-      Project.updateOne( { _id: req.params.projectId }, { $addToSet: { 'permissions.canWrite': req.params.userId } } )
+      DataStream.updateMany( { streamId: { $in: project.streams } }, { $addToSet: { canWrite: req.params.userId, canRead: req.params.userId } } ),
+      Project.updateOne( { _id: req.params.projectId }, { $addToSet: { 'permissions.canWrite': req.params.userId, 'permissions.canRead': req.params.userId } } )
     ] )
-    return res.send( { success: true, project: project } )
+    return res.send( { success: true, message: `Added user ${req.params.userId} to read streams.` } )
   } catch ( err ) {
     winston.error( JSON.stringify( err ) )
     res.status( err.message.indexOf( 'authorised' ) >= 0 ? 401 : 404 ).send( { success: false, message: err.message } )

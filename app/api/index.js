@@ -165,7 +165,6 @@ module.exports = function( app, express, urlRoot, plugins ) {
   r.put( '/projects/:projectId/downgradeuser/:userId', mandatoryAuthorisation, require( './projects/ProjectPutDowngradeUser' ) )
 
   // crushkilldestroy a project xxx
-  // TODO: remove permissions from streams if no conflicts with other projects
   r.delete( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectDelete' ) )
 
   //
