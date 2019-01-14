@@ -1,1 +1,4 @@
 
+[submodule "plugins/SpeckleAdmin"]
+	path = plugins/SpeckleAdmin
+	url = https://github.com/speckleworks/SpeckleAdmin.git
