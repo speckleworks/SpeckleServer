@@ -1,0 +1,10 @@
+{
+  "name": "Rodney Plugin",
+  "version":"0.1.0",
+  "desc": "This plugin tests Rodney",
+  "serveFrom": "/rodney-plugin",
+  "author": "DAS",
+  "contact":"test@dimitrie.org",
+  "homepage":"https://dimitrie.org",
+  "git":"https://github.com/speckleworks/SpeckleViewer"
+}
