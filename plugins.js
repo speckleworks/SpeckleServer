@@ -14,7 +14,7 @@ module.exports = ( ) => {
   rootDirs.forEach( dir => {
     if ( fs.existsSync( dir ) ) {
       let dirs = getDirectories( dir )
-      pluginDirs = [ ...dirs, pluginDirs ]
+      pluginDirs.push( ...dirs, dir )
     } else
       winston.warn( `specified plugin directory does not exist: ${dir}` )
   } )
