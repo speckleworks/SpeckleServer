@@ -56,26 +56,28 @@ Note: You're not restricted to digital ocean. Any machine with docker should be 
 
        $ git clone https://github.com/speckleworks/SpeckleServer.git
        $ cd SpeckleServer
-       $ npm install
+       $ sudo npm install
 
-5) Follow the instructions in `.env-base` file to configure your server.
+5) Follow the instructions in `.env-base` file to configure your server. Use `sudo nano .env` to edit.
     
 6) Start mongo (create a folder somewhere to store the db): 
 
-       $ mongodb --dbpath /path/to/some/folder
+       $ sudo mongodb --dbpath /path/to/some/folder
     
-7) Start redis in another terminal: 
+7) Start redis in another terminal. You might need to restart server instance after this step. 
 
        $ redis-server
  
 8) Check that both mongo and redis are running OK and that you can connect to them with these two clients:
 
-       $ mongo
-       $ redis-cli
+       $ service mongodb status
+       $ redis-cli ping
     
 9) Start Speckle in a third terminal: 
 
-       $ node server.js
+       $ sudo node server.js
+
+Check that you can registre a new account on you Speckle server. If not the first thing to try is to restart it an redo step 8 and 9.
 
 ## API
 [API docs are here](https://speckleworks.github.io/SpeckleSpecs/) - they are a good overview of what you can do with the speckle server.
