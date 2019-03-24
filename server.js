@@ -128,7 +128,8 @@ if ( cluster.isMaster ) {
   /// /////////////////////////////////////////////////////////////////////
 
   var port = process.env.PORT || 3000
-  server.listen( port, ( ) => {
+  var ip = process.env.IP || null
+  server.listen( port, ip, ( ) => {
     logger.debug( chalk.yellow( `Speckle worker process ${process.pid} now running on port ${port}.` ) )
   } )
 }
