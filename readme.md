@@ -12,7 +12,7 @@ This is the Speckle Server, which coordinates communications between the various
 
 The Speckle Server is a nodejs (`v.8+`, `latest stable` preffered) app.
 
-- Dependencies: [mongodb](https://en.wikipedia.org/wiki/MongoDB) and [redis](https://en.wikipedia.org/wiki/Redis). 
+- Dependencies: [mongodb](https://www.mongodb.com/download-center/community) and [redis](https://redis.io/). 
 - Clone this repo `git clone https://github.com/speckleworks/SpeckleServer.git`
 - Configuration: create a `.env` using `.env-base` as a template, and fill in the required information.
 - Run `npm install` and thereafter `npm run`.
