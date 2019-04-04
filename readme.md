@@ -24,11 +24,7 @@ The Speckle Server is a nodejs (`v.8+`, `latest stable` preffered) app.
 
 **Note**: hestia is hosted on Digital Ocean. If you want to signup to digital ocean and support the running costs of speckle, use [the following affiliate link](https://m.do.co/c/947a2b5d7dc1) to get $100 in credit. 
 
-To install a front-end plugin, such as the [admin ui](https://github.com/speckleworks/SpeckleAdmin), clone the respective repo in the `plugins` folder of the server. For example: 
-
-- `cd server_install_folder/plugins`
-- `git clone https://github.com/speckleworks/SpeckleAdmin.git`
-- restart your server.
+To install a front-end plugin, such as the [admin ui](https://github.com/speckleworks/SpeckleAdmin), clone the respective repo in the `plugins` folder of the server.
 
 ## Get In Touch
 
