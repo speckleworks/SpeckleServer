@@ -2,9 +2,9 @@ version: '3'
 services:
   # SPECKLE
   speckle:
-    image: speckle/speckleserver:latest
+    build: .
     ports:
-      - '3000:3000'
+      - '80:80'
     networks:
       - webnet
     depends_on:
@@ -23,7 +23,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - EXPOSE_EMAILS=false
       - PUBLIC_STREAMS=true
-      - PLUGIN_DIRS="./node_modules/@speckle,./plugins"
+      - PLUGIN_DIRS=./node_modules/@speckle,./plugins
     links:
       - redis
       - mongo
