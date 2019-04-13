@@ -100,7 +100,7 @@ if ( cluster.isMaster ) {
 
   // register plugins with express
   plugins.forEach( plugin => {
-    app.use( plugin.serveFrom, express.static( path.join( __dirname, plugin.serveSource ? plugin.serveSource : plugin.sourceDir ) ) )
+    app.use( plugin.serveFrom, express.static( path.join( plugin.serveSource ? plugin.serveSource : plugin.sourceDir ) ) )
   } )
 
   // expose an api
@@ -128,7 +128,8 @@ if ( cluster.isMaster ) {
   /// /////////////////////////////////////////////////////////////////////
 
   var port = process.env.PORT || 3000
-  server.listen( port, ( ) => {
+  var ip = process.env.IP || null
+  server.listen( port, ip, ( ) => {
     logger.debug( chalk.yellow( `Speckle worker process ${process.pid} now running on port ${port}.` ) )
   } )
 }
