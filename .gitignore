@@ -10,3 +10,5 @@ data/*
 !data/.gitkeep
 cloc_output.txt
 tree_out.txt
+
+terraform/.terraform
