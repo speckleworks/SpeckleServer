@@ -20,6 +20,8 @@ The Speckle Server is a nodejs (`v.8+`, `latest stable` preffered) app.
 
 #### ⚠️ **Warning**: if these instructions seem confusing and you want to use speckle in production, please consult someone with more experience! Incorrect configuration can have **security and reliability implications**. 
 
+> Community supported instructions by on how to set up a development server (thanks @arendvw!) can be found in [this discourse thread](https://discourse.speckle.works/t/speckle-server-debian-9-installation-notes-for-development-machines/344). Feel free to contribute your own experiences there, or ask questions.
+
 #### 🍰 If you just want to try out speckle, at your own risk, you can use `https://hestia.speckle.works/api`.
 
 **Note**: hestia is hosted on Digital Ocean. If you want to signup to digital ocean and support the running costs of speckle, use [the following affiliate link](https://m.do.co/c/947a2b5d7dc1) to get $100 in credit. 
