@@ -1,6 +1,5 @@
 const winston = require( 'winston' )
 const { merge } = require( 'lodash' )
-const crypto = require( 'crypto' )
 
 const SpeckleObject = require( '../../../models/SpeckleObject' )
 const BulkObjectSave = require( '../middleware/BulkObjectSave' )
