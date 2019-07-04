@@ -23,7 +23,8 @@ services:
       - REDIS_URL=redis://redis:6379
       - EXPOSE_EMAILS=false
       - PUBLIC_STREAMS=true
-      - PLUGIN_DIRS="./node_modules/@speckle,./plugins"
+      - PLUGIN_DIRS=./node_modules/@speckle,./plugins
+      - CANONICAL_URL=http://localhost:3000
     links:
       - redis
       - mongo
