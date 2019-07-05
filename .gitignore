@@ -10,3 +10,6 @@ data/*
 !data/.gitkeep
 cloc_output.txt
 tree_out.txt
+
+#don't track our super secret speckle stuff™ file
+.env
