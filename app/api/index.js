@@ -90,6 +90,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // Create an object or more!
   r.post( '/objects', mandatoryAuthorisation, require( './objects/ObjectPost' ) )
 
+  // Derive an object or more!
+  r.post( '/objects/derive', mandatoryAuthorisation, require( './objects/ObjectDerive' ) )
+
   // Get an object / perm check 'read' xxx
   r.get( '/objects/:objectId', optionalAuthorisation, require( './objects/ObjectGet' ) )
 
