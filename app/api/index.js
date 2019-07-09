@@ -1,4 +1,5 @@
 const passport = require( 'passport' )
+const adminCheck = require( './middleware/AdminCheck')
 
 module.exports = function( app, express, urlRoot, plugins ) {
   var r = new express.Router( )
@@ -22,7 +23,7 @@ module.exports = function( app, express, urlRoot, plugins ) {
   r.get( '/accounts', mandatoryAuthorisation, require( './accounts/UserGet' ) )
 
   // get all accounts
-  r.get( '/accounts/all', mandatoryAuthorisation, require( './accounts/UsersGet' ) )
+  r.get( '/accounts/admin', mandatoryAuthorisation, adminCheck, require( './accounts/UserGetAdmin' ) )
 
   // update profile xxx
   r.put( '/accounts', mandatoryAuthorisation, require( './accounts/UserPut' ) )
@@ -66,7 +67,7 @@ module.exports = function( app, express, urlRoot, plugins ) {
   r.get( '/streams', mandatoryAuthorisation, require( './streams/StreamGetAll' ) )
 
   // get every stream on the server
-  r.get( '/streams/all', mandatoryAuthorisation, require( './streams/StreamsGetAll' ) )
+  r.get( '/streams/admin', mandatoryAuthorisation, adminCheck, require( './streams/StreamGetAdmin' ) )
 
   // get stream / perm check 'read' xxx
   r.get( '/streams/:streamId', optionalAuthorisation, require( './streams/StreamGet' ) )
@@ -150,7 +151,7 @@ module.exports = function( app, express, urlRoot, plugins ) {
   r.get( '/projects', mandatoryAuthorisation, require( './projects/ProjectGetAll' ) )
 
   // get all the projects on the server
-  r.get( '/projects/all', mandatoryAuthorisation, require( './projects/ProjectsGetAll' ) )
+  r.get( '/projects/admin', mandatoryAuthorisation, adminCheck, require( './projects/ProjectGetAdmin' ) )
 
   // get project by id xxx
   r.get( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectGet' ) )
