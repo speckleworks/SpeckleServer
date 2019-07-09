@@ -21,6 +21,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // get profile xxx
   r.get( '/accounts', mandatoryAuthorisation, require( './accounts/UserGet' ) )
 
+  // get all accounts
+  r.get( '/accounts/all', mandatoryAuthorisation, require( './accounts/UsersGet' ) )
+
   // update profile xxx
   r.put( '/accounts', mandatoryAuthorisation, require( './accounts/UserPut' ) )
 
@@ -61,6 +64,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
 
   // get a user's streams xxx
   r.get( '/streams', mandatoryAuthorisation, require( './streams/StreamGetAll' ) )
+
+  // get every stream on the server
+  r.get( '/streams/all', mandatoryAuthorisation, require( './streams/StreamsGetAll' ) )
 
   // get stream / perm check 'read' xxx
   r.get( '/streams/:streamId', optionalAuthorisation, require( './streams/StreamGet' ) )
@@ -142,6 +148,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
 
   // get user's projects xxx
   r.get( '/projects', mandatoryAuthorisation, require( './projects/ProjectGetAll' ) )
+
+  // get all the projects on the server
+  r.get( '/projects/all', mandatoryAuthorisation, require( './projects/ProjectsGetAll' ) )
 
   // get project by id xxx
   r.get( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectGet' ) )
