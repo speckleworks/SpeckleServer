@@ -1,6 +1,6 @@
 const passport = require( 'passport' )
 
-module.exports = function( app, express, urlRoot, plugins ) {
+module.exports = function ( app, express, urlRoot, plugins ) {
   var r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
@@ -32,6 +32,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
 
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
+
+  // verify
+  r.post( '/accounts/verify', require( './accounts/UserVerify' ) )
 
   //
   // CLIENTS

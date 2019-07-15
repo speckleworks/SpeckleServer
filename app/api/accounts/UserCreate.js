@@ -3,7 +3,7 @@ const jwt = require( 'jsonwebtoken' )
 
 const User = require( '../../../models/User' )
 
-module.exports = function( req, res ) {
+module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )
   if ( !req.body.email ) { res.status( 400 ); return res.send( { success: false, message: 'Do not fuck with us. Give us your email.' } ) }
   if ( !req.body.password ) { res.status( 400 ); return res.send( { success: false, message: 'Passwords are a necessary evil, fam.' } ) }
@@ -28,7 +28,7 @@ module.exports = function( req, res ) {
     .then( user => {
       if ( user ) throw new Error( 'Email taken. Please login. Thanks!' )
       myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, sessionSecret, { expiresIn: '2y' } )
-      if ( userCount === 0 )
+      if ( userCount === 0 && process.env.FIRST_USER_ADMIN === 'true' )
         myUser.role = 'admin'
       return myUser.save( )
     } )
