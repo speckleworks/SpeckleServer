@@ -5,7 +5,7 @@ const Project = require( '../../../models/Project' )
 
 module.exports = ( req, res ) => {
   let query = q2m( req.query )
-  Project.find( { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+  Project.find( { sort: query.options.sort, skip: query.options.skip, limit: query.options.limit } )
     .then( resources => {
       res.send( { success: true, resources: resources } )
     } )

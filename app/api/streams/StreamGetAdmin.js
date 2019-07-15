@@ -5,6 +5,7 @@ const DataStream = require('../../../models/DataStream')
 module.exports = (req, res) => {
   winston.debug('Getting *all* streams.')
   let query = q2m(req.query)
+ console.log(query)
 
   let finalCriteria = {}
 
@@ -21,7 +22,7 @@ module.exports = (req, res) => {
   // if we actually have any query params, include them
   if (andCrit.length !== 0) finalCriteria.$and = andCrit
 
-  DataStream.find(finalCriteria, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit })
+  DataStream.find(finalCriteria, query.options.fields, { sort: query.options.sort, skip: query.options.skip, limit: query.options.limit })
     .then( myStreams => {
       let resources = myStreams
       let streams = []
