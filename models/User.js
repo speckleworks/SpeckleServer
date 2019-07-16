@@ -25,7 +25,8 @@ var userSchema = mongoose.Schema( {
   avatar: String,
   role: { type: String, default: 'user' },
   private: { type: Boolean, default: true },
-  isVerified: { type: Boolean, default: false }
+  verified: { type: Boolean, default: false },
+  archived: { type: Boolean, default: false }
 }, { timestamps: true } )
 
 
