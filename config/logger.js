@@ -18,6 +18,7 @@ const logger = createLogger( {
   level: 'debug',
   format: format.combine(
     format.timestamp( { format: 'YYYY-MM-DD HH:mm:ss' } ),
+    format.errors( { stack: true } ),
     format.json( )
   ),
   transports: [

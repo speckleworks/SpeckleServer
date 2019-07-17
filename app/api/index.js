@@ -1,7 +1,7 @@
 const passport = require( 'passport' )
 const adminCheck = require( './middleware/AdminCheck')
 
-module.exports = function( app, express, urlRoot, plugins ) {
+module.exports = function ( app, express, urlRoot, plugins ) {
   var r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
@@ -36,6 +36,12 @@ module.exports = function( app, express, urlRoot, plugins ) {
 
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
+
+  // verify
+  r.get( '/accounts/verify/:token', optionalAuthorisation, require( './accounts/UserVerify' ) )
+
+  // reset password
+  r.post( '/accounts/reset/:token', require( './accounts/UserVerify' ) )
 
   //
   // CLIENTS
