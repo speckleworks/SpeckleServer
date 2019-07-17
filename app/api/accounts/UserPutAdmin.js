@@ -5,9 +5,9 @@ const User = require('../../../models/User')
 
 // Used only to grant other users admin role
 module.exports = function (req, res) {
-  if (req.params.userId === req.user._id.toString()) {
-    return res.status(400).send({ success: false, message: 'Why would you want to change your own role? Sneaky.' })
-  }
+  // if (req.params.userId === req.user._id.toString()) {
+  //   return res.status(400).send({ success: false, message: 'Why would you want to change your own role? Sneaky.' })
+  // }
   User.findOne({ _id: req.params.userId }, '-password')
     .then(user => {
       //make sure we have a valid request
