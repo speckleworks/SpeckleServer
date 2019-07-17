@@ -5,6 +5,8 @@ const cryptoRandomString = require( 'crypto-random-string' )
 const User = require( '../../../models/User' )
 const ActionToken = require( '../../../models/ActionToken' )
 
+const SendVerificationEmail = require( '../../../app/email/index' ).SendEmailVerification
+
 module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )
   if ( !req.body.email ) { res.status( 400 ); return res.send( { success: false, message: 'Do not fuck with us. Give us your email.' } ) }
@@ -44,9 +46,10 @@ module.exports = function ( req, res ) {
     } )
     .then( user => {
       savedUser = user
-      return validationToken.save()
-    })
+      return validationToken.save( )
+    } )
     .then( result => {
+      let verfication = SendVerificationEmail( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
       let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
       return res.send( { success: true, message: 'User saved. Redirect to login.', resource: { apitoken: savedUser.apitoken, token: token, email: savedUser.email }, validationToken: res.token } )
     } )
