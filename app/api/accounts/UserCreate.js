@@ -5,7 +5,7 @@ const cryptoRandomString = require( 'crypto-random-string' )
 const User = require( '../../../models/User' )
 const ActionToken = require( '../../../models/ActionToken' )
 
-const SendVerificationEmail = require( '../../../app/email/index' ).SendEmailVerification
+const SendEmailVerification = require( '../../../app/email/index' ).SendEmailVerification
 
 module.exports = function ( req, res ) {
   winston.debug( 'register new user route' )
@@ -26,7 +26,7 @@ module.exports = function ( req, res ) {
 
   let validationToken = new ActionToken( {
     owner: myUser._id,
-    token: cryptoRandomString( { length: 20, type: 'url-safe' } ),
+    token: cryptoRandomString( { length: 20, type: 'base64' } ),
     action: "email-confirmation"
   } )
 
@@ -49,7 +49,7 @@ module.exports = function ( req, res ) {
       return validationToken.save( )
     } )
     .then( result => {
-      let verfication = SendVerificationEmail( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
+      let verfication = SendEmailVerification( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
       let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
       return res.send( { success: true, message: 'User saved. Redirect to login.', resource: { apitoken: savedUser.apitoken, token: token, email: savedUser.email }, validationToken: res.token } )
     } )

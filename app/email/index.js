@@ -28,7 +28,7 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
   let message = {
     from: process.env.EMAIL_SENDER,
     to: email,
-    subject: `Speckle Password reset for your account on ${process.env.SERVER_NAME}`,
+    subject: `Speckle: Email verification for your account on ${process.env.SERVER_NAME}`,
     text: `
       Hello ${name},
 
@@ -36,7 +36,7 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
 
       ${process.env.CANONICAL_URL}/api/accounts/verify/${token}
 
-      If any problems, do get in touch via the forum (https://discourse.speckle.works).
+      **This link will expire in 24h.** If any problems, do get in touch via the forum (https://discourse.speckle.works).
 
       Best regards,
       Speckle
@@ -58,7 +58,7 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
       <pre>${process.env.CANONICAL_URL}/api/accounts/verify/${token}</pre>
       <br>
       <br>
-      If you have any problems or questions, do get in touch via <a href="https://discourse.speckle.works">the forum</a>.
+      <b>This link  will expire in 24h.</b> If you have any problems or questions, do get in touch via <a href="https://discourse.speckle.works">the forum</a>.
       <br>
       <br>
       Best regards,<br>
