@@ -5,7 +5,6 @@ const DataStream = require('../../../models/DataStream')
 module.exports = (req, res) => {
   winston.debug('Getting *all* streams.')
   let query = q2m(req.query)
- console.log(query)
 
   let finalCriteria = {}
 

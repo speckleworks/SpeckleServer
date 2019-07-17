@@ -32,7 +32,7 @@ module.exports = function( app, express, urlRoot, plugins ) {
   r.get( '/accounts/:userId', mandatoryAuthorisation, require( './accounts/UserProfile' ) )
 
   // modify an account's role  (needs to be admin)
-  r.put( '/accounts/:userId', mandatoryAuthorisation, require( './accounts/UserPutByParam' ) )
+  r.put( '/accounts/:userId', mandatoryAuthorisation, adminCheck, require( './accounts/UserPutAdmin' ) )
 
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
