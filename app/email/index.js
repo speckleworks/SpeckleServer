@@ -75,12 +75,12 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
   }
 
   transporter.sendMail( message, ( err ) => {
-    if(err) {
-      winston.debug( 'OUPS ERRROROR')
+    if ( err ) {
+      winston.debug( 'OUPS ERRROROR' )
       console.log( err )
       winston.debug( err )
     } else {
-      winston.debug( 'email sent?')
+      winston.debug( 'email sent?' )
       winston.debug( message )
     }
   } )
