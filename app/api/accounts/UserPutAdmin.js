@@ -16,21 +16,15 @@ module.exports = function (req, res) {
         req.body.surname == null ||
         req.body.company == null ||
         req.body.email == null ||
-        req.body.role == null
+        req.body.role == null ||
+        req.body.archived == null
       ) { throw new Error('Request body is missing required field') }
 
       //update fields
-      user.name = req.body.name
-      user.surname = req.body.surname
-      user.company = req.body.company
-      user.email = req.body.email
-      user.role = req.body.role
-
-      //mark as modified & save
-      user.markModified('name')
-      user.markModified('surname')
-      user.markModified('company')
-      user.markModified('email')
+      let fields = ['name', 'surname', 'company', 'email', 'role', 'archived']
+      fields.forEach(field => {
+        updateField(user, req.body, field)
+      })
       return user.save()
     })
     .then(() => {
@@ -41,4 +35,11 @@ module.exports = function (req, res) {
       res.status(400)
       res.send({ success: false, message: err.toString() })
     })
+}
+
+function updateField(user, body, field){
+  if (user[field] != body[field]){
+    user[field] = body[field]
+    user.markModified(field)
+  }
 }
