@@ -7,6 +7,7 @@ const passport = require( 'passport' )
 const chalk = require( 'chalk' )
 const mongoose = require( 'mongoose' ).set( 'debug', false )
 const expressWinston = require( 'express-winston' )
+const exphbs = require( 'express-handlebars' )
 const redis = require( 'redis' )
 const logger = require( './config/logger' )
 
@@ -126,6 +127,9 @@ if ( cluster.isMaster ) {
 
   // init email transport
   require( './app/email/index' )
+
+  // init default register/login routes
+  require( './app/auth/index' )( app, express )
 
   /// /////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.

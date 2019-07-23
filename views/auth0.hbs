@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  {{!-- <meta name="viewport" content="width=device-width, initial-scale=1"> --}}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{{title}}</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+  <div class="row align-items-center justify-content-center" xxxstyle="height:100%">
+    <div class='col-sm-12 col-lg-6 py-3' id='hiw-login-container'>
+    </div>
+  </div>
+
+<script src="https://cdn.auth0.com/js/lock/11.17.0/lock.min.js"></script>
+<script>
+  var lock = new Auth0Lock('{{clientId}}', '{{domain}}', {
+    auth: {
+      redirectUrl: 'http://localhost:3000/auth0-c',
+      responseType: 'code',
+      params: {
+        scope: 'openid email profile'
+      }
+    },
+    theme: {
+      logo: 'https://en.gravatar.com/userimage/159900111/0c61da434c81b4ee4eb00b897b8b06a2.png',
+      primaryColor:"#0A66FF"
+    },
+    languageDictionary: {
+      emailInputPlaceholder: "something@youremail.com",
+      title: "Login"
+    },
+    closable:false,
+    container:'hiw-login-container',
+    additionalSignUpFields: [
+    { name: "Name", placeholder:"Family Name"}, {name:"Surname", placeholder:"Given Name"}, {name: "Company", placeholder: "Where do you work? (optional)" }
+    ]
+
+  } )
+
+  lock.show()
+</script>
+</body>
