@@ -1,5 +1,5 @@
 const passport = require( 'passport' )
-const adminCheck = require( './middleware/AdminCheck')
+const adminCheck = require( './middleware/AdminCheck' )
 
 module.exports = function ( app, express, urlRoot, plugins ) {
   var r = new express.Router( )
