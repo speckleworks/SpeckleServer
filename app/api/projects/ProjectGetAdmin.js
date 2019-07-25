@@ -1,5 +1,4 @@
 const winston = require( '../../../config/logger' )
-const mongoose = require( 'mongoose' )
 const q2m = require( 'query-to-mongo' )
 const Project = require( '../../../models/Project' )
 

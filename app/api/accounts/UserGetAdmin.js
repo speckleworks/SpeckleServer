@@ -3,7 +3,7 @@ const winston = require( '../../../config/logger' )
 const User = require( '../../../models/User' )
 
 module.exports = function ( req, res ) {
-  User.find( {}, '-password')
+  User.find( {}, '-password' )
     .then( myUsers => {
       if ( !myUsers ) throw new Error( 'no user found.' )
       res.send( { success: true, resource: myUsers } )
