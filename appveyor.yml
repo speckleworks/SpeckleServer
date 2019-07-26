@@ -10,4 +10,21 @@ install:
 test_script:
 - sh: npm run lint
 
+
 build: off
+
+-
+  branches:
+    only:
+    - master
+  configuration: Release
+  
+  environment:
+    DOCKER_IMAGE: "speckle/speckleserver"
+    DOCKER_USERNAME: "botsalot"
+
+  before_deploy:
+  - sh: git config --global user.email "devops@speckle.works"
+  - sh: git config --global user.name "botsalot"
+  deploy_script:
+  - sh: npx semantic-release
