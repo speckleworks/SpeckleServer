@@ -123,6 +123,10 @@ if ( cluster.isMaster ) {
   require( './app/api/index' )( app, express, '/api', plugins )
   require( './app/api/index' )( app, express, '/api/v1', plugins )
 
+
+  // init email transport
+  // require( './app/email/index' ) // soon
+
   /// /////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.
   /// /////////////////////////////////////////////////////////////////////

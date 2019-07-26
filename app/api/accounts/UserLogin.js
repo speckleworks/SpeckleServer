@@ -11,6 +11,10 @@ module.exports = function( req, res ) {
 
   User.findOne( { 'email': req.body.email.toLowerCase( ) } )
     .then( myUser => {
+      if  ( myUser.archived ){
+        winston.error( 'This user is archived' )
+        return res.status( 403 ).send ( {success: false, message: 'This user is archived.'} )
+      }
       if ( !myUser ) {
         winston.error( 'Invalid credentials.' )
         return res.status( 401 ).send( { success: false, message: 'Invalid credentials.' } )

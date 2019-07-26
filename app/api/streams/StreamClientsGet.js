@@ -16,7 +16,7 @@ module.exports = ( req, res ) => {
     .then( ( ) => {
       let query = q2m( req.query )
       query.criteria[ 'streamId' ] = req.params.streamId
-      return UserAppClient.find( query.criteria, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+      return UserAppClient.find( query.criteria, query.options.fields, { sort: query.options.sort, skip: query.options.skip, limit: query.options.limit } )
     } )
     .then( clients => {
       res.send( { success: true, resources: clients, message: `Client list for stream ${req.params.streamId} returned.` } )

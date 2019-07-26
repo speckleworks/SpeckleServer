@@ -9,7 +9,7 @@ module.exports = function ( req, res ) {
     res.send( { success: false, message: 'Malformed request.' } )
   }
 
-  let projection = '_id name surname company' + ( req.app.get( 'expose emails' ) ? ' email' : '' )
+  let projection = '_id name surname company archived' + ( req.app.get( 'expose emails' ) ? ' email' : '' )
 
   User.findOne( { _id: req.params.userId }, projection )
     .then( user => {

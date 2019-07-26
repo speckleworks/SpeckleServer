@@ -22,7 +22,7 @@ module.exports = ( req, res ) => {
     { 'canRead': mongoose.Types.ObjectId( req.user._id ) }
   ]
 
-  Project.find( finalCriteria, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+  Project.find( finalCriteria, query.options.fields, { sort: query.options.sort, skip: query.options.skip, limit: query.options.limit } )
     .then( resources => {
       res.send( { success: true, resources: resources } )
     } )

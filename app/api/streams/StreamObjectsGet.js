@@ -19,7 +19,7 @@ module.exports = ( req, res ) => {
       streamObjects = stream.objects.map( o => o.toString( ) )
       let query = q2m( req.query )
       query.criteria[ '_id' ] = { $in: stream.objects }
-      return SpeckleObject.find( query.criteria, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+      return SpeckleObject.find( query.criteria, query.options.fields, { sort: query.options.sort, skip: query.options.skip, limit: query.options.limit } )
     } )
     .then( objects => {
       let list = streamObjects.reduce( ( arr, o ) => {
