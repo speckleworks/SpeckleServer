@@ -38,10 +38,10 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
 
   // verify
-  r.get( '/accounts/verify/:token', optionalAuthorisation, require( './accounts/UserVerify' ) )
+  // r.get( '/accounts/verify/:token', optionalAuthorisation, require( './accounts/UserVerify' ) )
 
   // reset password
-  r.post( '/accounts/reset/:token', require( './accounts/UserVerify' ) )
+  // r.post( '/accounts/reset/:token', require( './accounts/UserVerify' ) )
 
   //
   // CLIENTS
