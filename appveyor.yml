@@ -24,6 +24,10 @@ for:
   environment:
     DOCKER_IMAGE: "speckle/speckleserver"
     DOCKER_USERNAME: "botsalot"
+    GH_TOKEN:
+      secure: 3Dr6N3HXAs/QfKZQddw+4erxGBGPA/CqrB6HQL79qz8Hdw2M27eRCRDlqsPoQtOS
+    DOCKER_PASSWORD:
+      secure: USQ0X2x5R969IwDYkAUvfA==
 
   before_deploy:
   - sh: git config --global user.email "devops@speckle.works"
