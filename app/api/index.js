@@ -13,10 +13,10 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   //
 
   // create a new account xxx
-  r.post( '/accounts/register', require( './accounts/UserCreate' ) )
+  r.post( '/accounts/register', process.env.USE_AUTH0 === 'true' ? require( './accounts/UserCreateAuth0' ) : require( './accounts/UserCreate' ) )
 
   // login xxx
-  r.post( '/accounts/login', require( './accounts/UserLogin' ) )
+  r.post( '/accounts/login', process.env.USE_AUTH0 === 'true' ? require( './accounts/UserLoginAuth0' ) : require( './accounts/UserLogin' ) )
 
   // get profile xxx
   r.get( '/accounts', mandatoryAuthorisation, require( './accounts/UserGet' ) )

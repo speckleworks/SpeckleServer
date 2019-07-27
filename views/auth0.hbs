@@ -14,12 +14,15 @@
     <div class='col-sm-12 col-lg-6 py-3' id='hiw-login-container'>
     </div>
   </div>
+  <br>
+
+  <pre>{{{redirectTo}}}</pre>
 
 <script src="https://cdn.auth0.com/js/lock/11.17.0/lock.min.js"></script>
 <script>
   var lock = new Auth0Lock('{{clientId}}', '{{domain}}', {
     auth: {
-      redirectUrl: 'http://localhost:3000/auth0-c',
+      redirectUrl: 'http://localhost:3000/registration-callback',
       responseType: 'code',
       params: {
         scope: 'openid email profile'
@@ -34,13 +37,9 @@
       title: "Login"
     },
     closable:false,
-    container:'hiw-login-container',
-    additionalSignUpFields: [
-    { name: "Name", placeholder:"Family Name"}, {name:"Surname", placeholder:"Given Name"}, {name: "Company", placeholder: "Where do you work? (optional)" }
-    ]
-
+    container:'hiw-login-container'
   } )
 
-  lock.show()
+  lock.show();
 </script>
 </body>
