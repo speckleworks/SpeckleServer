@@ -25,21 +25,26 @@ module.exports = function ( app, express ) {
     store: new RedisStore( { client: redis.createClient( process.env.REDIS_URL ) } ),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    expires: new Date(Date.now() + 60000 * 3 ) // three minute expiration
   } )
 
   let redirectCheck = ( req, res, next ) => {
     // TODO
-    next()
+    next( )
   }
 
-  let LocalStrategy = require( './local' ).init( app, express, sessionMiddleware, redirectCheck )
-  let Auth0Strategy = require( './auth0' ).init( app, express, sessionMiddleware, redirectCheck )
-  let AzureStrategy = require( './azure-ad' ).init( app, express, sessionMiddleware, redirectCheck )
+  let strategies = [
+    require( './local' ).init( app, express, sessionMiddleware, redirectCheck ),
+    require( './auth0' ).init( app, express, sessionMiddleware, redirectCheck ),
+    require( './azure-ad' ).init( app, express, sessionMiddleware, redirectCheck ),
+  ]
 
-  let strategies = [ LocalStrategy, Auth0Strategy, AzureStrategy ]
-
-  app.get( '/signin', ( req, res ) => {
-    res.send( strategies )
+  app.get( '/signin', redirectCheck, sessionMiddleware, ( req, res ) => {
+    req.session.redirectUrl = req.session.redirectUrl || req.query.redirectUrl
+    res.render( 'signin', {
+      strategies: strategies,
+      redirectUrl: req.session.redirectUrl
+    } )
   } )
 }

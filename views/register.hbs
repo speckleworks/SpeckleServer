@@ -2,6 +2,8 @@
   <div class='col-sm-12 col-lg-5'>
     <h1 class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</h1>
     <p class='font-weight-lighter text-center'><small>the open source data platform for aec.</small></p>
+  </div>
+  <div class='col-sm-12 col-lg-5'>
     <br>
     <div class='alert alert-secondary'>
       Register @ <b>{{server}}</b> <small>({{url}})</small>.
@@ -12,7 +14,13 @@
     </div>
 
     {{#if error}}
-    <div class='alert alert-danger'>Failed to register. Please try again.</div>
+    <div class='alert alert-danger'>
+      {{#if errorMessage}}
+        {{errorMessage}}
+      {{else}}
+      Failed to register.
+      {{/if}}
+    </div>
     {{/if}}
 
     <form method="post">

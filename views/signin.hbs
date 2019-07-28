@@ -1,0 +1,21 @@
+<div class="row align-items-center justify-content-center">
+  <div class='col-sm-12 col-lg-5'>
+    <h1 class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</h1>
+    <p class='font-weight-lighter text-center'><small>the open source data platform for aec.</small></p>
+  </div>
+  <div class='col-sm-12 col-lg-5 py-4'>
+    <h2 class='font-weight-light'>Welcome! You can sign in using the following options:</h2>
+    {{#each strategies}}
+      <a class="btn btn-primary btn-block btn-lg my-4" role="button" href='{{signinRoute}}'>
+        {{strategyName}}
+      </a>
+      {{!-- <h2>{{strategyName}}</h2> --}}
+      {{!-- <div class="body">{{body}}</div> --}}
+    {{/each}}
+    {{#if redirectUrl}}
+    <p><small>
+      You will be redirected to: {{redirectUrl}}
+    </small></p>
+    {{/if}}
+  </div>
+</div>

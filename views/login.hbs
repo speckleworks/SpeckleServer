@@ -1,10 +1,11 @@
 <div class="row align-items-center justify-content-center">
   <div class='col-sm-12 col-lg-5'>
-  <h1 class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</h1>
+  <p class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</p>
   <p class='font-weight-lighter text-center'><small>the open source data platform for aec.</small></p>
+  </div>
 
+  <div class='col-sm-12 col-lg-5'>
   <br>
-
   <div class='alert alert-secondary'>
     Login @ <b>{{server}}</b> <small>({{url}})</small>.
     {{#if redirectUrl}}
@@ -14,7 +15,13 @@
   </div>
 
   {{#if error}}
-  <div class='alert alert-danger'>Failed to login. Please try again.</div>
+  <div class='alert alert-danger'>
+    {{#if errorMessage}}
+      {{errorMessage}}
+    {{else}}
+    Failed to login.
+    {{/if}}
+  </div>
   {{/if}}
 
   <form method="post">

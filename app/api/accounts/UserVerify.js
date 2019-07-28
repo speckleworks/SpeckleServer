@@ -31,6 +31,6 @@ module.exports = async function ( req, res ) {
     return res.status( 400 ).send( { success: false, message: err } )
   }
 
-  // return res.status( 200 ).send( { success: true, message: "User successfully verfied!" } ) // makes no sense!
-  res.redirect( `${process.env.CANONICAL_URL}/#/login?verfied=true` )
+  return res.status( 200 ).send( { success: true, message: "Thanks for verifying your email!" } ) // makes no sense!
+  // res.redirect( `${process.env.CANONICAL_URL}/#/login?verfied=true` )
 }

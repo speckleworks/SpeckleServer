@@ -42,7 +42,7 @@ module.exports = {
     } )
 
     return {
-      strategyName: `Microsoft Azure Active Directory ${process.env.AZUREAD_ORG_NAME}`,
+      strategyName: `Azure AD ${process.env.AZUREAD_ORG_NAME}`,
       signinRoute: '/signin/azure',
       useForm: false
     }

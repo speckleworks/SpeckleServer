@@ -25,6 +25,11 @@ transporter.verify( ( err, success ) => {
 
 exports.SendEmailVerification = ( { name, email, token } ) => {
 
+  if ( !initOk ) {
+    winston.error('Tried sending email before service was initialised.')
+    return
+  }
+
   let message = {
     from: process.env.EMAIL_SENDER,
     to: email,
