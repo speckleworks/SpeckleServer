@@ -4,7 +4,7 @@ const passport = require( 'passport' )
 const Auth0Strategy = require( 'passport-auth0' )
 
 module.exports = {
-  init( app, express, sessionMiddleware ) {
+  init( app, express, sessionMiddleware, redirectCheck ) {
 
     if ( process.env.USE_AUTH0 !== "true" )
       return null
@@ -21,7 +21,7 @@ module.exports = {
     passport.use( strategy )
 
     // create signin route
-    app.get( '/signin/auth0', sessionMiddleware, ( req, res ) => {
+    app.get( '/signin/auth0', redirectCheck, sessionMiddleware, ( req, res ) => {
       req.session.redirectUrl = req.query.redirectUrl // TODO: validate against whitelist
       res.render( 'auth0', {
         layout: false,
@@ -34,7 +34,7 @@ module.exports = {
     } )
 
     // create signin callback (this url needs to be whitelisted in your auth0 settings)
-    app.get( '/signin/auth0/callback', sessionMiddleware, passport.authenticate( 'auth0' ), ( req, res ) => {
+    app.get( '/signin/auth0/callback', redirectCheck, sessionMiddleware, passport.authenticate( 'auth0' ), ( req, res ) => {
       console.log( 'Auth0 signin callback' )
 
       if ( !req.user )

@@ -1,18 +1,36 @@
 <div class="row align-items-center justify-content-center">
-  <div class='col-sm-12 col-lg-6'>
-  <p class='display-1 text-center'>
-    <img src="https://en.gravatar.com/userimage/159900111/0c61da434c81b4ee4eb00b897b8b06a2.png"></p>
-  <p class='text-muted text-center'>Now <b>logging in</b> at <br><kbd>{{server}} | {{url}}</kbd> </p>
-  <form>
+  <div class='col-sm-12 col-lg-5'>
+  <h1 class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</h1>
+  <p class='font-weight-lighter text-center'><small>the open source data platform for aec.</small></p>
+
+  <br>
+
+  <div class='alert alert-secondary'>
+    Login @ <b>{{server}}</b> <small>({{url}})</small>.
+    {{#if redirectUrl}}
+    <hr>
+    <small>You will be redirected to {{redirectUrl}}.</small>
+    {{/if}}
+  </div>
+
+  {{#if error}}
+  <div class='alert alert-danger'>Failed to login. Please try again.</div>
+  {{/if}}
+
+  <form method="post">
     <div class="form-group">
-      <label for="exampleInputEmail1">Email address *</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+      <label for="inputEmail">Email address *</label>
+      <input required name="email" type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email">
     </div>
     <div class="form-group">
-      <label for="exampleInputPassword1">Password *</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+      <label for="inputPwd">Password *</label>
+      <input required minlength="8" name="password" type="password" class="form-control" id="inputPwd" placeholder="Password">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary btn-block btn-lg">Submit</button>
   </form>
+  <hr>
+  <p class='text-center'>
+    <a onclick="window.location='/signin/local/register'+window.location.search;" href='#'>register</a>
+  </p>
   </div>
 </div>
