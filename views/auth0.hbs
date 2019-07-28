@@ -21,8 +21,9 @@
 <script src="https://cdn.auth0.com/js/lock/11.17.0/lock.min.js"></script>
 <script>
   var lock = new Auth0Lock('{{clientId}}', '{{domain}}', {
+    allowSignUp: {{allowRegistration}},
     auth: {
-      redirectUrl: 'http://localhost:3000/registration-callback',
+      redirectUrl: '{{serverRedirectUrl}}',
       responseType: 'code',
       params: {
         scope: 'openid email profile'
