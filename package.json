@@ -1,5 +1,5 @@
 {
-  "name": "SpeckleServer",
+  "name": "@speckle/speckleserver",
   "version": "1.5.0",
   "description": "This is the speckle server. Orchestrates all the communication channels between clients and does heavy lifting for geometry and other data.",
   "main": "server.js",
