@@ -1,0 +1,25 @@
+<div class="row align-items-center justify-content-center">
+  <div class='col-sm-12 col-lg-5'>
+    <h1 class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</h1>
+    <p class='font-weight-lighter text-center'><small>the open source data platform for aec.</small></p>
+  </div>
+  <div class='col-sm-12 col-lg-5 py-4'>
+    <h2 class='font-weight-light'>Welcome {{user.name}}!</h2>
+    <p>You can now close this browser window.</p>
+    <hr>
+    <a class='' href="https://speckle.works/docs/start">Getting Started Guide</a>
+    {{!-- <a href="https://speckle.works/docs/start"></a> --}}
+    <hr>
+    <p>
+    <small>Speckle was not instructed to redirect you to any application, so below is a connection string you can use to add this account to your clients.</small>
+    </p>
+    <a class="btn btn-sm btn-light" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        show connection string
+    </a>
+    <div class="collapse mt-4" id="collapseExample">
+    <div class="">
+       <small><code id='connectionString' style="user-select:all">{{connectionString}}</code></small>
+    </div>
+    </div>
+  </div>
+</div>
