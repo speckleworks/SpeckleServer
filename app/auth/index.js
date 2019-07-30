@@ -5,8 +5,6 @@ const redis = require( 'redis' )
 const ExpressSession = require( 'express-session' )
 const RedisStore = require( 'connect-redis' )( ExpressSession )
 
-let redirectUrls = process.env.REDIRECT_URLS.split( ',' ).filter( r => r !== '' )
-redirectUrls.push( process.env.CANONICAL_URL )
 
 module.exports = function ( app ) {
 
@@ -16,6 +14,8 @@ module.exports = function ( app ) {
   passport.serializeUser( ( user, done ) => done( null, user ) )
   passport.deserializeUser( ( user, done ) => done( null, user ) )
 
+  let redirectUrls = process.env.REDIRECT_URLS.split( ',' ).filter( r => r !== '' ).map( u => new URL( u ) )
+  redirectUrls.push( new URL( process.env.CANONICAL_URL ) )
 
   //
   // Common middleware routes for authentication
@@ -31,6 +31,21 @@ module.exports = function ( app ) {
   let redirectCheck = ( req, res, next ) => {
     // TODO: pass through whitelist
     if ( req.query.redirectUrl ) {
+      let url = null
+
+      try {
+        url = new URL( req.query.redirectUrl )
+      } catch ( err ) {
+        req.session.errorMessage = `Invalid redirect url: <b>${req.query.redirectUrl}</b>`
+        return res.redirect( '/signin/error' )
+      }
+
+      let ind = redirectUrls.findIndex( u => u.host === url.host )
+      if ( ind === -1 ) {
+        req.session.errorMessage = `The redirect url (<code>${req.query.redirectUrl}</code>) is not whitelisted on this server (${process.env.SERVER_NAME}). <hr> <small>Please contact your server administrator.</small>`
+        return res.redirect( '/signin/error' )
+      }
+
       req.session.redirectUrl = req.query.redirectUrl
     }
     next( )
