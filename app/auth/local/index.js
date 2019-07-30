@@ -49,16 +49,19 @@ module.exports = {
           title: 'Speckle Login',
           server: process.env.SERVER_NAME,
           url: process.env.CANONICAL_URL,
-          error: req.query.err === 'true',
-          errorMessage: req.query.errorMessage,
+          errorMessage: req.session.errorMessage,
+          err: req.query.err,
           redirectUrl: req.session.redirectUrl
         } )
+        req.session.errorMessage = ''
       } )
 
     app.post( '/signin/local/login',
       sessionMiddleware,
       redirectCheck,
-      passport.authenticate( 'local', { failureRedirect: `/signin/local/login?err=true` } ),
+      ( req, res, next ) => {
+        passport.authenticate( 'local', { failureRedirect: `/signin/local/login?err=true` } )( req, res, next )
+      },
       ( req, res, next ) => {
         req.user.token = 'JWT ' + jwt.sign( { _id: req.user._id, name: req.user.name, email: req.user.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } )
         next( )
@@ -68,15 +71,28 @@ module.exports = {
     //
     // Registration
     //
+
+    let inviteCheck = ( req, res, next ) => {
+      // TODO: check for req.query.inviteToken
+      next( )
+    }
+
     app.get( '/signin/local/register',
       sessionMiddleware,
       redirectCheck,
+      inviteCheck,
       ( req, res ) => {
-        res.render( 'register', {
+        if ( process.env.PUBLIC_REGISTRATION !== "true" ) {
+          req.session.errorMessage = `
+          Public registration is closed for this server.
+          `
+          return res.redirect( '/signin/error' )
+        }
+        return res.render( 'register', {
           title: 'Speckle Register',
           server: process.env.SERVER_NAME,
           url: process.env.CANONICAL_URL,
-          error: req.query.err === 'true',
+          error: req.query.errorMessage,
           errorMessage: req.query.errorMessage,
           redirectUrl: req.session.redirectUrl
         } )
@@ -85,51 +101,49 @@ module.exports = {
     app.post( '/signin/local/register',
       sessionMiddleware,
       redirectCheck,
-      ( req, res, next ) => {
+      inviteCheck,
+      async ( req, res, next ) => {
 
-        if ( !req.body.email || !req.body.password )
-          return res.redirect( `/signin/local/register?err=true&redirectUrl=${req.session.redirectUrl}` )
+          if ( !req.body.email || !req.body.password ) {
+            req.session.errorMessage = `
+            Please provide an email and a password.
+            `
+            return res.redirect( `/signin/error` )
+          }
 
-        let myUser = new User( {
-          email: req.body.email,
-          password: req.body.password,
-          company: req.body.company,
-          name: req.body.name ? req.body.name : 'Anonymous',
-          surname: req.body.surname ? req.body.surname : 'User',
-          apitoken: null
-        } )
-
-        let userCount = 1 // do not default to 0
-
-        let validationToken = new ActionToken( {
-          owner: myUser._id,
-          token: cryptoRandomString( { length: 20, type: 'base64' } ),
-          action: "email-confirmation"
-        } )
-
-        let savedUser = {}
-
-        User.count( {} )
-          .then( count => {
-            userCount = count
-            return User.findOne( { 'email': req.body.email } )
+          let myUser = new User( {
+            email: req.body.email,
+            password: req.body.password,
+            company: req.body.company,
+            name: req.body.name ? req.body.name : 'Anonymous',
+            surname: req.body.surname ? req.body.surname : 'User',
+            apitoken: null
           } )
-          .then( user => {
-            if ( user )
-              return res.redirect( `/signin/local/login?err=true&errorMessage=${user.email} is taken, please login below.` )
+
+          let validationToken = new ActionToken( {
+            owner: myUser._id,
+            token: cryptoRandomString( { length: 20, type: 'base64' } ),
+            action: "email-confirmation"
+          } )
+
+          try {
+            let userCount = await User.count( {} )
+            let user = await User.findOne( { email: req.body.email } )
+
+            if ( user ) {
+              req.session.errorMessage = "Email is already registered. Please log in."
+              return res.redirect( `/signin/local/login` )
+            }
+
             myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, process.env.SESSION_SECRET, { expiresIn: '2y' } )
 
             if ( userCount === 0 && process.env.FIRST_USER_ADMIN === 'true' )
               myUser.role = 'admin'
 
-            return myUser.save( )
-          } )
-          .then( user => {
-            savedUser = user
-            return validationToken.save( )
-          } )
-          .then( result => {
-            let verfication = SendEmailVerification( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
+            let savedUser = await myUser.save( )
+            await validationToken.save( )
+
+            SendEmailVerification( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
 
             let savedUserObj = {
               name: savedUser.name,
@@ -140,16 +154,16 @@ module.exports = {
             }
 
             savedUserObj.token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name, email: myUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } )
-
             req.user = savedUserObj
+
             return next( )
-          } )
-          .catch( err => {
-            winston.error( JSON.stringify( err ) )
-            return res.redirect( `/signin/local/register?err=true&errorMessage=${err.message}&redirectUrl=${req.session.redirectUrl}` )
-          } )
-      },
-      handleLogin )
+          } catch ( err ) {
+            winston.error( err )
+            req.session.errorMessage = err.message
+            return res.redirect( `/signin/local/login` )
+          }
+        },
+        handleLogin )
 
     return {
       strategyName: 'Default Authentication',

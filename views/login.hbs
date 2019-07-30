@@ -14,13 +14,19 @@
     {{/if}}
   </div>
 
-  {{#if error}}
+  {{#if errorMessage}}
   <div class='alert alert-danger'>
     {{#if errorMessage}}
       {{errorMessage}}
     {{else}}
     Failed to login.
     {{/if}}
+  </div>
+  {{/if}}
+
+  {{#if err}}
+  <div class='alert alert-danger'>
+    Failed to login.
   </div>
   {{/if}}
 

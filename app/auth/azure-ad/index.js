@@ -40,37 +40,36 @@ module.exports = {
       redirectCheck,
       passport.authenticate( 'azuread-openidconnect', { failureRedirect: '/signin/error' } ),
       async ( req, res, next ) => {
-
           if ( !req.user ) {
             req.session.errorMessage = 'Failed to retrieve user from the Azure AD auth.'
-            return res.redirect('/signin/error' )
+            return res.redirect( '/signin/error' )
           }
 
           let email = req.user._json.email
           let name = req.user._json.name || req.user.displayName
 
-          if ( !name || !email ){
+          if ( !name || !email ) {
             req.session.errorMessage = 'Failed to retrieve email and name from the Azure AD auth.'
-            return res.redirect('/signin/error' )
+            return res.redirect( '/signin/error' )
           }
 
           try {
-            let dbUser = await User.findOne( { email: email } )
+            let existingUser = await User.findOne( { email: email } )
 
             // If user exists:
-            if ( dbUser ) {
+            if ( existingUser ) {
               let userObj = {
-                name: dbUser.name,
-                surname: dbUser.surname,
-                email: dbUser.email,
-                role: dbUser.role,
-                verified: dbUser.verified,
-                token: 'JWT ' + jwt.sign( { _id: dbUser._id, name: dbUser.name, email: dbUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } ),
+                name: existingUser.name,
+                surname: existingUser.surname,
+                email: existingUser.email,
+                role: existingUser.role,
+                verified: existingUser.verified,
+                token: 'JWT ' + jwt.sign( { _id: existingUser._id, name: existingUser.name, email: existingUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } ),
               }
 
-              dbUser.logins.push( { date: Date.now( ) } )
-              dbUser.markModified('logins')
-              await dbUser.save()
+              existingUser.logins.push( { date: Date.now( ) } )
+              existingUser.markModified( 'logins' )
+              await existingUser.save( )
 
               req.user = userObj
               return next( )
@@ -83,7 +82,7 @@ module.exports = {
               company: process.env.AZUREAD_ORG_NAME,
               apitoken: null,
               role: 'user',
-              verified: true,
+              verified: true, // If coming from an AD route, we assume the user's email is verified.
               password: cryptoRandomString( { length: 20, type: 'base64' } ), // need a dummy password
             } )
 
@@ -115,7 +114,8 @@ module.exports = {
             return next( )
           } catch ( err ) {
             winston.error( err )
-            return res.render( 'error', { errorMessage: `Something went wrong. Server said: ${err.message}` } )
+            req.session.errorMessage = `Something went wrong. Server said: ${err.message}`
+            return res.redirect( '/error' )
           }
         },
         handleLogin )

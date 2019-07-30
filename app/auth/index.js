@@ -83,8 +83,11 @@ module.exports = function ( app, express ) {
     } )
 
   app.get( '/signin/error', sessionMiddleware, ( req, res ) => {
+
     res.render( 'error', {
       errorMessage: req.session.errorMessage || "Oups. Something went wrong."
     } )
+
+    req.session.errorMessage = ''
   } )
 }

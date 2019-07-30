@@ -2,9 +2,14 @@
 
 const passport = require( 'passport' )
 const Auth0Strategy = require( 'passport-auth0' )
+const cryptoRandomString = require( 'crypto-random-string' )
+const jwt = require( 'jsonwebtoken' )
+
+const winston = require( '../../../config/logger' )
+const User = require( '../../../models/User' )
 
 module.exports = {
-  init( app, sessionMiddleware, redirectCheck ) {
+  init( app, sessionMiddleware, redirectCheck, handleLogin ) {
 
     if ( process.env.USE_AUTH0 !== "true" )
       return null
@@ -40,14 +45,85 @@ module.exports = {
     app.get( '/signin/auth0/callback',
       sessionMiddleware,
       redirectCheck,
-      passport.authenticate( 'auth0' ), ( req, res ) => {
-        console.log( 'Auth0 signin callback' )
+      passport.authenticate( 'auth0', { failureRedirect: '/signin/error' } ),
+      async ( req, res, next ) => {
 
-        if ( !req.user )
-          res.render( 'error' )
+          if ( !req.user ) {
+            req.session.errorMessage = 'Auth0 flow failed.'
+            res.redirect( '/signin/error' )
+          }
 
-        res.send( { user: req.user, redirectUrl: req.session.redirectUrl } )
-      } )
+          let email = req.user._json.email
+          let name = req.user._json.name
+
+          if ( !name || !email ) {
+            req.session.errorMessage = 'Failed to retrieve email or name from the Auth0.'
+            return res.redirect( '/signin/error' )
+          }
+
+          try {
+            let existingUser = await User.findOne( { email: email } )
+
+            // If user exists:
+            if ( existingUser ) {
+              let userObj = {
+                name: existingUser.name,
+                surname: existingUser.surname,
+                email: existingUser.email,
+                role: existingUser.role,
+                token: 'JWT ' + jwt.sign( { _id: existingUser._id, name: existingUser.name, email: existingUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } ),
+              }
+              existingUser.logins.push( { date: Date.now( ) } )
+              existingUser.markModified( 'logins' )
+              await existingUser.save( )
+              return next( )
+            }
+
+            // If user does not exist:
+
+            let userCount = await User.count( )
+            let myUser = new User( {
+              email: email,
+              company: process.env.AZUREAD_ORG_NAME,
+              apitoken: null,
+              role: 'user',
+              verified: true, // If coming from an AD route, we assume the user's email is verified.
+              password: cryptoRandomString( { length: 20, type: 'base64' } ), // need a dummy password
+            } )
+
+            myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, process.env.SESSION_SECRET, { expiresIn: '2y' } )
+            let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name, email: myUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } )
+
+            if ( userCount === 0 && process.env.FIRST_USER_ADMIN === 'true' )
+              myUser.role = 'admin'
+
+            let namePieces = name.split( /(?<=^\S+)\s/ )
+            if ( namePieces.length === 2 ) {
+              myUser.name = namePieces[ 1 ]
+              myUser.surname = namePieces[ 0 ]
+            } else {
+              myUser.name = "Anonymouss"
+              myUser.surname = name
+            }
+
+            await myUser.save( )
+
+            req.user = {
+              name: myUser.name,
+              surname: myUser.surname,
+              email: myUser.email,
+              role: myUser.role,
+              verified: myUser.verified,
+              token: token
+            }
+            return next( )
+          } catch ( err ) {
+            winston.error( err )
+            req.session.errorMessage = `Something went wrong. Server said: ${err.message}`
+            return res.redirect( '/error' )
+          }
+        },
+        handleLogin )
 
     return {
       strategyName: 'Auth0',

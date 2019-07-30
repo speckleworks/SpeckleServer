@@ -6,15 +6,15 @@
   <div class='col-sm-12 col-lg-6 py-4'>
     <h2 class='font-weight-light'>Welcome! You can sign in using the following options:</h2>
     {{#each strategies}}
-      <a class="btn btn-primary btn-block btn-lg my-4" role="button" href='{{signinRoute}}'>
+      <a class="btn btn-outline-primary btn-block btn-lg my-4" role="button" href='{{signinRoute}}'>
         {{strategyName}}
       </a>
       {{!-- <h2>{{strategyName}}</h2> --}}
       {{!-- <div class="body">{{body}}</div> --}}
     {{/each}}
     {{#if redirectUrl}}
-    <p><small>
-      You will be redirected to: {{redirectUrl}}
+    <p class='text-center'><small>
+      You will be redirected to: <code>{{redirectUrl}}</code>
     </small></p>
     {{/if}}
   </div>
