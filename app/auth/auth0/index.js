@@ -104,6 +104,7 @@ module.exports = {
               myUser.role = 'admin'
 
             let namePieces = name.split( /(?<=^\S+)\s/ )
+
             if ( namePieces.length === 2 ) {
               myUser.name = namePieces[ 1 ]
               myUser.surname = namePieces[ 0 ]

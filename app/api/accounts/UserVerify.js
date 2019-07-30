@@ -1,7 +1,4 @@
 const winston = require( '../../../config/logger' )
-const jwt = require( 'jsonwebtoken' )
-
-const User = require( '../../../models/User' )
 const ActionToken = require( '../../../models/ActionToken' )
 
 module.exports = async function ( req, res ) {

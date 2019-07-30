@@ -13,7 +13,7 @@ let transporter = nodemailer.createTransport( {
   }
 } )
 
-transporter.verify( ( err, success ) => {
+transporter.verify( ( err ) => {
   if ( err )
     winston.debug( err )
   else {
@@ -26,7 +26,7 @@ transporter.verify( ( err, success ) => {
 exports.SendEmailVerification = ( { name, email, token } ) => {
 
   if ( !initOk ) {
-    winston.error('Tried sending email before service was initialised.')
+    winston.error( 'Tried sending email before service was initialised.' )
     return
   }
 
@@ -81,18 +81,17 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
 
   transporter.sendMail( message, ( err ) => {
     if ( err ) {
-      winston.debug( 'OUPS ERRROROR' )
-      console.log( err )
-      winston.debug( err )
+      winston.error( err )
     } else {
-      winston.debug( 'email sent?' )
-      winston.debug( message )
+      winston.debug( 'email sent' )
     }
   } )
 }
 
-exports.SendPasswordReset = ( token ) => {
+/* eslint-disable */
 
+exports.SendPasswordReset = ( token ) => {
+  token = 'placeholder'
 }
 
 exports.default = {}

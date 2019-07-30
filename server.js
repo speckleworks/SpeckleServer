@@ -7,7 +7,6 @@ const passport = require( 'passport' )
 const chalk = require( 'chalk' )
 const mongoose = require( 'mongoose' ).set( 'debug', false )
 const expressWinston = require( 'express-winston' )
-const exphbs = require( 'express-handlebars' )
 const redis = require( 'redis' )
 const logger = require( './config/logger' )
 
@@ -24,7 +23,7 @@ const plugins = require( './plugins' )( )
 /// MASTER process                                                 /////.
 /////////////////////////////////////////////////////////////////////////
 if ( cluster.isMaster ) {
-  console.log( chalk.blue( `
+  logger.info( chalk.blue( `
 
 
     █▀▀ █▀▀█ █▀▀ █▀▀▀ █ █ █   █▀▀
@@ -32,15 +31,15 @@ if ( cluster.isMaster ) {
     ▀▀▀ █▀▀▀ ▀▀▀ ▀▀▀▀ ▀ ▀ ▀▀▀ ▀▀▀
 
 
-` ), `
+` ) + `
     █
     █  https://speckle.works
     █  The Open Source Data Platform for AEC.
     █
-`,
-chalk.red(`
+` +
+chalk.red( `
     █  Server running at: ${process.env.CANONICAL_URL}
-  `)
+  ` )
  )
 
   logger.level = 'debug'
@@ -147,7 +146,7 @@ chalk.red(`
   require( './app/email/index' )
 
   // init default register/login routes
-  require( './app/auth/index' )( app, express )
+  require( './app/auth/index' )( app )
 
   /// /////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.

@@ -5,15 +5,10 @@ const redis = require( 'redis' )
 const ExpressSession = require( 'express-session' )
 const RedisStore = require( 'connect-redis' )( ExpressSession )
 
-
-const User = require( '../../models/User' )
-const ActionToken = require( '../../models/ActionToken' )
-const SendEmailVerification = require( '../../app/email/index' ).SendEmailVerification
-
 let redirectUrls = process.env.REDIRECT_URLS.split( ',' ).filter( r => r !== '' )
 redirectUrls.push( process.env.CANONICAL_URL )
 
-module.exports = function ( app, express ) {
+module.exports = function ( app ) {
 
   app.engine( '.hbs', exphbs( { extname: '.hbs' } ) )
   app.set( 'view engine', '.hbs' )
@@ -41,7 +36,7 @@ module.exports = function ( app, express ) {
     next( )
   }
 
-  let handleLogin = ( req, res, next ) => {
+  let handleLogin = ( req, res ) => {
     // TODO: also check for potential errors
     // TODO: redirect if redirect is present, or display a simple page otherwise
     // NOTE: By this point in time, the req.user var should be the speckle user.

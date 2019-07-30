@@ -53,8 +53,8 @@ module.exports = ( req, res ) => {
       savedUser = user
       return validationToken.save( )
     } )
-    .then( result => {
-      let verfication = SendEmailVerification( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
+    .then( () => {
+      SendEmailVerification( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
       let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
       return res.send( { success: true, message: 'User saved. Redirect to login.', resource: { apitoken: savedUser.apitoken, token: token, email: savedUser.email }, validationToken: res.token } )
     } )
