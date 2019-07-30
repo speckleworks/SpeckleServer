@@ -66,6 +66,7 @@ module.exports = function ( app, express ) {
     require( './local' ).init( app, sessionMiddleware, redirectCheck, handleLogin ),
     require( './auth0' ).init( app, sessionMiddleware, redirectCheck, handleLogin ),
     require( './azure-ad' ).init( app, sessionMiddleware, redirectCheck, handleLogin ),
+    require( './github' ).init( app, sessionMiddleware, redirectCheck, handleLogin ),
   ]
 
 

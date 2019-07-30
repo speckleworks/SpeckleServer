@@ -24,8 +24,26 @@ const plugins = require( './plugins' )( )
 /// MASTER process                                                 /////.
 /////////////////////////////////////////////////////////////////////////
 if ( cluster.isMaster ) {
+  console.log( chalk.blue( `
+
+
+    █▀▀ █▀▀█ █▀▀ █▀▀▀ █ █ █   █▀▀
+    ▀▀█ █  █ █▀▀ █    █▀▄ █   █▀▀
+    ▀▀▀ █▀▀▀ ▀▀▀ ▀▀▀▀ ▀ ▀ ▀▀▀ ▀▀▀
+
+
+` ), `
+    █
+    █  https://speckle.works
+    █  The Open Source Data Platform for AEC.
+    █
+`,
+chalk.red(`
+    █  Server running at: ${process.env.CANONICAL_URL}
+  `)
+ )
+
   logger.level = 'debug'
-  logger.info( chalk.bgBlue( `Speckle is starting up.` ) )
 
   let osCpus = require( 'os' ).cpus( ).length
   let envCpus = process.env.MAX_PROC
@@ -84,7 +102,7 @@ if ( cluster.isMaster ) {
   } )
 
   mongoose.connection.on( 'connected', ( ) => {
-    logger.debug( chalk.red( 'Connected to mongo.' ) )
+    logger.debug( 'Connected to mongo.' )
   } )
 
 
@@ -138,6 +156,6 @@ if ( cluster.isMaster ) {
   var port = process.env.PORT || 3000
   var ip = process.env.IP || null
   server.listen( port, ip, ( ) => {
-    logger.debug( chalk.yellow( `Speckle worker process ${process.pid} now running on port ${port}.` ) )
+    logger.debug( `Speckle worker process ${process.pid} now running on port ${port}.` )
   } )
 }

@@ -49,7 +49,7 @@ module.exports = {
       async ( req, res, next ) => {
 
           if ( !req.user ) {
-            req.session.errorMessage = 'Auth0 flow failed.'
+            req.session.errorMessage = 'Auth0 authentication failed.'
             res.redirect( '/signin/error' )
           }
 
@@ -57,7 +57,7 @@ module.exports = {
           let name = req.user._json.name
 
           if ( !name || !email ) {
-            req.session.errorMessage = 'Failed to retrieve email or name from the Auth0.'
+            req.session.errorMessage = 'Failed to retrieve email or name from Auth0.'
             return res.redirect( '/signin/error' )
           }
 
@@ -75,7 +75,13 @@ module.exports = {
               }
               existingUser.logins.push( { date: Date.now( ) } )
               existingUser.markModified( 'logins' )
+
+              existingUser.providerProfiles[ 'auth0' ] = req.user._json
+              existingUser.markModified( 'providerProfiles' )
+
               await existingUser.save( )
+
+              req.user = userObj
               return next( )
             }
 
@@ -84,13 +90,13 @@ module.exports = {
             let userCount = await User.count( )
             let myUser = new User( {
               email: email,
-              company: process.env.AZUREAD_ORG_NAME,
               apitoken: null,
               role: 'user',
               verified: true, // If coming from an AD route, we assume the user's email is verified.
               password: cryptoRandomString( { length: 20, type: 'base64' } ), // need a dummy password
             } )
 
+            myUser.providerProfiles[ 'auth0' ] = req.user._json
             myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, process.env.SESSION_SECRET, { expiresIn: '2y' } )
             let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name, email: myUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } )
 
@@ -102,7 +108,7 @@ module.exports = {
               myUser.name = namePieces[ 1 ]
               myUser.surname = namePieces[ 0 ]
             } else {
-              myUser.name = "Anonymouss"
+              myUser.name = "Anonymous"
               myUser.surname = name
             }
 

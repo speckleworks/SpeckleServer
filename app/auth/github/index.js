@@ -1,7 +1,7 @@
 'use strict'
 
 const passport = require( 'passport' )
-const OIDCStrategy = require( 'passport-azure-ad' ).OIDCStrategy
+const GithubStrategy = require( 'passport-github' )
 const cryptoRandomString = require( 'crypto-random-string' )
 const jwt = require( 'jsonwebtoken' )
 
@@ -11,46 +11,47 @@ const User = require( '../../../models/User' )
 module.exports = {
   init( app, sessionMiddleware, redirectCheck, handleLogin ) {
 
-    if ( process.env.USE_AZUREAD !== 'true' )
+    if ( process.env.USE_GITHUB !== "true" )
       return null
 
     // define and set strategy
-    let strategy = new OIDCStrategy( {
-      identityMetadata: process.env.AZUREAD_IDENTITY_METADATA,
-      clientID: process.env.AZUREAD_CLIENT_ID,
-      responseType: 'code id_token',
-      responseMode: 'form_post',
-      redirectUrl: new URL( '/signin/azure/callback', process.env.CANONICAL_URL ).toString( ),
-      allowHttpForRedirectUrl: true,
-      clientSecret: process.env.AZUREAD_CLIENT_SECRET,
-      scope: [ 'profile', 'email', 'openid' ]
-    }, async ( iss, sub, profile, done ) => {
-      done( null, profile )
+    let strategy = new GithubStrategy( {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: process.env.GITHUB_CALLBACK,
+      scope: [ 'profile', 'email' ]
+    }, async ( accessToken, refreshToken, profile, done ) => {
+      return done( null, profile )
     } )
 
     passport.use( strategy )
 
-    app.get( '/signin/azure',
+    // create signin route
+    app.get( '/signin/github',
       sessionMiddleware,
       redirectCheck,
-      passport.authenticate( 'azuread-openidconnect' )
+      passport.authenticate( 'github', { failureRedirect: '/signin/error' } ),
     )
 
-    app.post( '/signin/azure/callback',
+    // create signin callback (this url needs to be whitelisted in your github application settings)
+    app.get( '/signin/github/callback',
       sessionMiddleware,
       redirectCheck,
-      passport.authenticate( 'azuread-openidconnect', { failureRedirect: '/signin/error' } ),
+      passport.authenticate( 'github', { failureRedirect: '/signin/error' } ),
       async ( req, res, next ) => {
+
           if ( !req.user ) {
-            req.session.errorMessage = 'Failed to retrieve user from the Azure AD auth.'
-            return res.redirect( '/signin/error' )
+            req.session.errorMessage = 'Github authentication failed.'
+            res.redirect( '/signin/error' )
           }
 
+          // return res.send( req.user )
+
           let email = req.user._json.email
-          let name = req.user._json.name || req.user.displayName
+          let name = req.user._json.name
 
           if ( !name || !email ) {
-            req.session.errorMessage = 'Failed to retrieve email and name from the Azure AD auth.'
+            req.session.errorMessage = 'Failed to retrieve email or name from the Auth0.'
             return res.redirect( '/signin/error' )
           }
 
@@ -64,14 +65,12 @@ module.exports = {
                 surname: existingUser.surname,
                 email: existingUser.email,
                 role: existingUser.role,
-                verified: existingUser.verified,
                 token: 'JWT ' + jwt.sign( { _id: existingUser._id, name: existingUser.name, email: existingUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } ),
               }
-
               existingUser.logins.push( { date: Date.now( ) } )
               existingUser.markModified( 'logins' )
 
-              existingUser.providerProfiles[ 'azure' ] = req.user._json
+              existingUser.providerProfiles[ 'github' ] = req.user._json
               existingUser.markModified( 'providerProfiles' )
 
               await existingUser.save( )
@@ -81,17 +80,18 @@ module.exports = {
             }
 
             // If user does not exist:
-            let userCount = await User.count( {} )
+
+            let userCount = await User.count( )
             let myUser = new User( {
               email: email,
-              company: process.env.AZUREAD_ORG_NAME,
+              company: req.user._json.company || null,
               apitoken: null,
               role: 'user',
               verified: true, // If coming from an AD route, we assume the user's email is verified.
               password: cryptoRandomString( { length: 20, type: 'base64' } ), // need a dummy password
             } )
 
-            myUser.providerProfiles[ 'azure' ] = req.user._json
+            myUser.providerProfiles[ 'github' ] = req.user._json
             myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, process.env.SESSION_SECRET, { expiresIn: '2y' } )
             let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name, email: myUser.email }, process.env.SESSION_SECRET, { expiresIn: '24h' } )
 
@@ -127,8 +127,8 @@ module.exports = {
         handleLogin )
 
     return {
-      strategyName: `Azure AD ${process.env.AZUREAD_ORG_NAME}`,
-      signinRoute: '/signin/azure',
+      strategyName: 'Github',
+      signinRoute: '/signin/github',
       useForm: false
     }
   }
