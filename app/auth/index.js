@@ -30,9 +30,9 @@ module.exports = function ( app ) {
 
   let redirectCheck = ( req, res, next ) => {
     // TODO: pass through whitelist
+    console.log( req.query.redirectUrl)
     if ( req.query.redirectUrl ) {
       let url = null
-
       try {
         url = new URL( req.query.redirectUrl )
       } catch ( err ) {
@@ -54,7 +54,7 @@ module.exports = function ( app ) {
 
       req.session.redirectUrl = req.query.redirectUrl
     } else {
-      delete req.session.redirectUrl
+      //delete req.session.redirectUrl
     }
     next( )
   }
@@ -66,15 +66,16 @@ module.exports = function ( app ) {
 
     let token = Buffer.from( req.user.token ).toString( 'base64' )
     let server = Buffer.from( process.env.CANONICAL_URL ).toString( 'base64' )
-    let fullConnectionString = `${token}/${server}`
+    let fullConnectionString = `${token}:::${server}`
 
     if ( req.session.redirectUrl ) {
-      return res.redirect( `${req.session.redirectUrl}?token=${token}&serverUrl=${server}` )
+      // return res.redirect( `${req.session.redirectUrl}?token=${token}&serverUrl=${server}` )
     }
 
     res.render( 'postLogin', {
       user: req.user,
-      connectionString: fullConnectionString
+      connectionString: fullConnectionString,
+      redirectUrl: req.session.redirectUrl
     } )
   }
 

@@ -10,9 +10,10 @@
     <a class='' href="https://speckle.works/docs/start">Getting Started Guide</a>
     {{!-- <a href="https://speckle.works/docs/start"></a> --}}
     <hr>
-    <p>
-    <small>Speckle was not instructed to redirect you to any application, so below is a connection string you can use to add this account to your clients.</small>
-    </p>
+    <p><small>
+      You will be redirected to: <code>{{redirectUrl}}</code>
+    {{!-- <small>Speckle was not instructed to redirect you to any application, so below is a connection string you can use to add this account to your clients.</small> --}}
+    </small></p>
     <a class="btn btn-sm btn-light" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
         show connection string
     </a>
@@ -23,3 +24,14 @@
     </div>
   </div>
 </div>
+
+<script>
+  function redirect() {
+    window.opener.location.href = "{{redirectUrl}}?token={{connectionString}}"
+    self.close()
+  }
+
+  window.onload = function() {
+    setTimeout( redirect, 3000 )
+  }
+</script>

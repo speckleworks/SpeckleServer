@@ -40,7 +40,6 @@
     "passport-local": "^1.0.0",
     "query-to-mongo": "^0.7.0",
     "redis": "^2.8.0",
-    "request": "^2.88.0",
     "shortid": "^2.2.13",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",

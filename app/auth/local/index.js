@@ -175,7 +175,6 @@ module.exports = {
         if ( !req.params.token ) throw new Error( 'No verification token present.' )
 
         let token = await ActionToken.findOne( { token: req.params.token } ).populate( 'owner' )
-      console.log( token )
         if ( !token || token.action !== 'email-confirmation' ) throw new Error( 'Wrong or expired verification token.' )
 
         token.owner.verified = true
