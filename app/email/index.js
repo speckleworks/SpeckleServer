@@ -39,7 +39,7 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
 
       Please verify your speckle account on ${process.env.SERVER_NAME} (${process.env.CANONICAL_URL}) by clicking on the following link:
 
-      ${process.env.CANONICAL_URL}/api/accounts/verify/${token}
+      ${process.env.CANONICAL_URL}/signin/local/verify/${token}
 
       **This link will expire in 24h.** If any problems, do get in touch via the forum (https://discourse.speckle.works).
 
@@ -57,10 +57,10 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
       Hello ${name},
       <br>
       <br>
-      We're happy you're on board! There's just a bit of house-keeping to take care of. Complete your registration by verifying your speckle account on ${process.env.SERVER_NAME} (${process.env.CANONICAL_URL}) by clicking on <a href="${process.env.CANONICAL_URL}/api/accounts/verify/${token}">this link.</a> If that doesn't work, copy paste it in your browser of choice:
+      We're happy you're on board! There's just a bit of house-keeping to take care of. Complete your registration by verifying your speckle account on ${process.env.SERVER_NAME} (${process.env.CANONICAL_URL}) by clicking on <a href="${process.env.CANONICAL_URL}/signin/local/verify/${token}">this link.</a> If that doesn't work, copy paste it in your browser of choice:
       <br>
       <br>
-      <pre>${process.env.CANONICAL_URL}/api/accounts/verify/${token}</pre>
+      <pre>${process.env.CANONICAL_URL}/signin/local/verify/${token}</pre>
       <br>
       <br>
       <b>This link  will expire in 24h.</b> If you have any problems or questions, do get in touch via <a href="https://discourse.speckle.works">the forum</a>.

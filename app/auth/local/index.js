@@ -17,6 +17,7 @@ module.exports = {
     if ( process.env.USE_LOCAL !== "true" )
       return null
 
+    // Define the strategy
     let strategy = new LocalStrategy( {
       usernameField: 'email',
       passwordField: 'password'
@@ -122,7 +123,7 @@ module.exports = {
 
           let validationToken = new ActionToken( {
             owner: myUser._id,
-            token: cryptoRandomString( { length: 20, type: 'base64' } ),
+            token: cryptoRandomString( { length: 20, type: 'url-safe' } ),
             action: "email-confirmation"
           } )
 
@@ -164,6 +165,36 @@ module.exports = {
           }
         },
         handleLogin )
+
+    //
+    // Verify email
+    //
+    app.get( '/signin/local/verify/:token', sessionMiddleware, async ( req, res ) => {
+      try {
+
+        if ( !req.params.token ) throw new Error( 'No verification token present.' )
+
+        let token = await ActionToken.findOne( { token: req.params.token } ).populate( 'owner' )
+      console.log( token )
+        if ( !token || token.action !== 'email-confirmation' ) throw new Error( 'Wrong or expired verification token.' )
+
+        token.owner.verified = true
+        token.owner.markModified( 'verified' )
+
+        await Promise.all( [ token.owner.save( ), token.delete( ) ] )
+
+        return res.render( 'verify', {
+          success: true
+        } )
+      } catch ( err ) {
+        req.session.errorMessage = err.message
+        return res.redirect( `/signin/error` )
+      }
+    } )
+
+    //
+    // Verify email
+    //
 
     return {
       strategyName: 'Default Authentication',

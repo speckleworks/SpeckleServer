@@ -12,11 +12,14 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   // ACCOUNTS & USERS
   //
 
-  // create a new account xxx
-  r.post( '/accounts/register', require( './accounts/UserCreate' ) )
+  // only allow api registration/login if local auth strategy is enabled
+  if ( process.env.USE_LOCAL === 'true' ) {
+    // create a new account xxx
+    r.post( '/accounts/register', require( './accounts/UserCreate' ) )
 
-  // login xxx
-  r.post( '/accounts/login', require( './accounts/UserLogin' ) )
+    // login xxx
+    r.post( '/accounts/login', require( './accounts/UserLogin' ) )
+  }
 
   // get profile xxx
   r.get( '/accounts', mandatoryAuthorisation, require( './accounts/UserGet' ) )
@@ -33,13 +36,9 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
 
-
-
-  // verify
-  r.get( '/accounts/verify/:token', require( './accounts/UserVerify' ) )
-
-  // reset password
-  r.post( '/accounts/reset/:token', require( './accounts/UserVerify' ) )
+  // TODOs:
+  // API call to send a new verification email
+  // API call to send a password reset email
 
   //
   // CLIENTS
