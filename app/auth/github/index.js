@@ -19,7 +19,8 @@ module.exports = {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       callbackURL: process.env.GITHUB_CALLBACK,
-      scope: [ 'profile', 'email' ]
+      scope: [ 'profile', 'email' ],
+      // passReqToCallback: true
     }, async ( accessToken, refreshToken, profile, done ) => {
       return done( null, profile )
     } )

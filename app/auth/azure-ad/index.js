@@ -23,7 +23,8 @@ module.exports = {
       redirectUrl: new URL( '/signin/azure/callback', process.env.CANONICAL_URL ).toString( ),
       allowHttpForRedirectUrl: true,
       clientSecret: process.env.AZUREAD_CLIENT_SECRET,
-      scope: [ 'profile', 'email', 'openid' ]
+      scope: [ 'profile', 'email', 'openid' ],
+      // passReqToCallback: true
     }, async ( iss, sub, profile, done ) => {
       done( null, profile )
     } )

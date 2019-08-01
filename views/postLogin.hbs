@@ -10,10 +10,14 @@
     <a class='' href="https://speckle.works/docs/start">Getting Started Guide</a>
     {{!-- <a href="https://speckle.works/docs/start"></a> --}}
     <hr>
-    <p><small>
-      You will be redirected to: <code>{{redirectUrl}}</code>
+    <p>
+      {{#if redirectUrl}}
+      You will be redirected to <code>{{redirectUrl}}</code> in 3 seconds.
+      {{else}}
+      No redirect url present.
+      {{/if}}
     {{!-- <small>Speckle was not instructed to redirect you to any application, so below is a connection string you can use to add this account to your clients.</small> --}}
-    </small></p>
+    </p>
     <a class="btn btn-sm btn-light" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
         show connection string
     </a>
@@ -27,9 +31,13 @@
 
 <script>
   function redirect() {
-    window.opener.location.href = "{{redirectUrl}}?token={{connectionString}}"
-    self.close()
-  }
+    var redirectUrl = '{{redirectUrl}}'
+    if( redirectUrl && redirectUrl !== '') {
+      window.opener.location.href = "{{redirectUrl}}?token={{connectionString}}"
+      self.close()
+    } else
+      console.log("no redirect url. ")
+    }
 
   window.onload = function() {
     setTimeout( redirect, 3000 )

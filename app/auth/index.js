@@ -64,9 +64,9 @@ module.exports = function ( app ) {
     // TODO: redirect if redirect is present, or display a simple page otherwise
     // NOTE: By this point in time, the req.user var should be the speckle user.
 
-    let token = Buffer.from( req.user.token ).toString( 'base64' )
-    let server = Buffer.from( process.env.CANONICAL_URL ).toString( 'base64' )
-    let fullConnectionString = `${token}:::${server}`
+    let token = req.user.token //Buffer.from( req.user.token ).toString( 'base64' )
+    let server = process.env.CANONICAL_URL //Buffer.from( process.env.CANONICAL_URL ).toString( 'base64' )
+    let fullConnectionString = encodeURIComponent( `${token}:::${server}` )
 
     if ( req.session.redirectUrl ) {
       // return res.redirect( `${req.session.redirectUrl}?token=${token}&serverUrl=${server}` )
@@ -98,7 +98,8 @@ module.exports = function ( app ) {
       res.render( 'signin', {
         strategies: strategies,
         redirectUrl: req.session.redirectUrl,
-        error: req.query.err
+        error: req.query.err,
+        serverName: process.env.SERVER_NAME
       } )
     } )
 

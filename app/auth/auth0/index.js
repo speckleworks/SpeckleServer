@@ -20,7 +20,8 @@ module.exports = {
       clientID: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
       state: false,
-      callbackURL: '/signin/auth0/callback'
+      callbackURL: '/signin/auth0/callback',
+      passReqToCallback: true
     }, ( accessToken, refreshToken, extraParams, profile, done ) => done( null, profile ) )
 
     passport.use( strategy )
@@ -29,17 +30,14 @@ module.exports = {
     app.get( '/signin/auth0',
       sessionMiddleware,
       redirectCheck,
-      ( req, res ) => {
-        req.session.redirectUrl = req.query.redirectUrl // TODO: validate against whitelist
-        res.render( 'auth0', {
-          layout: false,
-          title: 'Speckle Login/Register using Auth0',
-          clientId: process.env.AUTH0_CLIENT_ID,
-          domain: process.env.AUTH0_DOMAIN,
-          allowRegistration: process.env.PUBLIC_REGISTRATION === 'true',
-          serverRedirectUrl: new URL( '/signin/auth0/callback', process.env.CANONICAL_URL )
-        } )
+      passport.authenticate( 'auth0', {
+        domain: process.env.AUTH0_DOMAIN,
+        clientID: process.env.AUTH0_CLIENT_ID,
+        redirectUri: `${process.env.CANONICAL_URL}/signin/auth0/callback`,
+        responseType: 'code',
+        scope: 'openid profile email'
       } )
+    )
 
     // create signin callback (this url needs to be whitelisted in your auth0 settings)
     app.get( '/signin/auth0/callback',
@@ -47,7 +45,7 @@ module.exports = {
       redirectCheck,
       passport.authenticate( 'auth0', { failureRedirect: '/signin/error' } ),
       async ( req, res, next ) => {
-
+          console.log( req.user )
           if ( !req.user ) {
             req.session.errorMessage = 'Auth0 authentication failed.'
             res.redirect( '/signin/error' )

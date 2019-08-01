@@ -20,7 +20,8 @@ module.exports = {
     // Define the strategy
     let strategy = new LocalStrategy( {
       usernameField: 'email',
-      passwordField: 'password'
+      passwordField: 'password',
+      // passReqToCallback: true
     }, ( username, password, done ) => {
       User.findOne( { email: username } )
         .then( user => {
