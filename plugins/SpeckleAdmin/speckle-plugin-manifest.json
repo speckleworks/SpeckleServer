@@ -1,0 +1,11 @@
+{
+  "name": "Speckle Admin",
+  "version":"0.5.0-beta",
+  "desc": "This plugin allows you to manage your streams.",
+  "serveFrom": "/",
+  "serveSource": "/dist",
+  "author": "Speckle Project Contributors",
+  "contact":"hello@speckle.works",
+  "homepage":"https://speckle.works",
+  "git":"https://github.com/speckleworks/SpeckleAdmin"
+}

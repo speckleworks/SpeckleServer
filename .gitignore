@@ -13,3 +13,5 @@ tree_out.txt
 
 #don't track our super secret speckle stuff™ file
 .env
+
+terraform/.terraform

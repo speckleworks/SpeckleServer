@@ -1,1 +1,3 @@
-
+[submodule "plugins/SpeckleViewer"]
+	path = plugins/SpeckleViewer
+	url = https://github.com/speckleworks/SpeckleViewer.git
