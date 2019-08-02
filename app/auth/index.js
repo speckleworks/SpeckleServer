@@ -30,7 +30,6 @@ module.exports = function ( app ) {
 
   let redirectCheck = ( req, res, next ) => {
     // TODO: pass through whitelist
-    console.log( req.query.redirectUrl)
     if ( req.query.redirectUrl ) {
       let url = null
       try {
@@ -47,7 +46,7 @@ module.exports = function ( app ) {
         return res.redirect( '/signin/error' )
       }
 
-      if( url.protocol === 'http:' && process.env.ALLOW_INSECURE_REDIRECTS === 'false' ) {
+      if ( url.protocol === 'http:' && process.env.ALLOW_INSECURE_REDIRECTS === 'false' ) {
         req.session.errorMessage = `Insecure urls (non-http<b>s</b>) are not allowed as redirects. <hr> <small>Please contact your server administrator.</small>`
         return res.redirect( '/signin/error' )
       }
@@ -68,10 +67,6 @@ module.exports = function ( app ) {
     let server = process.env.CANONICAL_URL //Buffer.from( process.env.CANONICAL_URL ).toString( 'base64' )
     let fullConnectionString = encodeURIComponent( `${token}:::${server}` )
 
-    if ( req.session.redirectUrl ) {
-      // return res.redirect( `${req.session.redirectUrl}?token=${token}&serverUrl=${server}` )
-    }
-
     res.render( 'postLogin', {
       user: req.user,
       connectionString: fullConnectionString,
@@ -86,8 +81,7 @@ module.exports = function ( app ) {
     require( './auth0' ).init( app, sessionMiddleware, redirectCheck, handleLogin ),
     require( './azure-ad' ).init( app, sessionMiddleware, redirectCheck, handleLogin ),
     require( './github' ).init( app, sessionMiddleware, redirectCheck, handleLogin ),
-  ]
-
+  ].filter( s => s !== null )
 
   // Main authentication entry page
   app.get( '/signin',

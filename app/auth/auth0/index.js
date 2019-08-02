@@ -45,7 +45,6 @@ module.exports = {
       redirectCheck,
       passport.authenticate( 'auth0', { failureRedirect: '/signin/error' } ),
       async ( req, res, next ) => {
-          console.log( req.user )
           if ( !req.user ) {
             req.session.errorMessage = 'Auth0 authentication failed.'
             res.redirect( '/signin/error' )
