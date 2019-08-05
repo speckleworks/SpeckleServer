@@ -25,6 +25,9 @@ module.exports = function ( app ) {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      maxAge: 60000 * 3
+    },
     expires: new Date( Date.now( ) + 60000 * 3 ) // three minute expiration (not needed)
   } )
 
@@ -72,6 +75,8 @@ module.exports = function ( app ) {
       connectionString: fullConnectionString,
       redirectUrl: req.session.redirectUrl
     } )
+
+    delete req.session.redirectUrl
   }
 
   // TODO: automate these reading from disk
