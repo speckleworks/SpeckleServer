@@ -5,14 +5,14 @@
   </div>
   <div class='col-sm-12 col-lg-5 py-4'>
     <h2 class='font-weight-light'>Welcome {{user.name}}!</h2>
-    <p>You can now close this browser window.</p>
+    <p>You have signed in.</p>
     <hr>
     <a class='' href="https://speckle.works/docs/start">Getting Started Guide</a>
     {{!-- <a href="https://speckle.works/docs/start"></a> --}}
     <hr>
     <p>
       {{#if redirectUrl}}
-      You will be redirected to <code>{{redirectUrl}}</code> in 3 seconds.
+      You will be redirected to <code>{{redirectUrl}}</code> in 1 second.
       {{else}}
       No redirect url present.
       {{/if}}
@@ -32,14 +32,27 @@
 <script>
   function redirect() {
     var redirectUrl = '{{redirectUrl}}'
+    
+    try { 
+      var xmlHttp = new XMLHttpRequest()
+      xmlHttp.open( 'GET', "{{redirectUrl}}?token={{connectionString}}", true)
+      xmlHttp.send( null )
+    } catch( err ) {
+      console.log( err.message )
+    }
+    
     if( redirectUrl && redirectUrl !== '') {
-      window.opener.location.href = "{{redirectUrl}}?token={{connectionString}}"
-      self.close()
+      if( window.opener ) {
+        window.opener.location.href = "{{redirectUrl}}?token={{connectionString}}"
+        self.close()
+      } else {
+      	window.close()
+      }
     } else
       console.log("no redirect url. ")
     }
 
   window.onload = function() {
-    setTimeout( redirect, 3000 )
+    setTimeout( redirect, 1000 )
   }
 </script>
