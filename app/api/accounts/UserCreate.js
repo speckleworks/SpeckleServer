@@ -2,7 +2,7 @@ const winston = require( '../../../config/logger' )
 const jwt = require( 'jsonwebtoken' )
 
 const User = require( '../../../models/User' )
-const SendEmailVerification = require( '../../../app/email/index' ).SendEmailVerification
+// const SendEmailVerification = require( '../../../app/email/index' ).SendEmailVerification
 
 module.exports = ( req, res ) => {
 
