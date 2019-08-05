@@ -20,7 +20,7 @@ module.exports = function( req, res ) {
 
   let projection = '_id name surname company' + ( process.env.EXPOSE_EMAILS ? ' email' : '' )
 
-  User.find( { $or: conditions }, projection ).limit( 10 )
+  User.find( { $and: [ {$or: conditions}, {archived: 'false'} ] }, projection ).limit( 10 )
     .then( myUsers => {
       if ( !myUsers ) throw new Error( 'no users found.' )
       res.send( { success: true, resources: myUsers } )

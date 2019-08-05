@@ -143,7 +143,7 @@ chalk.red( `
 
 
   // init email transport
-  require( './app/email/index' )
+  // require( './app/email/index' ) // soon
 
   // init default register/login routes
   require( './app/auth/index' )( app )

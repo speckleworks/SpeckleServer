@@ -1,10 +1,7 @@
 const winston = require( '../../../config/logger' )
 const jwt = require( 'jsonwebtoken' )
-const cryptoRandomString = require( 'crypto-random-string' )
 
 const User = require( '../../../models/User' )
-const ActionToken = require( '../../../models/ActionToken' )
-
 const SendEmailVerification = require( '../../../app/email/index' ).SendEmailVerification
 
 module.exports = ( req, res ) => {
@@ -29,14 +26,6 @@ module.exports = ( req, res ) => {
   let sessionSecret = process.env.SESSION_SECRET
   let userCount = 1 // do not default to 0
 
-  let validationToken = new ActionToken( {
-    owner: myUser._id,
-    token: cryptoRandomString( { length: 20, type: 'base64' } ),
-    action: "email-confirmation"
-  } )
-
-  let savedUser = {}
-
   User.count( {} )
     .then( count => {
       userCount = count
@@ -45,18 +34,13 @@ module.exports = ( req, res ) => {
     .then( user => {
       if ( user ) throw new Error( 'Email taken. Please login. Thanks!' )
       myUser.apitoken = 'JWT ' + jwt.sign( { _id: myUser._id }, sessionSecret, { expiresIn: '2y' } )
-      if ( userCount === 0 && process.env.FIRST_USER_ADMIN === 'true' )
+      if ( userCount === 0 )
         myUser.role = 'admin'
       return myUser.save( )
     } )
-    .then( user => {
-      savedUser = user
-      return validationToken.save( )
-    } )
-    .then( () => {
-      SendEmailVerification( { name: savedUser.name, email: savedUser.email, token: validationToken.token } )
+    .then( savedUser => {
       let token = 'JWT ' + jwt.sign( { _id: myUser._id, name: myUser.name }, sessionSecret, { expiresIn: '24h' } )
-      return res.send( { success: true, message: 'User saved. Redirect to login.', resource: { apitoken: savedUser.apitoken, token: token, email: savedUser.email }, validationToken: res.token } )
+      return res.send( { success: true, message: 'User saved. Redirect to login.', resource: { apitoken: savedUser.apitoken, token: token, email: savedUser.email } } )
     } )
     .catch( err => {
       winston.error( JSON.stringify( err ) )
