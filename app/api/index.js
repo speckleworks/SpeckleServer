@@ -208,6 +208,7 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   } )
 
   let serverDescription = {
+    isSpeckleServer: true, // looks stupid, but is used for url validation by the clients
     serverName: process.env.SERVER_NAME,
     version: '1.x.x',
     api: grouped,

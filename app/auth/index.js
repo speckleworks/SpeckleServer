@@ -32,7 +32,8 @@ module.exports = function ( app ) {
   } )
 
   let redirectCheck = ( req, res, next ) => {
-    // TODO: pass through whitelist
+    // TODO: whitelist all localhost ports
+    // There's no guarantee from .net clients that we'll be always on the same localhost port
     if ( req.query.redirectUrl ) {
       let url = null
       try {

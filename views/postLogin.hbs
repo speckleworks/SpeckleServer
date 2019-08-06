@@ -12,7 +12,7 @@
     <hr>
     <p>
       {{#if redirectUrl}}
-      You will be redirected to <code>{{redirectUrl}}</code> in 1 second.
+      You will be redirected to <code>{{redirectUrl}}</code> in 1 second. If that doesn't happen, you can probably close this browser window afterwards.
       {{else}}
       No redirect url present.
       {{/if}}
@@ -32,15 +32,15 @@
 <script>
   function redirect() {
     var redirectUrl = '{{redirectUrl}}'
-    
-    try { 
+
+    try {
       var xmlHttp = new XMLHttpRequest()
       xmlHttp.open( 'GET', "{{redirectUrl}}?token={{connectionString}}", true)
       xmlHttp.send( null )
     } catch( err ) {
       console.log( err.message )
     }
-    
+
     if( redirectUrl && redirectUrl !== '') {
       if( window.opener ) {
         window.opener.location.href = "{{redirectUrl}}?token={{connectionString}}"
