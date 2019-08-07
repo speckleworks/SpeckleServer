@@ -199,6 +199,7 @@ module.exports = function ( app, express, urlRoot, plugins ) {
 
   let grouped = { projects: [ ], clients: [ ], streams: [ ], accounts: [ ], comments: [ ], objects: [ ] }
   routes.forEach( r => {
+    // TESt
     if ( r.route.includes( 'projects' ) ) grouped.projects.push( r )
     if ( r.route.includes( 'clients' ) ) grouped.clients.push( r )
     if ( r.route.includes( 'comments' ) ) grouped.comments.push( r )
