@@ -2,8 +2,8 @@ version: '3'
 services:
   # SPECKLE
   speckle:
-    # image: speckle/speckleserver:latest
-    image: speckle:latest
+    image: speckle/speckleserver:latest
+    #image: speckle:latest # local dev
     ports:
       - '3000:3000'
     networks:
@@ -24,7 +24,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - EXPOSE_EMAILS=false
       - PUBLIC_STREAMS=true
-      - PLUGIN_DIRS="./node_modules/@speckle,./plugins"
+      - PLUGIN_DIRS=./node_modules/@speckle,./plugins
     links:
       - redis
       - mongo
