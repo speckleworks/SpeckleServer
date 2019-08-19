@@ -1,7 +1,7 @@
 {
   "name": "Speckle Admin",
-  "version":"0.5.0-beta",
-  "desc": "This plugin allows you to manage your streams.",
+  "version":"0.7.5",
+  "desc": "YEAH! Speckle has a frontend yo!",
   "serveFrom": "/",
   "serveSource": "/dist",
   "author": "Speckle Project Contributors",
