@@ -1,5 +1,4 @@
 'use strict'
-
 const passport = require( 'passport' )
 const GithubStrategy = require( 'passport-github' )
 const cryptoRandomString = require( 'crypto-random-string' )
@@ -71,7 +70,7 @@ module.exports = {
               existingUser.logins.push( { date: Date.now( ) } )
               existingUser.markModified( 'logins' )
 
-              existingUser.providerProfiles[ 'github' ] = req.user._json
+              existingUser.providerProfiles[ 'github' ] = req.user
               existingUser.markModified( 'providerProfiles' )
 
               await existingUser.save( )
