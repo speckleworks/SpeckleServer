@@ -4,7 +4,11 @@ const passport = require( 'passport' )
 const redis = require( 'redis' )
 const ExpressSession = require( 'express-session' )
 const RedisStore = require( 'connect-redis' )( ExpressSession )
+const cryptoRandomString = require( 'crypto-random-string' )
 
+const User = require( '../../models/User' )
+const ActionToken = require( '../../models/ActionToken' )
+const SendPasswordReset = require( '../../app/email/index' ).SendPasswordReset
 
 module.exports = function ( app ) {
 
@@ -20,6 +24,7 @@ module.exports = function ( app ) {
   //
   // Common middleware routes for authentication
   //
+
   let sessionMiddleware = ExpressSession( {
     store: new RedisStore( { client: redis.createClient( process.env.REDIS_URL ) } ),
     secret: process.env.SESSION_SECRET,
@@ -111,4 +116,87 @@ module.exports = function ( app ) {
 
     req.session.errorMessage = ''
   } )
+
+  //
+  // Password resets
+  //
+
+  // Entry page
+  app.get( '/password-reset', ( req, res ) => {
+    return res.render( 'password-reset', {
+      title: 'Speckle Password Reset',
+      server: process.env.SERVER_NAME,
+      url: process.env.CANONICAL_URL,
+    } )
+  } )
+
+  // Reset sender
+  app.post( '/password-reset', sessionMiddleware, async ( req, res ) => {
+    try {
+      let myUser = await User.findOne( { email: req.body.email } )
+      if ( !myUser ) throw new Error( 'No user found with that email address.' )
+
+      let resetToken = new ActionToken( {
+        owner: myUser._id,
+        token: cryptoRandomString( { length: 20, type: 'url-safe' } ),
+        action: "password-reset"
+      } )
+
+      await resetToken.save( )
+      SendPasswordReset( { name: myUser.name, email: myUser.email, token: resetToken.token } )
+      return res.send( 'Ya. Sent you an email yo' ) // TODO: render nice page.
+    } catch ( err ) {
+      req.session.errorMessage = err.message
+      return res.redirect( '/password-reset/error' )
+    }
+  } )
+
+  // Finalisation (input new password) route
+  app.get( '/password-reset/finalize/:token', sessionMiddleware, async ( req, res ) => {
+    try {
+      let myToken = await ActionToken.findOne( { token: req.params.token } )
+      if ( !myToken ) throw new Error( "Could not find your password reset token. Possibly it's expired." )
+      if ( myToken.action !== "password-reset" ) throw new Error( "Invalid password reset token" )
+
+      return res.render( 'password-reset-finalize', { server: process.env.SERVER_NAME, url: process.env.CANONICAL_URL } )
+      // return res.send( myToken )
+    } catch ( err ) {
+      req.session.errorMessage = err.message
+      return res.redirect( '/password-reset/error' )
+    }
+  } )
+
+  // Finalisation (update password) route
+  app.post( '/password-reset/finalize/:token', sessionMiddleware, async ( req, res ) => {
+    try {
+      let myToken = await ActionToken.findOne( { token: req.params.token } )
+      if ( !myToken ) throw new Error( "Could not find your password reset token. Possibly it's expired." )
+      if ( myToken.action !== "password-reset" ) throw new Error( "Invalid password reset token" )
+
+      let myUser = await User.findOne( { _id: myToken.owner } )
+      if ( !myUser ) throw new Error( 'No user found. Weird.' )
+
+      console.log( req.body.password )
+
+      myUser.password = req.body.password
+      myUser.markModified( 'password' )
+
+      await myUser.save( )
+      await myToken.delete( )
+
+      res.send( myUser )
+    } catch ( err ) {
+      req.session.errorMessage = err.message
+      return res.redirect( '/password-reset/error' )
+    }
+  } )
+
+  // Errors
+  app.get( '/password-reset/error', sessionMiddleware, ( req, res ) => {
+    res.render( 'error', {
+      errorMessage: req.session.errorMessage || "Oups. Something went wrong."
+    } )
+    req.session.errorMessage = ''
+  } )
+
 }
