@@ -22,7 +22,6 @@ transporter.verify( ( err ) => {
   }
 } )
 
-
 exports.SendEmailVerification = ( { name, email, token } ) => {
 
   if ( !initOk ) {
@@ -89,7 +88,6 @@ exports.SendEmailVerification = ( { name, email, token } ) => {
 }
 
 /* eslint-disable */
-
 exports.SendPasswordReset = ( token ) => {
   token = 'placeholder'
 }

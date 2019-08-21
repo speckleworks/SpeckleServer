@@ -19,7 +19,7 @@ module.exports = {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       callbackURL: process.env.GITHUB_CALLBACK,
-      scope: [ 'profile', 'email' ],
+      scope: [ 'profile', 'user:email' ],
       // passReqToCallback: true
     }, async ( accessToken, refreshToken, profile, done ) => {
       return done( null, profile )
@@ -48,11 +48,11 @@ module.exports = {
 
           // return res.send( req.user )
 
-          let email = req.user._json.email
+          let email = req.user._json.email || req.user.emails[ 0 ].value
           let name = req.user._json.name
 
           if ( !name || !email ) {
-            req.session.errorMessage = 'Failed to retrieve email or name from the Auth0.'
+            req.session.errorMessage = 'Failed to retrieve email or name from Github.'
             return res.redirect( '/signin/error' )
           }
 
@@ -122,7 +122,7 @@ module.exports = {
           } catch ( err ) {
             winston.error( err )
             req.session.errorMessage = `Something went wrong. Server said: ${err.message}`
-            return res.redirect( '/error' )
+            return res.redirect( '/signin/error' )
           }
         },
         handleLogin )
