@@ -1,5 +1,5 @@
 # NODE
-FROM node:8
+FROM node:10
 
 # LABELS
 LABEL version="1.x.x"
