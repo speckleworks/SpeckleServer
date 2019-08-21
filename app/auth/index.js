@@ -5,6 +5,7 @@ const redis = require( 'redis' )
 const ExpressSession = require( 'express-session' )
 const RedisStore = require( 'connect-redis' )( ExpressSession )
 const cryptoRandomString = require( 'crypto-random-string' )
+const URL = require( 'url' ).URL
 
 const User = require( '../../models/User' )
 const ActionToken = require( '../../models/ActionToken' )
