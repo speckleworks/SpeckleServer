@@ -1,0 +1,61 @@
+<div class="row align-items-center justify-content-center">
+  <div class='col-sm-12 col-lg-6'>
+    <h1 class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</h1>
+    <p class='font-weight-lighter text-center'><small>the open source data platform for aec.</small></p>
+  </div>
+  <div class='col-sm-12 col-lg-6'>
+    <br>
+    <div class='alert alert-secondary'>
+      Register @ <b>{{server}}</b> <small>({{url}})</small>.
+      {{#if redirectUrl}}
+      <hr>
+      <small>You will be redirected to {{redirectUrl}}.</small>
+      {{/if}}
+    </div>
+
+    {{#if errorMessage}}
+    <div class='alert alert-danger'>
+      {{#if errorMessage}}
+        {{errorMessage}}
+      {{else}}
+      Failed to register.
+      {{/if}}
+    </div>
+    {{/if}}
+
+    <form method="post">
+      <div class="row">
+        <div class="form-group col-6">
+          <label for="name">Name *</label>
+          <input required maxlength="20" minlength="3" name="name" type="text" class="form-control" id="name" aria-describedby="name" placeholder="Enter your name">
+        </div>
+        <div class="form-group col-6">
+          <label for="surname">Surname *</label>
+          <input required maxlength="20" minlength="3" name="surname" type="text" class="form-control" id="surname" aria-describedby="surname" placeholder="Enter your surname">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email address *</label>
+        <input required name="email" type="email" class="form-control" id="email" aria-describedby="email" placeholder="Enter email">
+      </div>
+      <div class="form-group">
+        <label for="company">Company (optional)</label>
+        <input name="company" type="text" class="form-control" id="company" aria-describedby="company" placeholder="Your company">
+      </div>
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input required minlength="8" name="password" type="password" class="form-control" id="password" placeholder="Password" aria-describedby="password">
+        {{!-- <p><small>Password must contain upper case and lowercase characters, a number, and be at least 8 characters long.</small></p> --}}
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+    </form>
+    <hr>
+    <p class='text-center'>
+      <a href='/signin/local/login'>Already having an account? Login!</a>
+    </p>
+    <hr>
+  <p class='text-center'>
+    <a href='/password-reset'>Forgot your password?</a>
+  </p>
+  </div>
+</div>
