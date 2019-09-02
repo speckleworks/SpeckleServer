@@ -37,10 +37,10 @@ if ( cluster.isMaster ) {
     █  The Open Source Data Platform for AEC.
     █
 ` +
-chalk.red( `
+    chalk.red( `
     █  Server running at: ${process.env.CANONICAL_URL}
   ` )
- )
+  )
 
   logger.level = 'debug'
 
@@ -67,6 +67,27 @@ chalk.red( `
     logger.debug( `Flushing redis database.` )
     redisClient.flushdb( )
   } )
+
+  require( './telemetry' )()
+
+  // Countly.init( {
+  //   app_key: '6b79ee267ff23c4b99108591c5b33f0ba8ed5e4b',
+  //   device_id: 'test',
+  //   url: 'https://telemetry.speckle.works',
+  //   debug: true
+  // } )
+
+  // Countly.begin_session( false )
+
+  // Countly.add_event( {
+  //   "key": "server-start",
+  //   "segmentation": {
+  //     "serverName": process.env.SERVER_NAME,
+  //     "machineId": 'bender rocks!'
+  //   }
+  // } )
+
+  // Countly.end_session( )
 
   /////////////////////////////////////////////////////////////////////////
   /// CHILD processes                                                /////.
