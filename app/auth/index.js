@@ -38,15 +38,19 @@ module.exports = function ( app ) {
   } )
 
   let redirectCheck = ( req, res, next ) => {
-    // TODO: whitelist all localhost ports
-    // There's no guarantee from .net clients that we'll be always on the same localhost port
     if ( req.query.redirectUrl ) {
       let url = null
+
       try {
         url = new URL( req.query.redirectUrl )
       } catch ( err ) {
         req.session.errorMessage = `Invalid redirect url: <b>${req.query.redirectUrl}</b>`
         return res.redirect( '/signin/error' )
+      }
+
+      if ( url.host === 'localhost' ) {
+        req.session.redirectUrl = req.query.redirectUrl
+        return next( )
       }
 
       let ind = redirectUrls.findIndex( u => u.host === url.host )
@@ -62,10 +66,9 @@ module.exports = function ( app ) {
       }
 
       req.session.redirectUrl = req.query.redirectUrl
-    } else {
-      //delete req.session.redirectUrl
+      return next( )
     }
-    next( )
+    return next( )
   }
 
   let handleLogin = ( req, res ) => {
