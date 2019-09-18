@@ -48,7 +48,7 @@ module.exports = function ( app ) {
         return res.redirect( '/signin/error' )
       }
 
-      if ( url.host === 'localhost' ) {
+      if ( url.hostname === 'localhost' ) {
         req.session.redirectUrl = req.query.redirectUrl
         return next( )
       }
