@@ -41,7 +41,9 @@
     }
 
     if( redirectUrl && redirectUrl !== '') {
-      if( window.opener ) {
+      if( window.parent && window.parent !== window ) {
+        window.parent.postMessage("{{connectionString}}", "{{redirectUrl}}")
+      } else if( window.opener ) {
         window.opener.location.href = "{{redirectUrl}}?token={{connectionString}}"
         self.close()
       } else {
