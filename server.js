@@ -37,10 +37,10 @@ if ( cluster.isMaster ) {
     █  The Open Source Data Platform for AEC.
     █
 ` +
-chalk.red( `
+    chalk.red( `
     █  Server running at: ${process.env.CANONICAL_URL}
   ` )
- )
+  )
 
   logger.level = 'debug'
 
@@ -67,6 +67,8 @@ chalk.red( `
     logger.debug( `Flushing redis database.` )
     redisClient.flushdb( )
   } )
+
+  require( './app/telemetry/initTelemetry' )( )
 
   /////////////////////////////////////////////////////////////////////////
   /// CHILD processes                                                /////.
@@ -111,6 +113,9 @@ chalk.red( `
 
   app.use( passport.initialize( ) )
 
+ // Telemetry
+  require( './app/telemetry/appTelemetry' )( app )
+
   if ( process.env.INDENT_RESPONSES === 'true' ) { app.set( 'json spaces', 2 ) }
   if ( process.env.EXPOSE_EMAILS === 'true' ) { app.enable( 'expose emails' ) }
 
@@ -140,10 +145,6 @@ chalk.red( `
   app.use( '/api/v0', ( req, res ) => res.status( 410 ).json( { error: 'The v0 API has been removed.' } ) )
   require( './app/api/index' )( app, express, '/api', plugins )
   require( './app/api/index' )( app, express, '/api/v1', plugins )
-
-
-  // init email transport
-  // require( './app/email/index' ) // soon
 
   // init default register/login routes
   require( './app/auth/index' )( app )
