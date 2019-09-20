@@ -2,6 +2,7 @@ const passport = require( 'passport' )
 const adminCheck = require( './middleware/AdminCheck' )
 
 module.exports = function ( app, express, urlRoot, plugins ) {
+
   var r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists

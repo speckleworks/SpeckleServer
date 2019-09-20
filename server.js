@@ -68,26 +68,7 @@ if ( cluster.isMaster ) {
     redisClient.flushdb( )
   } )
 
-  require( './telemetry' )()
-
-  // Countly.init( {
-  //   app_key: '6b79ee267ff23c4b99108591c5b33f0ba8ed5e4b',
-  //   device_id: 'test',
-  //   url: 'https://telemetry.speckle.works',
-  //   debug: true
-  // } )
-
-  // Countly.begin_session( false )
-
-  // Countly.add_event( {
-  //   "key": "server-start",
-  //   "segmentation": {
-  //     "serverName": process.env.SERVER_NAME,
-  //     "machineId": 'bender rocks!'
-  //   }
-  // } )
-
-  // Countly.end_session( )
+  require( './app/telemetry/initTelemetry' )( )
 
   /////////////////////////////////////////////////////////////////////////
   /// CHILD processes                                                /////.
@@ -132,6 +113,9 @@ if ( cluster.isMaster ) {
 
   app.use( passport.initialize( ) )
 
+ // Telemetry
+  require( './app/telemetry/appTelemetry' )( app )
+
   if ( process.env.INDENT_RESPONSES === 'true' ) { app.set( 'json spaces', 2 ) }
   if ( process.env.EXPOSE_EMAILS === 'true' ) { app.enable( 'expose emails' ) }
 
@@ -161,10 +145,6 @@ if ( cluster.isMaster ) {
   app.use( '/api/v0', ( req, res ) => res.status( 410 ).json( { error: 'The v0 API has been removed.' } ) )
   require( './app/api/index' )( app, express, '/api', plugins )
   require( './app/api/index' )( app, express, '/api/v1', plugins )
-
-
-  // init email transport
-  // require( './app/email/index' ) // soon
 
   // init default register/login routes
   require( './app/auth/index' )( app )
