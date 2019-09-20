@@ -15,14 +15,17 @@ module.exports = ( ) => {
   let tagVersion = 'unknown'
 
   try {
-    exec( 'git describe --tags', ( err, stdout, stderr ) => {
+    exec( 'git describe --tags', ( err, stdout ) => {
       tagVersion = stdout.split( '-' )[ 0 ]
       logger.info( `Version: ${tagVersion}` )
 
       countly.init( {
+        // eslint-disable-next-line camelcase
         app_key: '6b79ee267ff23c4b99108591c5b33f0ba8ed5e4b',
         url: 'https://telemetry.speckle.works',
+        // eslint-disable-next-line camelcase
         device_id: myMachineId,
+        // eslint-disable-next-line camelcase
         app_version: tagVersion,
         debug: false
       } )

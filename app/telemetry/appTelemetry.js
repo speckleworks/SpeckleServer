@@ -13,8 +13,10 @@ module.exports = ( app ) => {
 
   try {
     countly.init( {
+      // eslint-disable-next-line camelcase
       app_key: '6b79ee267ff23c4b99108591c5b33f0ba8ed5e4b',
       url: 'https://telemetry.speckle.works',
+      // eslint-disable-next-line camelcase
       device_id: myMachineId,
       debug: false
     } )
@@ -24,14 +26,17 @@ module.exports = ( app ) => {
     } )
 
     app.use( ( req, res, next ) => {
+
       next( ) // let's not block things, in case telemetry server is down.
+
       try {
         countly.track_view( `${req.method} "${req.route.path}"` )
-      } catch {
+      } catch ( err ) {
         logger.info( 'Failed to initialise route based telemetry.' )
       }
+
     } )
-  } catch {
+  } catch ( err ) {
     logger.info( 'Failed to initialise route based telemetry.' )
   }
 }
