@@ -29,6 +29,7 @@ var projectSchema = mongoose.Schema( {
 
   deleted: { type: Boolean, default: false }
 
+  jobNumber: { type: String, default: ''}
   // strict false so peeps can expand the schema if they wanna add shit 💩
 }, { timestamps: true, strict: false } )
 
