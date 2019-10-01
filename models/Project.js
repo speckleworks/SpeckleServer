@@ -27,10 +27,9 @@ var projectSchema = mongoose.Schema( {
     canWrite: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ]
   },
 
-  deleted: { type: Boolean, default: false }
+  deleted: { type: Boolean, default: false },
 
   jobNumber: { type: String, default: ''}
-  // strict false so peeps can expand the schema if they wanna add shit 💩
 }, { timestamps: true, strict: false } )
 
 module.exports = mongoose.model( 'Project', projectSchema )
