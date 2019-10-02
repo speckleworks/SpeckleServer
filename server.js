@@ -12,6 +12,9 @@ const logger = require( './config/logger' )
 
 // load up .env
 const configResult = require( 'dotenv' ).config( { path: './.env' } )
+
+process.env.CANONICAL_URL = new URL( process.env.CANONICAL_URL ).origin
+
 if ( configResult.error ) {
   logger.debug( chalk.bgRed( 'There is an error in the .env configuration file. Will use the default provided ones (if any).' ) )
 }
