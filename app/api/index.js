@@ -2,6 +2,7 @@ const passport = require( 'passport' )
 const adminCheck = require( './middleware/AdminCheck' )
 
 module.exports = function ( app, express, urlRoot, plugins ) {
+
   var r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
@@ -13,11 +14,14 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   // ACCOUNTS & USERS
   //
 
-  // create a new account xxx
-  r.post( '/accounts/register', require( './accounts/UserCreate' ) )
+  // only allow api registration/login if local auth strategy is enabled
+  if ( process.env.USE_LOCAL === 'true' ) {
+    // create a new account xxx
+    r.post( '/accounts/register', require( './accounts/UserCreate' ) )
 
-  // login xxx
-  r.post( '/accounts/login', require( './accounts/UserLogin' ) )
+    // login xxx
+    r.post( '/accounts/login', require( './accounts/UserLogin' ) )
+  }
 
   // get profile xxx
   r.get( '/accounts', mandatoryAuthorisation, require( './accounts/UserGet' ) )
@@ -37,11 +41,9 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
 
-  // verify
-  // r.get( '/accounts/verify/:token', optionalAuthorisation, require( './accounts/UserVerify' ) )
-
-  // reset password
-  // r.post( '/accounts/reset/:token', require( './accounts/UserVerify' ) )
+  // TODOs:
+  // API call to send a new verification email
+  // API call to send a password reset email
 
   //
   // CLIENTS
@@ -198,6 +200,7 @@ module.exports = function ( app, express, urlRoot, plugins ) {
 
   let grouped = { projects: [ ], clients: [ ], streams: [ ], accounts: [ ], comments: [ ], objects: [ ] }
   routes.forEach( r => {
+    // TESt
     if ( r.route.includes( 'projects' ) ) grouped.projects.push( r )
     if ( r.route.includes( 'clients' ) ) grouped.clients.push( r )
     if ( r.route.includes( 'comments' ) ) grouped.comments.push( r )
@@ -207,6 +210,7 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   } )
 
   let serverDescription = {
+    isSpeckleServer: true, // looks stupid, but is used for url validation by the clients
     serverName: process.env.SERVER_NAME,
     version: '1.x.x',
     api: grouped,

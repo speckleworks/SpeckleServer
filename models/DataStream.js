@@ -40,7 +40,10 @@ var dataStreamSchema = mongoose.Schema( {
 
   // keeps track wether this stream can be edited from the online ui or not.
   // it's set by default to NOPE
-  onlineEditable: { type: Boolean, default: false }
+  onlineEditable: { type: Boolean, default: false },
+
+  jobNumber: { type: String, default: ''}
+
 }, { timestamps: true, strict: false } )
 
 module.exports = mongoose.model( 'DataStream', dataStreamSchema )

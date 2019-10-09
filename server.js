@@ -12,6 +12,9 @@ const logger = require( './config/logger' )
 
 // load up .env
 const configResult = require( 'dotenv' ).config( { path: './.env' } )
+
+process.env.CANONICAL_URL = new URL( process.env.CANONICAL_URL ).origin
+
 if ( configResult.error ) {
   logger.debug( chalk.bgRed( 'There is an error in the .env configuration file. Will use the default provided ones (if any).' ) )
 }
@@ -23,8 +26,26 @@ const plugins = require( './plugins' )( )
 /// MASTER process                                                 /////.
 /////////////////////////////////////////////////////////////////////////
 if ( cluster.isMaster ) {
+  logger.info( chalk.blue( `
+
+
+    █▀▀ █▀▀█ █▀▀ █▀▀▀ █ █ █   █▀▀
+    ▀▀█ █  █ █▀▀ █    █▀▄ █   █▀▀
+    ▀▀▀ █▀▀▀ ▀▀▀ ▀▀▀▀ ▀ ▀ ▀▀▀ ▀▀▀
+
+
+` ) + `
+    █
+    █  https://speckle.works
+    █  The Open Source Data Platform for AEC.
+    █
+` +
+    chalk.red( `
+    █  Server running at: ${process.env.CANONICAL_URL}
+  ` )
+  )
+
   logger.level = 'debug'
-  logger.info( chalk.bgBlue( `Speckle is starting up.` ) )
 
   let osCpus = require( 'os' ).cpus( ).length
   let envCpus = process.env.MAX_PROC
@@ -49,6 +70,8 @@ if ( cluster.isMaster ) {
     logger.debug( `Flushing redis database.` )
     redisClient.flushdb( )
   } )
+
+  require( './app/telemetry/initTelemetry' )( )
 
   /////////////////////////////////////////////////////////////////////////
   /// CHILD processes                                                /////.
@@ -83,7 +106,7 @@ if ( cluster.isMaster ) {
   } )
 
   mongoose.connection.on( 'connected', ( ) => {
-    logger.debug( chalk.red( 'Connected to mongo.' ) )
+    logger.debug( 'Connected to mongo.' )
   } )
 
 
@@ -92,6 +115,9 @@ if ( cluster.isMaster ) {
   app.use( bodyParser.urlencoded( { extended: true } ) )
 
   app.use( passport.initialize( ) )
+
+ // Telemetry
+  require( './app/telemetry/appTelemetry' )( app )
 
   if ( process.env.INDENT_RESPONSES === 'true' ) { app.set( 'json spaces', 2 ) }
   if ( process.env.EXPOSE_EMAILS === 'true' ) { app.enable( 'expose emails' ) }
@@ -123,9 +149,8 @@ if ( cluster.isMaster ) {
   require( './app/api/index' )( app, express, '/api', plugins )
   require( './app/api/index' )( app, express, '/api/v1', plugins )
 
-
-  // init email transport
-  // require( './app/email/index' ) // soon
+  // init default register/login routes
+  require( './app/auth/index' )( app )
 
   /// /////////////////////////////////////////////////////////////////////
   /// LAUNCH                                                         /////.
@@ -134,6 +159,6 @@ if ( cluster.isMaster ) {
   var port = process.env.PORT || 3000
   var ip = process.env.IP || null
   server.listen( port, ip, ( ) => {
-    logger.debug( chalk.yellow( `Speckle worker process ${process.pid} now running on port ${port}.` ) )
+    logger.debug( `Speckle worker process ${process.pid} now running on port ${port}.` )
   } )
 }

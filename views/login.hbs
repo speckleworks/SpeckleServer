@@ -1,0 +1,53 @@
+<div class="row align-items-center justify-content-center">
+  <div class='col-sm-12 col-lg-6'>
+  <p class='text-center font-weight-light display-4' style="color:#0A66FF">Speckle,</p>
+  <p class='font-weight-lighter text-center'><small>the open source data platform for aec.</small></p>
+  </div>
+
+  <div class='col-sm-12 col-lg-6'>
+  <br>
+  <div class='alert alert-secondary'>
+    Login @ <b>{{server}}</b> <small>({{url}})</small>.
+    {{#if redirectUrl}}
+    <hr>
+    <small>You will be redirected to {{redirectUrl}}.</small>
+    {{/if}}
+  </div>
+
+  {{#if errorMessage}}
+  <div class='alert alert-danger'>
+    {{#if errorMessage}}
+      {{errorMessage}}
+    {{else}}
+    Failed to login.
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{#if err}}
+  <div class='alert alert-danger'>
+    Failed to login.
+  </div>
+  {{/if}}
+
+  <form method="post">
+    <div class="form-group">
+      <label for="inputEmail">Email address *</label>
+      <input required name="email" type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="form-group">
+      <label for="inputPwd">Password *</label>
+      <input required minlength="8" name="password" type="password" class="form-control" id="inputPwd" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary btn-block btn-lg">Submit</button>
+  </form>
+  <hr>
+  <p class='text-center'>
+    <a href='/signin/local/register'>No account yet? Register!</a>
+  </p>
+  <hr>
+  <p class='text-center'>
+    <a href='/password-reset'>Forgot your password?</a>
+  </p>
+  </div>
+</div>
