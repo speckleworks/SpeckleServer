@@ -90,7 +90,7 @@ module.exports = {
       }
 
       if ( roomName === '' ) {
-        return winston.debug(`Failed to deliver broadcast from ${senderClientId} (no room name).`)
+        return winston.debug( `Failed to deliver broadcast from ${senderClientId} (no room name).` )
       }
       winston.debug( `📣 broadcast in ${roomName} from ${senderClientId}` )
       for ( let ws of ClientStore.clients ) {
