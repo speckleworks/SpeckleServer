@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 const mongoose = require( 'mongoose' );
 const { MongoMemoryServer } = require( 'mongodb-memory-server' );
 
@@ -6,7 +8,7 @@ let mongoServer;
 before( async () => {
   mongoose.Promise = global.Promise
   mongoose.set( 'useCreateIndex', true );
-  const mongoServer = new MongoMemoryServer();
+  mongoServer = new MongoMemoryServer();
   const mongoUri = await mongoServer.getConnectionString();
   await mongoose.connect( mongoUri, {
     useNewUrlParser: true,
@@ -15,5 +17,5 @@ before( async () => {
 
 after( async () => {
   await mongoose.disconnect()
-  // await mongoServer.stop()
+  await mongoServer.stop()
 } )
