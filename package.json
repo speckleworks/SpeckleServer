@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "NODE_ENV=test mocha --timeout 120000 --exit --recursive"
   },
   "author": "Dimitrie Stefanescu & Project Contributors",
   "license": "MIT",
@@ -50,6 +51,9 @@
   },
   "devDependencies": {
     "@semantic-release/exec": "^3.3.6",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "chai-subset": "^1.6.0",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^3.0.2",
     "eslint": "^5.16.0",
@@ -58,6 +62,9 @@
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
+    "mocha": "^6.2.2",
+    "mongodb-memory-server": "^6.0.1",
+    "redis-mock": "^0.46.0",
     "semantic-release": "^15.13.24"
   },
   "config": {
