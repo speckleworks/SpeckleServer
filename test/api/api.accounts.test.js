@@ -47,6 +47,7 @@ describe( 'accounts', () => {
 
   after( async () => {
     await testUser.remove()
+    await adminUser.remove()
   } )
 
   beforeEach( async () => {

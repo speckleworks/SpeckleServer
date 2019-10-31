@@ -139,7 +139,7 @@ describe( 'clients', () => {
           Client.findOne( { _id } ).then( client => {
             client.should.containSubset( postPayload )
             done()
-          } )
+          } ).catch( err => done( err ) )
         } )
     } )
   } )
@@ -214,7 +214,7 @@ describe( 'clients', () => {
         } )
     } )
 
-    it( 'should return a resource', ( done ) => {
+    it( 'should return a resource and populate the owner field', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${client1._id}` )
         .set( 'Authorization', testUser.apiToken )
