@@ -43,7 +43,15 @@ module.exports = ( ) => {
         It will load from ${pl.serveFrom + '-dupe'} instead.` )
       pl.serveFrom += '-dupe'
     }
-    pl.canonicalUrl = process.env.CANONICAL_URL + pl.serveFrom
+    //trim extra leading slash from serveFrom if necessary
+    const canonicalUrl = process.env.CANONICAL_URL
+    const lastBaseChar = canonicalUrl.charAt( canonicalUrl.length - 1 )
+    const firstServeFromChar = pl.serveFrom.charAt( 0 )
+    if ( lastBaseChar === '/' && firstServeFromChar === '/' ) {
+      pl.canonicalUrl = process.env.CANONICAL_URL + pl.serveFrom.slice( 1 )
+
+    }
+    else pl.canonicalUrl = process.env.CANONICAL_URL + pl.serveFrom
   } )
   winston.debug( `Found ${plugins.length} plugin(s): ${plugins.map( p => p.name ).join( ', ' )}` )
 
