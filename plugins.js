@@ -1,9 +1,11 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
 const winston = require( './config/logger' )
+const URL = require( 'url').URL
 
 const isDirectory = source => fs.lstatSync( source ).isDirectory( )
 const getDirectories = source => fs.readdirSync( source ).map( name => path.join( source, name ) ).filter( isDirectory )
+
 
 module.exports = ( ) => {
   winston.debug( 'Scanning for speckle plugins...' )
