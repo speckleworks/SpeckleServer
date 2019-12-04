@@ -41,8 +41,8 @@ module.exports = ( user, operation, resource, mod ) => {
     }
 
     // let's get basic
-    let canRead = resource.canRead.map( x => x.toString( ) )
-    let canWrite = resource.canWrite.map( x => x.toString( ) )
+    let canRead = resource.canRead.filter( x => !!x ).map( x => x.toString( ) )
+    let canWrite = resource.canWrite.filter( x => !!x ).map( x => x.toString( ) )
 
     switch ( operation ) {
       case 'write':
