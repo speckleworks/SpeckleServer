@@ -861,12 +861,27 @@ describe( 'projects', () => {
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Stream.findOne( { _id: testStream._id } ).then( result => {
-            result.canRead.should.deep.equal( [ testUser2._id ] )
-            result.canWrite.should.deep.equal( [ adminUser._id ] )
+            result.canRead.should.include( testUser2._id )
+            result.canWrite.should.include(  adminUser._id )
             done()
           } ).catch( err => done( err ) )
         } )
     } )
+
+    it( 'should update stream permissions with project owner read + write on stream', ( done ) => {
+      chai.request( app )
+        .put( `${routeBase}/${project1._id}/addstream/${testStream.streamId}` )
+        .set( 'Authorization', testUser1.apiToken )
+        .end( ( err, res ) => {
+          res.should.have.status( 200 )
+          Stream.findOne( { _id: testStream._id } ).then( result => {
+            result.canRead.should.deep.equal( [ testUser2._id, testUser1._id ] )
+            result.canWrite.should.deep.equal( [ adminUser._id, testUser1._id ] )
+            done()
+          } ).catch( err => done( err ) )
+        } )
+    } )
+
   } )
 
   describe( '/DELETE /projects/{id}/removestream/{stream_id}', () => {
