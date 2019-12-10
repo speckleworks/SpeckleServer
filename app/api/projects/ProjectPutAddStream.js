@@ -20,9 +20,14 @@ module.exports = async ( req, res ) => {
     project.permissions.canRead.forEach( id => {
       stream.canRead.indexOf( id ) === -1 ? stream.canRead.push( id ) : null
     } )
+
+    stream.canRead.indexOf( project.owner ) === -1 ? stream.canRead.push( project.owner ) : null
+
     project.permissions.canWrite.forEach( id => {
       stream.canWrite.indexOf( id ) === -1 ? stream.canWrite.push( id ) : null
     } )
+
+    stream.canWrite.indexOf( project.owner ) === -1 ? stream.canWrite.push( project.owner ) : null
 
     await Promise.all( [ stream.save( ), project.save( ) ] )
     return res.send( { success: true, project: project, stream: stream } )

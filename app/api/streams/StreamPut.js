@@ -30,6 +30,10 @@ module.exports = ( req, res ) => {
     .then( result => {
       stream.set( req.body )
       if ( objsToSave.length > 0 ) stream.objects = result.map( obj => obj._id )
+
+      stream.canRead = stream.canRead.filter( x => !!x )
+      stream.canWrite = stream.canWrite.filter( x => !!x )
+
       return stream.save( )
     } )
     .then( ( ) => {

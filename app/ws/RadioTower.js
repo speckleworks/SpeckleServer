@@ -85,13 +85,14 @@ module.exports = {
       let roomName = ''
       if ( message.streamId && message.streamId.trim( ) !== '' ) {
         roomName = `stream-${message.streamId}`
-      } else if ( !( !message.resourceId || !message.resourceType ) )
+      } else if ( !( !message.resourceId || !message.resourceType ) ) {
         roomName = `${message.resourceType}-${message.resourceId}`
+      }
 
-      if ( roomName === '' )
+      if ( roomName === '' ) {
         return winston.debug( `Failed to deliver broadcast from ${senderClientId} (no room name).` )
-
-      winston.debug( `📣 broadcast in ${roomName} from ${senderClientId}: ${message.args.eventType}` )
+      }
+      winston.debug( `📣 broadcast in ${roomName} from ${senderClientId}` )
       for ( let ws of ClientStore.clients ) {
         if ( ws.clientId !== senderClientId && ws.rooms.indexOf( roomName ) !== -1 ) { ws.send( raw ) }
       }

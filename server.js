@@ -9,6 +9,7 @@ const mongoose = require( 'mongoose' ).set( 'debug', false )
 const expressWinston = require( 'express-winston' )
 const redis = require( 'redis' )
 const logger = require( './config/logger' )
+const URL = require( 'url' ).URL
 
 // load up .env
 const configResult = require( 'dotenv' ).config( { path: './.env' } )

@@ -1,9 +1,11 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
 const winston = require( './config/logger' )
+const URL = require( 'url' ).URL
 
 const isDirectory = source => fs.lstatSync( source ).isDirectory( )
 const getDirectories = source => fs.readdirSync( source ).map( name => path.join( source, name ) ).filter( isDirectory )
+
 
 module.exports = ( ) => {
   winston.debug( 'Scanning for speckle plugins...' )
@@ -43,7 +45,9 @@ module.exports = ( ) => {
         It will load from ${pl.serveFrom + '-dupe'} instead.` )
       pl.serveFrom += '-dupe'
     }
-    pl.canonicalUrl = process.env.CANONICAL_URL + pl.serveFrom
+
+    pl.canonicalUrl = new URL( pl.serveFrom, process.env.CANONICAL_URL )
+
   } )
   winston.debug( `Found ${plugins.length} plugin(s): ${plugins.map( p => p.name ).join( ', ' )}` )
 

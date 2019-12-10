@@ -1,9 +1,10 @@
 const passport = require( 'passport' )
 const adminCheck = require( './middleware/AdminCheck' )
+const { exec } = require( 'child_process' )
 
 module.exports = function ( app, express, urlRoot, plugins ) {
 
-  var r = new express.Router( )
+  let r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
   let mandatoryAuthorisation = passport.authenticate( 'jwt-strict', { session: false } )
@@ -209,15 +210,28 @@ module.exports = function ( app, express, urlRoot, plugins ) {
     if ( r.route.includes( 'objects' ) ) grouped.objects.push( r )
   } )
 
-  let serverDescription = {
-    isSpeckleServer: true, // looks stupid, but is used for url validation by the clients
-    serverName: process.env.SERVER_NAME,
-    version: '1.x.x',
-    api: grouped,
-    plugins: plugins
+  let tagVersion = null
+  try {
+    exec( 'git describe --tags', ( err, stdout ) => {
+      tagVersion = stdout.split( '-' )[ 0 ].replace( /(\r\n|\n|\r)/gm, "" )
+    } )
+  } catch ( err ) {
+    // POKEMON
+    tagVersion = '1.x.x'
   }
 
-  r.get( '/', ( req, res ) => res.json( serverDescription ) )
+  r.get( '/', ( req, res ) => {
+    let serverDescription = {
+      isSpeckleServer: true, // looks stupid, but is used for url validation by the clients
+      serverName: process.env.SERVER_NAME,
+      version: tagVersion || '1.x.x',
+      api: grouped,
+      plugins: plugins,
+      jnMask: process.env.JNMASK || "######-##"
+    }
+
+    return res.json( serverDescription )
+  } )
 
   // mount all these routes up
   app.use( urlRoot, r )
