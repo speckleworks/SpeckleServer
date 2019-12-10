@@ -886,7 +886,7 @@ describe( 'projects', () => {
       project2.streams = [ testStream.streamId, testStream2.streamId ]
       project2.permissions.canRead = [ testUser2._id, testUser1._id ]
       await project2.save()
-      
+
       project1.permissions.canRead = [ testUser2._id ]
       project1.permissions.canWrite = [ adminUser._id ]
       project1.streams = [ testStream.streamId ]
@@ -987,7 +987,7 @@ describe( 'projects', () => {
       project2.streams = [ testStream.streamId, testStream2.streamId ]
       project2.permissions.canRead = [ testUser2._id, testUser1._id ]
       await project2.save()
-      
+
       project1.permissions.canRead = [ testUser2._id ]
       project1.permissions.canWrite = [ adminUser._id ]
       project1.streams = [ testStream.streamId ]
@@ -1084,7 +1084,7 @@ describe( 'projects', () => {
       project2.streams = [ testStream.streamId, testStream2.streamId ]
       project2.permissions.canRead = [ testUser2._id, testUser1._id ]
       await project2.save()
-      
+
       project1.permissions.canRead = [ testUser2._id ]
       project1.permissions.canWrite = [ adminUser._id ]
       project1.streams = [ testStream.streamId ]
