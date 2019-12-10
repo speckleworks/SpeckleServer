@@ -397,12 +397,17 @@ describe( 'projects', () => {
       // Add write permission to adminUser on testStream
       testStream.canWrite = [ adminUser._id ]
 
-      project1.streams = [ testStream._id, otherStream._id ]
+      await testStream.save()
+
+      project1.streams = [ testStream.streamId, otherStream.streamId ]
       project1.permissions.canRead = [ testUser2._id, adminUser._id ]
       project1.permissions.canWrite = [ adminUser._id ]
 
+      await project1.save()
+
       project5 = new Project( projectPayload )
-      project5.streams = [ testStreamId.streamId ]
+      project5.jobNumber = "Mario Number 5"
+      project5.streams = [ testStreamId ]
       project5.permissions.canRead = [ testUser2._id ]
       await project5.save()
     } )
@@ -505,7 +510,7 @@ describe( 'projects', () => {
           Stream.findOne( { _id: testStream._id } )
             .then( result => {
               expect( result.canWrite ).to.be.an( 'array' ).that.is.empty
-              expect( result.canRead ).to.be.equal( [ testUser2._id ] )
+              expect( result.canRead ).to.deep.equal( [ testUser2._id ] )
               done()
             } ).catch( err => done( err ) )
         } )
@@ -675,13 +680,16 @@ describe( 'projects', () => {
       testStream.canRead = [ testUser2._id, adminUser._id ]
       // Add write permission to adminUser on testStream
       testStream.canWrite = [ adminUser._id ]
+      await testStream.save()
 
-      project1.streams = [ testStream._id, otherStream._id ]
+      project1.streams = [ testStream.streamId, otherStream.streamId ]
       project1.permissions.canRead = [ testUser2._id, adminUser._id ]
       project1.permissions.canWrite = [ adminUser._id ]
 
+      await project1.save()
+
       project5 = new Project( projectPayload )
-      project5.streams = [ testStreamId.streamId ]
+      project5.streams = [ testStream.streamId ]
       project5.permissions.canRead = [ testUser2._id ]
       await project5.save()
     } )
@@ -764,8 +772,7 @@ describe( 'projects', () => {
         .end( ( err, res ) => {
           Stream.findOne( { _id: testStream._id } )
             .then( result => {
-              // expect( result.canWrite ).to.be.an( 'array' ).that.is.empty
-              expect( result.canRead ).to.deep.equal( [ testUser2._id ] )
+              expect( result.canRead ).to.include( testUser2._id )
               done()
             } ).catch( err => done( err ) )
         } )
@@ -868,7 +875,7 @@ describe( 'projects', () => {
 
     beforeEach( async () => {
       testStream2 = new Stream( {
-        streamId: testStreamId,
+        streamId: 'some-other-stream',
         owner: testUser1._id,
         canRead: [ testUser1._id, testUser2._id ],
         canWrite: [ ]
@@ -878,20 +885,26 @@ describe( 'projects', () => {
 
       project2.streams = [ testStream.streamId, testStream2.streamId ]
       project2.permissions.canRead = [ testUser2._id, testUser1._id ]
+      await project2.save()
 
       project1.permissions.canRead = [ testUser2._id ]
       project1.permissions.canWrite = [ adminUser._id ]
       project1.streams = [ testStream.streamId ]
       await project1.save()
 
-      testStream.canRead = [ testUser2._id ]
+      testStream.canRead = [ testUser2._id, testUser1._id ]
       testStream.canWrite = [ adminUser._id ]
       await testStream.save()
     } )
 
     afterEach( async () => {
       await testStream2.remove()
-      Project.findOne( { _id: project1._id } ).then( res => {
+
+      project2.permissions.canRead = []
+      project2.streams = []
+      await project2.save()
+
+      await Project.findOne( { _id: project1._id } ).then( res => {
         res.permissions.canRead = []
         res.permissions.canWrite = []
         res.streams = []
@@ -980,12 +993,12 @@ describe( 'projects', () => {
         } )
     } )
 
-    it( 'should require user to have write access to the stream', ( done ) => {
+    it( 'should not require user to have write access to a stream in the project', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project2._id}/upgradeuser/${testUser2._id}` )
         .set( 'Authorization', testUser2.apiToken )
         .end( ( err, res ) => {
-          res.should.have.status( 401 )
+          res.should.have.status( 200 )
           done()
         } )
     } )
@@ -1036,12 +1049,12 @@ describe( 'projects', () => {
         } )
     } )
 
-    it( 'should require user to have write access to the stream', ( done ) => {
+    it( 'should not require user to have write access to a stream in the project', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project2._id}/downgradeuser/${testUser2._id}` )
         .set( 'Authorization', testUser2.apiToken )
         .end( ( err, res ) => {
-          res.should.have.status( 401 )
+          res.should.have.status( 200 )
           done()
         } )
     } )

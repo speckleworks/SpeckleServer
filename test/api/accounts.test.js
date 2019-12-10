@@ -437,6 +437,7 @@ describe( 'accounts', () => {
         role: 'not-admin'
       } )
 
+      await emailUser.save()
       await nameUser.save()
       await surnameUser.save()
     } )
