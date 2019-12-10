@@ -886,7 +886,7 @@ describe( 'projects', () => {
       project2.streams = [ testStream.streamId, testStream2.streamId ]
       project2.permissions.canRead = [ testUser2._id, testUser1._id ]
       await project2.save()
-
+      
       project1.permissions.canRead = [ testUser2._id ]
       project1.permissions.canWrite = [ adminUser._id ]
       project1.streams = [ testStream.streamId ]
@@ -972,6 +972,46 @@ describe( 'projects', () => {
 
   describe( '/PUT /projects/{id}/upgradeuser/{user_id}', () => {
 
+    let testStream2;
+
+    beforeEach( async () => {
+      testStream2 = new Stream( {
+        streamId: 'some-other-stream',
+        owner: testUser1._id,
+        canRead: [ testUser1._id, testUser2._id ],
+        canWrite: [ ]
+      } )
+
+      await testStream2.save()
+
+      project2.streams = [ testStream.streamId, testStream2.streamId ]
+      project2.permissions.canRead = [ testUser2._id, testUser1._id ]
+      await project2.save()
+      
+      project1.permissions.canRead = [ testUser2._id ]
+      project1.permissions.canWrite = [ adminUser._id ]
+      project1.streams = [ testStream.streamId ]
+      await project1.save()
+
+      testStream.canRead = [ testUser2._id, testUser1._id ]
+      testStream.canWrite = [ adminUser._id ]
+      await testStream.save()
+    } )
+
+    afterEach( async () => {
+      await testStream2.remove()
+
+      project2.permissions.canRead = []
+      project2.streams = []
+      await project2.save()
+
+      await Project.findOne( { _id: project1._id } ).then( res => {
+        res.permissions.canRead = []
+        res.permissions.canWrite = []
+        res.streams = []
+        return res.save()
+      } )
+    } )
 
     it( 'should require authentication', ( done ) => {
       chai.request( app )
@@ -1003,31 +1043,72 @@ describe( 'projects', () => {
         } )
     } )
 
-    it( 'should update the user\'s permissions on a project if the user making the request can write to project and stream', ( done ) => {
-      chai.request( app )
-        .put( `${routeBase}/${project1._id}/upgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser1.apiToken )
-        .end( ( err, res ) => {
-          err = new Error( 'test not implemented' )
-          done( err )
+    // it( 'should update the user\'s permissions on a project if the user making the request can write to project and stream', ( done ) => {
+    //   chai.request( app )
+    //     .put( `${routeBase}/${project1._id}/upgradeuser/${testUser2._id}` )
+    //     .set( 'Authorization', testUser1.apiToken )
+    //     .end( ( err, res ) => {
+    //       err = new Error( 'test not implemented' )
+    //       done( err )
 
-        } )
-    } )
+    //     } )
+    // } )
 
-    it( 'should update the user\'s permissions on a streams associated with the project if the user making the request can write to project and stream', ( done ) => {
-      chai.request( app )
-        .put( `${routeBase}/${project1._id}/upgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser1.apiToken )
-        .end( ( err, res ) => {
-          err = new Error( 'test not implemented' )
-          done( err )
+    // it( 'should update the user\'s permissions on a streams associated with the project if the user making the request can write to project and stream', ( done ) => {
+    //   chai.request( app )
+    //     .put( `${routeBase}/${project1._id}/upgradeuser/${testUser2._id}` )
+    //     .set( 'Authorization', testUser1.apiToken )
+    //     .end( ( err, res ) => {
+    //       err = new Error( 'test not implemented' )
+    //       done( err )
 
-        } )
-    } )
+    //     } )
+    // } )
   } )
 
   describe( '/PUT /projects/{id}/downgradeuser/{user_id}', () => {
 
+
+    let testStream2;
+
+    beforeEach( async () => {
+      testStream2 = new Stream( {
+        streamId: 'some-other-stream',
+        owner: testUser1._id,
+        canRead: [ testUser1._id, testUser2._id ],
+        canWrite: [ ]
+      } )
+
+      await testStream2.save()
+
+      project2.streams = [ testStream.streamId, testStream2.streamId ]
+      project2.permissions.canRead = [ testUser2._id, testUser1._id ]
+      await project2.save()
+      
+      project1.permissions.canRead = [ testUser2._id ]
+      project1.permissions.canWrite = [ adminUser._id ]
+      project1.streams = [ testStream.streamId ]
+      await project1.save()
+
+      testStream.canRead = [ testUser2._id, testUser1._id ]
+      testStream.canWrite = [ adminUser._id ]
+      await testStream.save()
+    } )
+
+    afterEach( async () => {
+      await testStream2.remove()
+
+      project2.permissions.canRead = []
+      project2.streams = []
+      await project2.save()
+
+      await Project.findOne( { _id: project1._id } ).then( res => {
+        res.permissions.canRead = []
+        res.permissions.canWrite = []
+        res.streams = []
+        return res.save()
+      } )
+    } )
 
     it( 'should require authentication', ( done ) => {
       chai.request( app )
@@ -1059,27 +1140,27 @@ describe( 'projects', () => {
         } )
     } )
 
-    it( 'should update the user\'s permissions on a project if the user making the request can write to project and stream', ( done ) => {
-      chai.request( app )
-        .put( `${routeBase}/${project1._id}/downgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser1.apiToken )
-        .end( ( err, res ) => {
-          err = new Error( 'test not implemented' )
-          done( err )
+    // it( 'should update the user\'s permissions on a project if the user making the request can write to project and stream', ( done ) => {
+    //   chai.request( app )
+    //     .put( `${routeBase}/${project1._id}/downgradeuser/${testUser2._id}` )
+    //     .set( 'Authorization', testUser1.apiToken )
+    //     .end( ( err, res ) => {
+    //       err = new Error( 'test not implemented' )
+    //       done( err )
 
-        } )
-    } )
+    //     } )
+    // } )
 
-    it( 'should update the user\'s permissions on a streams associated with the project if the user making the request can write to project and stream', ( done ) => {
-      chai.request( app )
-        .put( `${routeBase}/${project1._id}/downgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser1.apiToken )
-        .end( ( err, res ) => {
-          err = new Error( 'test not implemented' )
-          done( err )
+    // it( 'should update the user\'s permissions on a streams associated with the project if the user making the request can write to project and stream', ( done ) => {
+    //   chai.request( app )
+    //     .put( `${routeBase}/${project1._id}/downgradeuser/${testUser2._id}` )
+    //     .set( 'Authorization', testUser1.apiToken )
+    //     .end( ( err, res ) => {
+    //       err = new Error( 'test not implemented' )
+    //       done( err )
 
-        } )
-    } )
+    //     } )
+    // } )
   } )
 
 } );
