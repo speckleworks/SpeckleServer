@@ -2,12 +2,15 @@ version: '{build}'
 
 image: Ubuntu
 
-stack: node 9
+stack: node 10
 
 install:
 - sh: npm install
 
 test_script:
+- sh: npm test
+
+after_test:
 - sh: npm run lint
 
 

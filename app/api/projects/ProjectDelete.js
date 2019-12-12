@@ -18,19 +18,30 @@ module.exports = async ( req, res ) => {
 
     let streams = await DataStream.find( { streamId: { $in: project.streams } }, 'canWrite canRead streamId owner' )
     let allOtherProjects = await Project.find( { 'streams': { $in: project.streams }, _id: { $ne: project._id } } )
-
     let modifiedStreams = [ ]
 
     for ( let stream of streams ) {
       let otherProjects = allOtherProjects.filter( p => p.streams.indexOf( stream.streamId ) > -1 )
-      let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite ) )
-      let otherCR = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canRead ) )
+
+      // Replaced these two with a gross forEach method below because casting Mongoose Arrays to
+      // normal Javascript Arrays removes certain comparative properties when it comes to bson _id
+      // objects. Check this link for vague explanations: https://stackoverflow.com/questions/41063587/mongoose-indexof-in-an-objectid-array
+
+      // let otherCW = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canWrite ) )
+      // let otherCR = Array.prototype.concat( ...otherProjects.map( p => p.permissions.canRead ) )
 
       let modified = false
 
+
       project.permissions.canRead.forEach( id => {
         let index = stream.canRead.indexOf( id )
-        if ( otherCR.indexOf( id ) === -1 && index > -1 ) {
+        let canReadOther = false;
+        otherProjects.forEach( p => {
+          if ( p.permissions.canRead.indexOf( id ) > -1 ) {
+            canReadOther = true;
+          }
+        } );
+        if ( !canReadOther && index > -1 ) {
           stream.canRead.splice( index, 1 )
           modified = true
         }
@@ -38,7 +49,13 @@ module.exports = async ( req, res ) => {
 
       project.permissions.canWrite.forEach( id => {
         let index = stream.canWrite.indexOf( id )
-        if ( otherCW.indexOf( id ) === -1 && index > -1 ) {
+        let canWriteOther = false;
+        otherProjects.forEach( p => {
+          if ( p.permissions.canWrite.indexOf( id ) > -1 ) {
+            canWriteOther = true;
+          }
+        } );
+        if ( !canWriteOther && index > -1 ) {
           stream.canWrite.splice( index, 1 )
           modified = true
         }
