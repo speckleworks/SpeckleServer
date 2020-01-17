@@ -458,16 +458,14 @@ describe( 'objects', () => {
           .set( 'Authorization', unauthorizedUser.apiToken )
           .send( derivePayload )
           .end( ( err, res ) => {
-            res.body.resources.should.have.lengthOf( '3' )
-
-            // res.body.resources[0].type.should.be.equal( 'String' )
-            // res.body.resources[0].value.should.be.equal( 'You do not have permissions to view this object' )
-            // res.body.resources[1].type.should.be.equal( 'Placeholder' )
-            // res.body.resources[2].type.should.be.equal( 'String' )
-            // res.body.resources[2].value.should.be.equal( 'You do not have permissions to view this object' )
+            res.body.resources.should.have.lengthOf( '2' )
 
             SpeckleObject.find( { owner: unauthorizedUser._id } ).then(
-              objects => objects.length.should.equal( 1 )
+              objects => {
+                objects.length.should.equal( 2 );
+                objects[0].name = object1.name;
+                objects[1].name = object2.name;
+              }
             ).catch( err => done( err ) )
 
             done()
