@@ -1,0 +1,10 @@
+<html>
+  <body>
+      <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.2/js/msal.min.js"></script>
+      <script type="text/javascript">
+          // Microsoft login redirects back to this page and requires this object before it closes the popup.
+          // See https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/174
+          new Msal.UserAgentApplication(window.localStorage.msalClientId, null, null);
+      </script>
+  </body>
+</html>
