@@ -42,7 +42,7 @@ const createTestUser = async ( email, role ) => {
     role
   } );
 
-  testUser.apiToken = 'JWT ' + jwt.sign( { _id: testUser._id, name: testUser.name }, SESSION_SECRET, { expiresIn: '24h' } )
+  testUser.apitoken = 'JWT ' + jwt.sign( { _id: testUser._id, name: testUser.name }, SESSION_SECRET, { expiresIn: '24h' } )
 
   return testUser.save()
 }

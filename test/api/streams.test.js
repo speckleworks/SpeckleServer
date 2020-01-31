@@ -195,7 +195,7 @@ describe( 'streams', () => {
       it( 'should create a mongodb object matching the input payload', ( done ) => {
         chai.request( app )
           .post( routeBase )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .send( postPayload )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
@@ -212,7 +212,7 @@ describe( 'streams', () => {
       it( 'should allow users to create streams with objects they do not have access to', ( done ) => {
         chai.request( app )
           .post( routeBase )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .send( postPayload )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
@@ -253,7 +253,7 @@ describe( 'streams', () => {
       it( 'should return streams where user is owner', ( done ) => {
         chai.request( app )
           .get( routeBase )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 );
             res.body.resources.should.have.lengthOf( '3' )
@@ -264,7 +264,7 @@ describe( 'streams', () => {
       it( 'should return streams where user is not owner but has read access', ( done ) => {
         chai.request( app )
           .get( routeBase )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 );
             res.body.resources.should.have.lengthOf( '3' )
@@ -275,7 +275,7 @@ describe( 'streams', () => {
       it( 'should return all public streams if user has read access to or owns none', ( done ) => {
         chai.request( app )
           .get( routeBase )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 );
             res.body.resources.should.have.lengthOf( '1' )
@@ -297,7 +297,7 @@ describe( 'streams', () => {
     it( 'should require admin user', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/admin` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -307,7 +307,7 @@ describe( 'streams', () => {
     it( 'should GET all the streams regardless of ownership or write/read access', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/admin` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resources' )
@@ -364,7 +364,7 @@ describe( 'streams', () => {
       it( 'should require user to have some form of access', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 401 )
             done()
@@ -374,7 +374,7 @@ describe( 'streams', () => {
       it( 'should return a resource if user is owner', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.resource.should.containSubset( streamSubset );
@@ -387,7 +387,7 @@ describe( 'streams', () => {
       it( 'should add a default layer if none exists', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.resource.layers[0].should.containSubset( defaultLayer );
@@ -398,7 +398,7 @@ describe( 'streams', () => {
       it( 'should return a resource if user has read access', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${stream3.streamId}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             done()
@@ -408,7 +408,7 @@ describe( 'streams', () => {
       it( 'should return a resource if it is not private', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${stream2.streamId}` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             done()
@@ -419,7 +419,7 @@ describe( 'streams', () => {
       it( 'should return a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.resource.should.containSubset( streamSubset );
@@ -475,7 +475,7 @@ describe( 'streams', () => {
       it( 'should not accept request from non owner users without access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
@@ -486,7 +486,7 @@ describe( 'streams', () => {
       it( 'should not accept request from non owner users with read only access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${stream2.streamId}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
@@ -497,7 +497,7 @@ describe( 'streams', () => {
       it( 'should modify a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
@@ -511,7 +511,7 @@ describe( 'streams', () => {
       it( 'should modify a resource if user is non-owner with write access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${stream3.streamId}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
@@ -525,7 +525,7 @@ describe( 'streams', () => {
       it( 'should modify a resource if user is owner', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
@@ -540,7 +540,7 @@ describe( 'streams', () => {
       it( 'should replace all objects if present in update payload (no upsert behaviour)', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
@@ -554,7 +554,7 @@ describe( 'streams', () => {
       it( 'should create object if it is not of type "Placeholder"', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             SpeckleObject.countDocuments().then( res => {
@@ -598,7 +598,7 @@ describe( 'streams', () => {
       it( 'should not accept request from non owner users without write access', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 404 )
             DataStream.findOne( { streamId: stream3.streamId } ).then( stream => {
@@ -612,7 +612,7 @@ describe( 'streams', () => {
       it( 'should delete a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             DataStream.findOne( { streamId: stream1.streamId } ).then( stream => {
@@ -625,7 +625,7 @@ describe( 'streams', () => {
       it( 'should not delete a resource if user is non-owner with write access', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${stream3.streamId}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 404 )
             DataStream.findOne( { streamId: stream3.streamId } ).then( stream => {
@@ -638,7 +638,7 @@ describe( 'streams', () => {
       it( 'should delete a resource if user is owner', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             DataStream.findOne( { streamId: stream1.streamId } ).then( stream => {
@@ -651,7 +651,7 @@ describe( 'streams', () => {
       it( 'should delete all children streams', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${stream1.streamId}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             DataStream.countDocuments().then( res => {
@@ -718,7 +718,7 @@ describe( 'streams', () => {
       it( 'should require user to have some form of access', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/${stream1.streamId}/clone` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
             done()
@@ -728,7 +728,7 @@ describe( 'streams', () => {
       it( 'should clone a stream if user is owner', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/${stream1.streamId}/clone` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.clone.should.containSubset( streamSubset );
@@ -744,7 +744,7 @@ describe( 'streams', () => {
       it( 'should return a resource if user has read access', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/${stream3.streamId}/clone` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.clone.should.containSubset( stream3Subset );
@@ -759,7 +759,7 @@ describe( 'streams', () => {
       it( 'should return a resource if it is not private', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/${stream2.streamId}/clone` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.clone.should.containSubset( stream2Subset );
@@ -775,7 +775,7 @@ describe( 'streams', () => {
       it( 'should return a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/${stream1.streamId}/clone` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.clone.should.containSubset( streamSubset );
@@ -793,7 +793,7 @@ describe( 'streams', () => {
         chai.request( app )
           .post( `${routeBase}/${stream1.streamId}/clone` )
           .send( {name: 'new name'} )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             res.body.clone.name.should.equal( 'new name' );
@@ -809,7 +809,7 @@ describe( 'streams', () => {
       it( 'should add stream cloned from as a parent to the new stream', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/${stream1.streamId}/clone` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             DataStream.findOne( {streamId: res.body.clone.streamId} ).then( stream => {
@@ -822,7 +822,7 @@ describe( 'streams', () => {
       it( 'should new stream to list of parent stream children', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/${stream1.streamId}/clone` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             DataStream.findOne( {streamId: stream1.streamId} ).then( stream => {

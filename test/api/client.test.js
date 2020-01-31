@@ -85,7 +85,7 @@ describe( 'clients', () => {
     it( 'should GET all the clients', ( done ) => {
       chai.request( app )
         .get( routeBase )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resources' )
@@ -132,7 +132,7 @@ describe( 'clients', () => {
     it( 'should create a mongodb object matching the input payload', ( done ) => {
       chai.request( app )
         .post( routeBase )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .send( postPayload )
         .end( ( err, res ) => {
           const _id = res.body.resource._id;
@@ -172,7 +172,7 @@ describe( 'clients', () => {
     it( 'should only accept request from users with write access', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${client1._id}` )
-        .set( 'Authorization', unauthorizedUser.apiToken )
+        .set( 'Authorization', unauthorizedUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 400 )
           done()
@@ -182,7 +182,7 @@ describe( 'clients', () => {
     it( 'should modify a resource', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${client1._id}` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           Client.findOne( { _id: client1._id } ).then( client => {
@@ -217,7 +217,7 @@ describe( 'clients', () => {
     it( 'should return a resource and populate the owner field', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${client1._id}` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Client.findOne( { _id: client1._id } ).populate( 'owner', 'name surname email company' )
@@ -267,7 +267,7 @@ describe( 'clients', () => {
     it( 'should only accept request from users with write access', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${resourceToDelete._id}` )
-        .set( 'Authorization', unauthorizedUser.apiToken )
+        .set( 'Authorization', unauthorizedUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 404 )
           done()
@@ -277,7 +277,7 @@ describe( 'clients', () => {
     it( 'should delete a resource', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${resourceToDelete._id}` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Client.findOne( { _id: resourceToDelete._id } )
