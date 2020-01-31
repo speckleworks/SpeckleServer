@@ -65,7 +65,8 @@
     "mocha": "^6.2.2",
     "mongodb-memory-server": "^6.0.1",
     "redis-mock": "^0.46.0",
-    "semantic-release": "^15.13.24"
+    "semantic-release": "^15.13.24",
+    "sinon": "^8.1.1"
   },
   "config": {
     "commitizen": {
