@@ -96,6 +96,9 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   // modified diff endpoint to follow delta specs from innovateuk grant
   r.get( '/streams/:streamId/delta/:otherId', optionalAuthorisation, require( './streams/StreamDelta' ) )
 
+  // endpoint to apply a delta to a stream & create a new revison (clone)
+  r.post( '/streams/:streamId/delta', mandatoryAuthorisation, (req, res) => {res.send('Todo')})
+
   // Get stream objects / perm check 'read' xxx
   r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './streams/StreamObjectsGet' ) )
 
