@@ -104,7 +104,7 @@ describe( 'projects', () => {
     it( 'should GET all the projects where user is owner', ( done ) => {
       chai.request( app )
         .get( routeBase )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resources' )
@@ -117,7 +117,7 @@ describe( 'projects', () => {
     it( 'should GET all the projects where user is has read or write access', ( done ) => {
       chai.request( app )
         .get( routeBase )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resources' )
@@ -130,7 +130,7 @@ describe( 'projects', () => {
     it( 'should GET query projects user has access to', ( done ) => {
       chai.request( app )
         .get( routeBase )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .query( { name: 'Test Project', limit: 10 } )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
@@ -156,7 +156,7 @@ describe( 'projects', () => {
     it( 'should require admin user', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/admin` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -166,7 +166,7 @@ describe( 'projects', () => {
     it( 'should GET all the projects regardless of ownership or write/read access', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/admin` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resources' )
@@ -179,7 +179,7 @@ describe( 'projects', () => {
     it( 'should GET query all projects', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/admin` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .query( { name: 'Test Project', limit: 10 } )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
@@ -214,7 +214,7 @@ describe( 'projects', () => {
     it( 'should create a mongodb object matching the input payload', ( done ) => {
       chai.request( app )
         .post( routeBase )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .send( postPayload )
         .end( ( err, res ) => {
           const _id = res.body.resource._id;
@@ -246,7 +246,7 @@ describe( 'projects', () => {
     it( 'should not accept request from non owner users without write access', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -256,7 +256,7 @@ describe( 'projects', () => {
     it( 'should not accept request from non owner users with read access', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project3._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -266,7 +266,7 @@ describe( 'projects', () => {
     it( 'should modify a resource if user is admin regardless of access', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project4._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           Project.findOne( { _id: project4._id } ).then( project => {
@@ -279,7 +279,7 @@ describe( 'projects', () => {
     it( 'should modify a resource if user is non-owner with write access', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project4._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           Project.findOne( { _id: project4._id } ).then( project => {
@@ -292,7 +292,7 @@ describe( 'projects', () => {
     it( 'should modify a resource if user is owner', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project4._id}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           Project.findOne( { _id: project4._id } ).then( project => {
@@ -318,7 +318,7 @@ describe( 'projects', () => {
     it( 'should require user to have some form of access', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -328,7 +328,7 @@ describe( 'projects', () => {
     it( 'should return a resource if user is owner', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project1._id } ).then( result => {
@@ -341,7 +341,7 @@ describe( 'projects', () => {
     it( 'should return a resource if user has read access', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${project3._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project3._id } ).then( result => {
@@ -354,7 +354,7 @@ describe( 'projects', () => {
     it( 'should return a resource if user has write access', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${project4._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project4._id } ).then( result => {
@@ -367,7 +367,7 @@ describe( 'projects', () => {
     it( 'should return a resource if user is admin regardless of access', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project1._id } ).then( result => {
@@ -449,7 +449,7 @@ describe( 'projects', () => {
     it( 'should accept request if user is owner', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project1._id } )
@@ -463,7 +463,7 @@ describe( 'projects', () => {
     it( 'should not accept request if user has read access', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project3._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 400 )
           Project.findOne( { _id: project1._id } )
@@ -477,7 +477,7 @@ describe( 'projects', () => {
     it( 'should not accept request if user has write access', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project4._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 400 )
           Project.findOne( { _id: project1._id } )
@@ -491,7 +491,7 @@ describe( 'projects', () => {
     it( 'should accept request if user is admin regardless of access', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project1._id } )
@@ -505,7 +505,7 @@ describe( 'projects', () => {
     it( 'should keep stream permissions if user has them in other projects', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           Stream.findOne( { _id: testStream._id } )
             .then( result => {
@@ -519,7 +519,7 @@ describe( 'projects', () => {
     it( 'should remove stream permissions if user does not have them in other projects', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           Stream.findOne( { _id: otherStream._id } )
             .then( result => {
@@ -592,7 +592,7 @@ describe( 'projects', () => {
     it( 'should not work if user has read access', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project3._id}/adduser/${newUser._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           Project.findOne( {_id: project3._id} ).then( result => {
@@ -609,7 +609,7 @@ describe( 'projects', () => {
     it( 'should give read access to project and write access to streams if user is owner', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project3._id}/adduser/${newUser._id}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project3._id } ).then( result => {
@@ -626,7 +626,7 @@ describe( 'projects', () => {
     it( 'should give read access to project and write access to streams if user has write access', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project4._id}/adduser/${newUser._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project4._id } ).then( result => {
@@ -644,7 +644,7 @@ describe( 'projects', () => {
     it( 'should give read access to project and write access to streams if user is admin', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project4._id}/adduser/${newUser._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project4._id } ).then( result => {
@@ -731,7 +731,7 @@ describe( 'projects', () => {
     it( 'should not work if user has read access', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project3._id}/removeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -741,7 +741,7 @@ describe( 'projects', () => {
     it( 'should remove read access to user on project', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project3._id}/removeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project3._id } ).then( result => {
@@ -755,7 +755,7 @@ describe( 'projects', () => {
     it( 'should remove write access to user on project', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project4._id}/removeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project4._id } ).then( result => {
@@ -768,7 +768,7 @@ describe( 'projects', () => {
     it( 'should keep stream permissions if user has them in other projects', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}/removeuser/${testUser2._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           Stream.findOne( { _id: testStream._id } )
             .then( result => {
@@ -781,7 +781,7 @@ describe( 'projects', () => {
     it( 'should remove stream permissions if user does not have them in other projects', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}/removeuser/${testUser2._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           Stream.findOne( { _id: otherStream._id } )
             .then( result => {
@@ -824,7 +824,7 @@ describe( 'projects', () => {
     it( 'should require user to have write access to the project', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project1._id}/addstream/${testStream.streamId}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 400 )
           done()
@@ -834,7 +834,7 @@ describe( 'projects', () => {
     it( 'should require user to have write access to the stream', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project2._id}/addstream/${testStream.streamId}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 400 )
           done()
@@ -844,7 +844,7 @@ describe( 'projects', () => {
     it( 'should add a stream to a project if a user can write to project and stream', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project1._id}/addstream/${testStream.streamId}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project1._id} ).then( result => {
@@ -857,7 +857,7 @@ describe( 'projects', () => {
     it( 'should update stream permissions with users in project.permissions object', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project1._id}/addstream/${testStream.streamId}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Stream.findOne( { _id: testStream._id } ).then( result => {
@@ -871,7 +871,7 @@ describe( 'projects', () => {
     it( 'should update stream permissions with project owner read + write on stream', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project1._id}/addstream/${testStream.streamId}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Stream.findOne( { _id: testStream._id } ).then( result => {
@@ -940,7 +940,7 @@ describe( 'projects', () => {
     it( 'should require user to have write access to the project', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}/removestream/${testStream.streamId}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -950,7 +950,7 @@ describe( 'projects', () => {
     it( 'should require user to have write access to the stream', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project2._id}/removestream/${testStream.streamId}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -960,7 +960,7 @@ describe( 'projects', () => {
     it( 'should remove a stream from a project if a user can write to project and stream', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}/removestream/${testStream.streamId}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Project.findOne( { _id: project1._id } ).then( result => {
@@ -973,7 +973,7 @@ describe( 'projects', () => {
     it( 'should delete stream permissions with users in project.permissions object if no other projects with that user contain that stream', ( done ) => {
       chai.request( app )
         .delete( `${routeBase}/${project1._id}/removestream/${testStream.streamId}` )
-        .set( 'Authorization', testUser1.apiToken )
+        .set( 'Authorization', testUser1.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           Stream.findOne( { _id: testStream._id } ).then( result => {
@@ -1041,7 +1041,7 @@ describe( 'projects', () => {
     it( 'should require user to have write access to the project', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project1._id}/upgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -1051,7 +1051,7 @@ describe( 'projects', () => {
     it( 'should not require user to have write access to a stream in the project', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project2._id}/upgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           done()
@@ -1061,7 +1061,7 @@ describe( 'projects', () => {
     // it( 'should update the user\'s permissions on a project if the user making the request can write to project and stream', ( done ) => {
     //   chai.request( app )
     //     .put( `${routeBase}/${project1._id}/upgradeuser/${testUser2._id}` )
-    //     .set( 'Authorization', testUser1.apiToken )
+    //     .set( 'Authorization', testUser1.apitoken )
     //     .end( ( err, res ) => {
     //       err = new Error( 'test not implemented' )
     //       done( err )
@@ -1072,7 +1072,7 @@ describe( 'projects', () => {
     // it( 'should update the user\'s permissions on a streams associated with the project if the user making the request can write to project and stream', ( done ) => {
     //   chai.request( app )
     //     .put( `${routeBase}/${project1._id}/upgradeuser/${testUser2._id}` )
-    //     .set( 'Authorization', testUser1.apiToken )
+    //     .set( 'Authorization', testUser1.apitoken )
     //     .end( ( err, res ) => {
     //       err = new Error( 'test not implemented' )
     //       done( err )
@@ -1138,7 +1138,7 @@ describe( 'projects', () => {
     it( 'should require user to have write access to the project', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project1._id}/downgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -1148,7 +1148,7 @@ describe( 'projects', () => {
     it( 'should not require user to have write access to a stream in the project', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${project2._id}/downgradeuser/${testUser2._id}` )
-        .set( 'Authorization', testUser2.apiToken )
+        .set( 'Authorization', testUser2.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 )
           done()
@@ -1158,7 +1158,7 @@ describe( 'projects', () => {
     // it( 'should update the user\'s permissions on a project if the user making the request can write to project and stream', ( done ) => {
     //   chai.request( app )
     //     .put( `${routeBase}/${project1._id}/downgradeuser/${testUser2._id}` )
-    //     .set( 'Authorization', testUser1.apiToken )
+    //     .set( 'Authorization', testUser1.apitoken )
     //     .end( ( err, res ) => {
     //       err = new Error( 'test not implemented' )
     //       done( err )
@@ -1169,7 +1169,7 @@ describe( 'projects', () => {
     // it( 'should update the user\'s permissions on a streams associated with the project if the user making the request can write to project and stream', ( done ) => {
     //   chai.request( app )
     //     .put( `${routeBase}/${project1._id}/downgradeuser/${testUser2._id}` )
-    //     .set( 'Authorization', testUser1.apiToken )
+    //     .set( 'Authorization', testUser1.apitoken )
     //     .end( ( err, res ) => {
     //       err = new Error( 'test not implemented' )
     //       done( err )

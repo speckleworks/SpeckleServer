@@ -121,7 +121,7 @@ describe( 'objects', () => {
       it( 'should create a mongodb object matching the input payload', ( done ) => {
         chai.request( app )
           .post( routeBase )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .send( postPayload )
           .end( ( err, res ) => {
             const _id = res.body.resources[0]._id;
@@ -147,7 +147,7 @@ describe( 'objects', () => {
       it( 'should require user to have some form of access', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
             done()
@@ -157,7 +157,7 @@ describe( 'objects', () => {
       it( 'should return a resource if user is owner', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             SpeckleObject.findOne( { _id: object1._id } ).then( result => {
@@ -170,7 +170,7 @@ describe( 'objects', () => {
       it( 'should return a resource if user has read access', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${object3._id}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             SpeckleObject.findOne( { _id: object3._id } ).then( result => {
@@ -183,7 +183,7 @@ describe( 'objects', () => {
       it( 'should return a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .get( `${routeBase}/${object3._id}` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 )
             SpeckleObject.findOne( { _id: object3._id } ).then( result => {
@@ -238,7 +238,7 @@ describe( 'objects', () => {
       it( 'should not accept request from non owner users without write access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
@@ -249,7 +249,7 @@ describe( 'objects', () => {
       it( 'should not accept request from non owner users with read access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object3._id}` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
             done()
@@ -259,7 +259,7 @@ describe( 'objects', () => {
       it( 'should modify a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
@@ -274,7 +274,7 @@ describe( 'objects', () => {
       it( 'should modify a resource if user is non-owner with write access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
@@ -289,7 +289,7 @@ describe( 'objects', () => {
       it( 'should modify a resource if user is owner', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
@@ -340,7 +340,7 @@ describe( 'objects', () => {
       it( 'should not accept request from non owner users without write access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}/properties` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
@@ -351,7 +351,7 @@ describe( 'objects', () => {
       it( 'should not accept request from non owner users with read access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object3._id}/properties` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
             done()
@@ -361,7 +361,7 @@ describe( 'objects', () => {
       it( 'should modify a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}/properties` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
@@ -376,7 +376,7 @@ describe( 'objects', () => {
       it( 'should modify a resource if user is non-owner with write access', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}/properties` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
@@ -391,7 +391,7 @@ describe( 'objects', () => {
       it( 'should modify a resource if user is owner', ( done ) => {
         chai.request( app )
           .put( `${routeBase}/${object1._id}/properties` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .send( updatePayload )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
@@ -455,7 +455,7 @@ describe( 'objects', () => {
       it( 'should require user to have some form of access', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/derive` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .send( derivePayload )
           .end( ( err, res ) => {
             res.body.resources.should.have.lengthOf( '2' )
@@ -475,7 +475,7 @@ describe( 'objects', () => {
       it( 'should require a payload of object ID objects', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/derive` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 400 )
             done()
@@ -485,7 +485,7 @@ describe( 'objects', () => {
       it( 'should derive a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/derive` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .send( [ {_id: object1._id} ] )
           .end( ( err, res ) => {
             res.body.resources.should.have.lengthOf( '1' )
@@ -553,7 +553,7 @@ describe( 'objects', () => {
       it( 'should return all resources if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .post( `${routeBase}/getBulk` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .send( getBulkPayload )
           .end( ( err, res ) => {
             res.body.resources.should.have.lengthOf( '3' )
@@ -591,7 +591,7 @@ describe( 'objects', () => {
       it( 'should not accept request from non owner users without write access', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 404 )
             done()
@@ -601,7 +601,7 @@ describe( 'objects', () => {
       it( 'should not accept request from non owner users with read access', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${object3._id}` )
-          .set( 'Authorization', unauthorizedUser.apiToken )
+          .set( 'Authorization', unauthorizedUser.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 404 )
             done()
@@ -611,7 +611,7 @@ describe( 'objects', () => {
       it( 'should delete a resource if user is admin regardless of access', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', adminUser.apiToken )
+          .set( 'Authorization', adminUser.apitoken )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
               _id: object1._id
@@ -625,7 +625,7 @@ describe( 'objects', () => {
       it( 'should not delete a resource if user is non-owner with write access', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', testUser2.apiToken )
+          .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status ( 404 )
             done()
@@ -635,7 +635,7 @@ describe( 'objects', () => {
       it( 'should delete a resource if user is owner', ( done ) => {
         chai.request( app )
           .delete( `${routeBase}/${object1._id}` )
-          .set( 'Authorization', testUser1.apiToken )
+          .set( 'Authorization', testUser1.apitoken )
           .end( ( err, res ) => {
             SpeckleObject.findOne( {
               _id: object1._id

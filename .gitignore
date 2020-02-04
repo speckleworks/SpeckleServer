@@ -4,6 +4,7 @@ logs/
 *.sublime-project
 *.sublime-workspace
 npm-debug.log
+.nyc_output
 
 # keep only the data folder
 data/*

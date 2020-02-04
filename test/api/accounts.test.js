@@ -86,7 +86,7 @@ describe( 'accounts', () => {
     it( 'should GET the user corresponding to the auth token', ( done ) => {
       chai.request( app )
         .get( routeBase )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           let expectedAccount = JSON.parse( JSON.stringify( testUser.toObject() ) );
           delete expectedAccount.password
@@ -112,7 +112,7 @@ describe( 'accounts', () => {
     it( 'should require admin user', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/admin` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
           done()
@@ -122,7 +122,7 @@ describe( 'accounts', () => {
     it( 'should GET all existing users', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/admin` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .end( ( err, res ) => {
           let testAccount = JSON.parse( JSON.stringify( testUser.toObject() ) );
           let adminAccount = JSON.parse( JSON.stringify( adminUser.toObject() ) );
@@ -170,7 +170,7 @@ describe( 'accounts', () => {
     it( 'should modify a resource', ( done ) => {
       chai.request( app )
         .put( routeBase )
-        .set( 'Authorization', newUser.apiToken )
+        .set( 'Authorization', newUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           User.findOne( { _id: newUser._id } ).then( result => {
@@ -186,7 +186,7 @@ describe( 'accounts', () => {
     it( 'should not change password or role', ( done ) => {
       chai.request( app )
         .put( routeBase )
-        .set( 'Authorization', newUser.apiToken )
+        .set( 'Authorization', newUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           User.findOne( { _id: newUser._id } ).then( result => {
@@ -203,7 +203,7 @@ describe( 'accounts', () => {
     it( 'should not change password or role, even if admin!', ( done ) => {
       chai.request( app )
         .put( routeBase )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           User.findOne( { _id: adminUser._id } ).then( result => {
@@ -242,7 +242,7 @@ describe( 'accounts', () => {
     it( 'should GET the user corresponding to the id provided', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${newUser._id}` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resource' )
@@ -257,7 +257,7 @@ describe( 'accounts', () => {
     it( 'should GET not return certain keys', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${newUser._id}` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resource' )
@@ -278,7 +278,7 @@ describe( 'accounts', () => {
     it( 'should GET not return certain keys even if you\'re admin', ( done ) => {
       chai.request( app )
         .get( `${routeBase}/${adminUser._id}` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
           res.body.should.have.property( 'resource' )
@@ -331,7 +331,7 @@ describe( 'accounts', () => {
     it( 'should not allow non admin user', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${newUser._id}` )
-        .set( 'Authorization', newUser.apiToken )
+        .set( 'Authorization', newUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           res.should.have.status( 401 )
@@ -342,7 +342,7 @@ describe( 'accounts', () => {
     it( 'should modify a resource if admin', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${newUser._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           User.findOne( { _id: newUser._id } ).then( result => {
@@ -358,7 +358,7 @@ describe( 'accounts', () => {
     it( 'should modify a role and archived if admin', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${newUser._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           User.findOne( { _id: newUser._id } ).then( result => {
@@ -372,7 +372,7 @@ describe( 'accounts', () => {
     it( 'should not change password', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${newUser._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           User.findOne( { _id: newUser._id } ).then( result => {
@@ -387,7 +387,7 @@ describe( 'accounts', () => {
     it( 'should not change password or role, even if admin!', ( done ) => {
       chai.request( app )
         .put( `${routeBase}/${newUser._id}` )
-        .set( 'Authorization', adminUser.apiToken )
+        .set( 'Authorization', adminUser.apitoken )
         .send( updatePayload )
         .end( ( err, res ) => {
           User.findOne( { _id: adminUser._id } ).then( result => {
@@ -461,7 +461,7 @@ describe( 'accounts', () => {
     it( 'should fail if less than three letters in search', ( done ) => {
       chai.request( app )
         .post( `${routeBase}/search` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .send( { searchString: 'so' } )
         .end( ( err, res ) => {
           res.should.have.status( 400 );
@@ -474,7 +474,7 @@ describe( 'accounts', () => {
     it( 'should find a user by name, surname or email', ( done ) => {
       chai.request( app )
         .post( `${routeBase}/search` )
-        .set( 'Authorization', testUser.apiToken )
+        .set( 'Authorization', testUser.apitoken )
         .send( { searchString: 'som' } )
         .end( ( err, res ) => {
           res.should.have.status( 200 );
@@ -502,7 +502,7 @@ describe( 'accounts', () => {
       it( 'should find only return email in the search response if EXPOSE_EMAILS is non null', ( done ) => {
         chai.request( tempApp )
           .post( `${routeBase}/search` )
-          .set( 'Authorization', testUser.apiToken )
+          .set( 'Authorization', testUser.apitoken )
           .send( { searchString: 'som' } )
           .end( ( err, res ) => {
             res.should.have.status( 200 );

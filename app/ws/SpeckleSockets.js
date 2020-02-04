@@ -14,9 +14,10 @@ redisPublisher.on( 'connect', ( ) => {
   winston.debug( `${process.pid} connected to redis.` )
 } )
 
+// start a redis subscriber in the radio tower
+radioTower.initRedis( )
+
 module.exports = function( wss ) {
-  // start a redis subscriber in the radio tower
-  radioTower.initRedis( )
 
   wss.on( 'connection', function( ws, req ) {
     winston.debug( chalk.blue( `Ws connection request in PID ${process.pid}` ) )
