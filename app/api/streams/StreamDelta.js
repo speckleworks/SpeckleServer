@@ -61,9 +61,6 @@ module.exports = ( req, res ) => {
       objects.inB = second.objects.filter( id => !first.objects.includes( id ) )
       let firstSenderClient = firstClients.filter( cl => cl.role === 'Sender' )[0] // returns an arr, take first elem
       let secondSenderClient = secondClients.filter( cl => cl.role === 'Sender' )[0] // returns an arr, take first elem
-      // console.log(senderClient)
-      // console.log(firstClients)
-      // console.log(secondClients)
       
       res.send( {
         success: true,
