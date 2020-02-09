@@ -2,7 +2,7 @@ version: '3'
 services:
   # SPECKLE
   speckle:
-    image: speckle/speckleserver:latest
+    image: speckle/speckleserver:1.9.8
     #image: speckle:latest # local dev
     ports:
       - '3000:3000'
