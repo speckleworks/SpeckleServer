@@ -31,6 +31,7 @@ module.exports = {
           } )
       }
     } )
+
   },
 
   // tries to parse gracefully
@@ -42,7 +43,6 @@ module.exports = {
       } catch ( err ) {
         return reject( new Error( 'Failed to parse ws message.' ) )
       }
-      // console.log(parsedMessage)
       if ( !parsedMessage.eventName ) { return reject( new Error( 'Malformed message: no eventName.' ) ) }
 
       return resolve( parsedMessage )
@@ -85,6 +85,7 @@ module.exports = {
       let roomName = ''
       if ( message.streamId && message.streamId.trim( ) !== '' ) {
         roomName = `stream-${message.streamId}`
+        // TODO: Shame whoever wrote the boolean logic below...
       } else if ( !( !message.resourceId || !message.resourceType ) ) {
         roomName = `${message.resourceType}-${message.resourceId}`
       }
