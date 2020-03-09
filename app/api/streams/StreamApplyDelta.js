@@ -1,7 +1,11 @@
 const _ = require( 'lodash' )
-const DataStream = require( '../../../models/DataStream' )
 const shortId = require( 'shortid' )
 const mongoose = require( 'mongoose' )
+
+const BulkObjectSave = require( '../middleware/BulkObjectSave' )
+const DataStream = require( '../../../models/DataStream' )
+
+
 
 function removeAllElements(array, elem) {
   var index = array.indexOf(elem);
@@ -49,62 +53,50 @@ module.exports = async ( req, res ) => {
     console.log(delta.revision_A)
 
     //checks if delta can be applied. We have to make sure that the streamId of original stream should be the same as revision_A id.
-    if ( delta.revision_A.id != stream.streamId ) {
-      console.log("Cannot apply delta to stream. abort mission")
+    if ( delta.revision_A != stream.streamId ) {
+      console.log("Meeep - mismatched versions")
+      throw new Error("Mismatched revision/streamId.")
     } else {
-      console.log("All good, delta will be applied to the stream.")
-      
-      // objects do be added to the stream
-      let objsToAdd = delta.delta.created
+  
+      if( delta.created ) {
 
-      for (i = 0; i < objsToAdd.length; i++) {      
-        let objToAdd = objsToAdd[i]
-        // adds object to the stream's objects field
-        if (stream.objects.indexOf(objToAdd) < 0) { // check if object does NOT exist in the stream
-          console.log("This object needs to be created.")
-          stream.objects.push(objToAdd)
-          await stream.save()
+        let common = stream.objects.filter( obj => delta.created.indexOf(obj._id.toString()) !== -1 )
+
+        if(common.length != 0)
+        {
+          // TODO: Finish BAD DELTA check
+         // Check objects in stream. If there exist objects that have the same id of the `delta.created`, the delta is bad.
+
+          console.log("Bad delta")
+          throw new Error("Bad delta")
         }
+
+        console.log( delta.created )
+        let objs = await BulkObjectSave(delta.created, req.user)
+        stream.objects = new Set( [...stream.objects, ...objs.map( o => o._id.toString() ) ])
       }
 
       // objects to be deleted from the stream
-      let objsToDelete = delta.delta.deleted
-      
-      for (i = 0; i < objsToDelete.length; i++) {
-        
-        let objToDelete = objsToDelete[i]
-
-        // remove object from db
-        // SpeckleObject.findOne( { _id: objToDelete } )
-        // .then( obj => PermissionCheck( req.user, 'delete', obj ) )
-        // .then( obj => obj.remove() )
-        // .then( () => {
-        //   console.log('Object was deleted. Bye bye data.')
-        //   return res.send( { success: true, message: 'Object was deleted. Bye bye data.' } )
-        // } )
-        // .catch( err => {
-        //   winston.error( JSON.stringify( err ) )
-        //   res.status( err.message === 'Unauthorized. Please log in.' ? 401 : 404 )
-        //   res.send( { success: false, message: err.toString() } )
-        // } )
-        
-        // removes object from the stream's objects field
-        if (stream.objects.indexOf(objToDelete) >= 0) { // check if object exists in the stream
-          console.log("This object needs to be removed.")
-          removeAllElements(stream.objects, objToDelete)
-          await stream.save()
-        }
+      if(delta.deleted){
+        // TODO: Finish BAD DELTA check
+        // Check objects in stream. If any of the `delta.deleted` objects are not in the stream, the delta is bad.
+        let objsToDelete = delta.deleted
+        stream.objects = stream.objects.filter( obj => delta.deleted.indexOf(obj._id.toString()) !== -1 )
       }
 
+      console.log( stream )
+
+      await stream.save()
+
       // common objects - leave it as it is
-      let commonObjs = delta.delta.common
+      // let commonObjs = delta.common
+      res.send( { success: true, message:"applied delta" } )
+
     }
-  
-  res.send( { success: true, clone: result, parent: parent } )
-  res.send( { success: true } )
+
 
   } catch (err) {
-    
+    console.log(err)
     res.status( 400 )
     res.send( { success: false, message: JSON.stringify(err) } )
   }

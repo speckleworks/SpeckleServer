@@ -83,6 +83,9 @@ module.exports = function ( app, express, urlRoot, plugins ) {
 
   // update a stream / perm check 'write' xxx
   r.put( '/streams/:streamId', mandatoryAuthorisation, require( './streams/StreamPut' ) )
+    
+  // *update a stream using a Delta / perm check 'write' xxx
+  r.post( '/streams/:streamId/delta', mandatoryAuthorisation, require( './streams/StreamApplyDelta' ) )
 
   // delete a stream / perm check 'delete' xxx
   r.delete( '/streams/:streamId', mandatoryAuthorisation, require( './streams/StreamDelete' ) )
@@ -93,11 +96,8 @@ module.exports = function ( app, express, urlRoot, plugins ) {
   // diff a stream against another / perm check 'read' / perm check 'read' xxx
   r.get( '/streams/:streamId/diff/:otherId', optionalAuthorisation, require( './streams/StreamDiff' ) )
 
-  // modified diff endpoint to follow delta specs from innovateuk grant
-  r.get( '/streams/:streamId/delta/:otherId', optionalAuthorisation, require( './streams/StreamDelta' ) )
-  
-  // endpoint to apply a delta to a stream & create a new revison (clone)
-  r.post( '/streams/:streamId/delta', mandatoryAuthorisation, require( './streams/StreamApplyDelta' ) )
+  // *diff a stream against another and get a Delta / perm check 'read' / perm check 'read' xxx
+  r.get( '/streams/:streamId/delta/:otherId', optionalAuthorisation, require( './streams/StreamGetDelta' ) )
 
   // Get stream objects / perm check 'read' xxx
   r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './streams/StreamObjectsGet' ) )
