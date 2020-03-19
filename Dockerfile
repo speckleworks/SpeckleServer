@@ -21,4 +21,9 @@ RUN git clone https://github.com/speckleworks/SpeckleAdmin.git plugins/admin
 # RUN git clone https://github.com/speckleworks/SpeckleViewer.git plugins/viewer
 
 COPY . .
+
+# INSTALL SPECKLE ADMIN
+WORKDIR /usr/src/app/plugins/admin
+RUN npm install && npm run build
+
 CMD ["node", "server.js"]
