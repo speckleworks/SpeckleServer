@@ -14,7 +14,9 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 # Build the docker image
 docker build -t $IMAGE_TAG .
+docker build -t $DOCKER_IMAGE:latest .
+
 # Push the image with the new version tag
 docker push $IMAGE_TAG
 # Push the image with the "latest" version tag
-docker push $IMAGE
+docker push $DOCKER_IMAGE:latest
