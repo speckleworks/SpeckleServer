@@ -60,8 +60,86 @@ module.exports = ( req, res ) => {
       objects.inA = first.objects.filter( id => !second.objects.includes( id ) )
       objects.inB = second.objects.filter( id => !first.objects.includes( id ) )
       let firstSenderClient = firstClients.filter( cl => cl.role === 'Sender' )[0] // returns an arr, take first elem
+      
       let secondSenderClient = secondClients.filter( cl => cl.role === 'Sender' )[0] // returns an arr, take first elem
       
+      if ( firstSenderClient == undefined && secondSenderClient == undefined ) {
+        res.status( 400 )
+        return res.send( {
+          success: true,
+          message: "Clients from Stream A and Stream B are undefined",
+          revision_datetime: new Date().toLocaleString("en"),
+          author: "undefined",
+          delta: {
+            created: objects.inA,
+            deleted: objects.inB,
+            common: objects.common
+          },
+          revision_A: {
+            id: req.params.streamId, 
+            updatedAt: "undefined", 
+            sender: "undefined"
+          },
+          revision_B: {
+            id: req.params.otherId, 
+            updatedAt: "undefined", 
+            sender: "undefined"
+          }
+        } )
+      }
+
+      if ( firstSenderClient == undefined ) {
+        res.status( 400 )
+        return res.send( {
+          success: true,
+          message: "Clients from Stream A are undefined",
+          revision_datetime: new Date().toLocaleString("en"),
+          author: "undefined",
+          delta: {
+            created: objects.inA,
+            deleted: objects.inB,
+            common: objects.common
+          },
+          revision_A: {
+            id: req.params.streamId, 
+            updatedAt: "undefined", 
+            sender: "undefined"
+          },
+          revision_B: {
+            id: req.params.otherId, 
+            updatedAt: secondSenderClient.updatedAt.toLocaleString("en"), 
+            sender: secondSenderClient.documentType
+          }
+        } )
+      }
+
+      if ( secondSenderClient == undefined ) {
+        res.status( 400 )
+        return res.send( {
+          success: true,
+          message: "Clients from Stream B are undefined",
+          revision_datetime: new Date().toLocaleString("en"),
+          author: firstSenderClient.owner,
+          delta: {
+            created: objects.inA,
+            deleted: objects.inB,
+            common: objects.common
+          },
+          revision_A: {
+            id: req.params.streamId, 
+            updatedAt: firstSenderClient.updatedAt.toLocaleString("en"), 
+            sender: firstSenderClient.documentType
+          },
+          revision_B: {
+            id: req.params.otherId, 
+            updatedAt: "undefined", 
+            sender: "undefined"
+          }
+        } )
+      }
+
+
+
       res.send( {
         success: true,
         revision_datetime: new Date().toLocaleString("en"),
@@ -87,7 +165,7 @@ module.exports = ( req, res ) => {
     .catch( err => {
       winston.error( JSON.stringify( err ) )
       res.status( 400 )
-      res.send( { success: false, message: err.toString( ), lol: "lol" } )
+      res.send( { success: false, message: err.toString( )} )
     } )
 
 }
