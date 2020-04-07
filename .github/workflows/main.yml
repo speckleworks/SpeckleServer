@@ -16,4 +16,4 @@ jobs:
           repository: ${{ secrets.repository }}
           image: speckle
           folder: .
-          dockerfile: Dockerfile
+          dockerfile: 
