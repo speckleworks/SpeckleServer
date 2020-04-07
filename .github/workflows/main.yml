@@ -1,0 +1,21 @@
+name: build
+on:
+  push:
+    paths:
+      - ""
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ACR build
+        id: acr
+        uses: ams0/acr-task-github-action@master
+        with:
+          service_principal: ${{ secrets.service_principal }}
+          service_principal_password: ${{ secrets.service_principal_password }}
+          tenant: ${{ secrets.tenant }}
+          registry: ${{ secrets.registry }}
+          repository: ${{ secrets.repository }}
+          image: speckle
+          folder: .
+          dockerfile: Dockerfile
