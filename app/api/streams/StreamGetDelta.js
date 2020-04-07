@@ -71,9 +71,9 @@ module.exports = ( req, res ) => {
           revision_datetime: new Date().toLocaleString("en"),
           author: "undefined",
           delta: {
-            created: objects.inA,
-            deleted: objects.inB,
-            common: objects.common
+            created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
           },
           revision_A: {
             id: req.params.streamId, 
@@ -96,9 +96,9 @@ module.exports = ( req, res ) => {
           revision_datetime: new Date().toLocaleString("en"),
           author: "undefined",
           delta: {
-            created: objects.inA,
-            deleted: objects.inB,
-            common: objects.common
+            created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
           },
           revision_A: {
             id: req.params.streamId, 
@@ -121,9 +121,9 @@ module.exports = ( req, res ) => {
           revision_datetime: new Date().toLocaleString("en"),
           author: firstSenderClient.owner,
           delta: {
-            created: objects.inA,
-            deleted: objects.inB,
-            common: objects.common
+            created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
           },
           revision_A: {
             id: req.params.streamId, 
@@ -145,9 +145,9 @@ module.exports = ( req, res ) => {
         revision_datetime: new Date().toLocaleString("en"),
         author: firstSenderClient.owner,
         delta: {
-          created: objects.inA.map( id =>  { return { type="Placeholder", _id = id }} ),
-          deleted: objects.inB.map( id =>  { return { type="Placeholder", _id = id }} ),
-          common: objects.common.map( id =>  { return { type="Placeholder", _id = id }} )
+          created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
+          deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+          common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
         },
         revision_A: {
           id: req.params.streamId, 
