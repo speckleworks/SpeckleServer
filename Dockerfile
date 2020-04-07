@@ -11,7 +11,7 @@ WORKDIR /usr/src/app
 
 # INSTALL
 COPY package*.json ./
-RUN npm install
+RUN npm install --only=prod
 # GET PLUGINS
 RUN mkdir -p plugins/admin
 RUN git clone https://github.com/speckleworks/SpeckleAdmin.git plugins/admin
