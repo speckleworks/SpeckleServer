@@ -16,4 +16,5 @@ jobs:
           repository: ${{ secrets.repository }}
           image: speckle
           folder: .
-          dockerfile: 
+          dockerfile: Dockerfile
+          tag: latest
