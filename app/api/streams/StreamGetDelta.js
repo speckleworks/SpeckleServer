@@ -52,7 +52,6 @@ module.exports = ( req, res ) => {
       
       secondClients = clSecond
 
-      console.log(req.params.streamId,"lol")
       let objects = { common: null, inA: null, inB: null }
       first.objects = first.objects.map( o => o.toString( ) )
       second.objects = second.objects.map( o => o.toString( ) )
@@ -71,8 +70,8 @@ module.exports = ( req, res ) => {
           revision_datetime: new Date().toLocaleString("en"),
           author: "undefined",
           delta: {
-            created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
             common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
           },
           revision_A: {
@@ -96,8 +95,8 @@ module.exports = ( req, res ) => {
           revision_datetime: new Date().toLocaleString("en"),
           author: "undefined",
           delta: {
-            created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
             common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
           },
           revision_A: {
@@ -121,8 +120,8 @@ module.exports = ( req, res ) => {
           revision_datetime: new Date().toLocaleString("en"),
           author: firstSenderClient.owner,
           delta: {
-            created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
             common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
           },
           revision_A: {
@@ -145,8 +144,8 @@ module.exports = ( req, res ) => {
         revision_datetime: new Date().toLocaleString("en"),
         author: firstSenderClient.owner,
         delta: {
-          created: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-          deleted: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+          created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
+          deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
           common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
         },
         revision_A: {
