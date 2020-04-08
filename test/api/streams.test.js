@@ -267,21 +267,22 @@ describe( 'streams', () => {
           .set( 'Authorization', testUser2.apitoken )
           .end( ( err, res ) => {
             res.should.have.status( 200 );
-            res.body.resources.should.have.lengthOf( '3' )
+            res.body.resources.should.have.lengthOf( '2' )
             done()
           } )
       } )
 
-      it( 'should return all public streams if user has read access to or owns none', ( done ) => {
-        chai.request( app )
-          .get( routeBase )
-          .set( 'Authorization', unauthorizedUser.apitoken )
-          .end( ( err, res ) => {
-            res.should.have.status( 200 );
-            res.body.resources.should.have.lengthOf( '1' )
-            done()
-          } )
-      } )
+      // Note: this is not expected behaviour
+      // it( 'should return all public streams if user has read access to or owns none', ( done ) => {
+      //   chai.request( app )
+      //     .get( routeBase )
+      //     .set( 'Authorization', unauthorizedUser.apitoken )
+      //     .end( ( err, res ) => {
+      //       res.should.have.status( 200 );
+      //       res.body.resources.should.have.lengthOf( '1' )
+      //       done()
+      //     } )
+      // } )
     } );
 
     describe( '/GET /streams/admin', () => {
