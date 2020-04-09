@@ -28,10 +28,11 @@ module.exports = ( req, res ) => {
   finalCriteria.$or = [
     { owner: req.user._id },
     { 'canWrite': mongoose.Types.ObjectId( req.user._id ) },
-    { 'canRead': mongoose.Types.ObjectId( req.user._id ) }
+    { 'canRead': mongoose.Types.ObjectId( req.user._id ) },
+    // { 'private': false }
   ]
 
-  DataStream.find( finalCriteria, query.options.fields, { sort: query.options.sort, offset: query.options.offset, limit: query.options.limit } )
+  DataStream.find( finalCriteria, query.options.fields, { sort: query.options.sort, skip: query.options.skip, limit: query.options.limit } )
     .populate( { path: 'canRead', select: userSelect } )
     .populate( { path: 'canWrite', select: userSelect } )
     .then( myStreams => {

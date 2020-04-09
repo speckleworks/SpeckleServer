@@ -1,7 +1,10 @@
 const passport = require( 'passport' )
+const adminCheck = require( './middleware/AdminCheck' )
+const { exec } = require( 'child_process' )
 
-module.exports = function( app, express, urlRoot, plugins ) {
-  var r = new express.Router( )
+module.exports = function ( app, express, urlRoot, plugins ) {
+
+  let r = new express.Router( )
 
   // strict auth will return a 401 if no authorization header is present. pass means req.user exists
   let mandatoryAuthorisation = passport.authenticate( 'jwt-strict', { session: false } )
@@ -12,14 +15,20 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // ACCOUNTS & USERS
   //
 
-  // create a new account xxx
-  r.post( '/accounts/register', require( './accounts/UserCreate' ) )
+  // only allow api registration/login if local auth strategy is enabled
+  if ( process.env.USE_LOCAL === 'true' ) {
+    // create a new account xxx
+    r.post( '/accounts/register', require( './accounts/UserCreate' ) )
 
-  // login xxx
-  r.post( '/accounts/login', require( './accounts/UserLogin' ) )
+    // login xxx
+    r.post( '/accounts/login', require( './accounts/UserLogin' ) )
+  }
 
   // get profile xxx
   r.get( '/accounts', mandatoryAuthorisation, require( './accounts/UserGet' ) )
+
+  // get all accounts
+  r.get( '/accounts/admin', mandatoryAuthorisation, adminCheck, require( './accounts/UserGetAdmin' ) )
 
   // update profile xxx
   r.put( '/accounts', mandatoryAuthorisation, require( './accounts/UserPut' ) )
@@ -28,10 +37,14 @@ module.exports = function( app, express, urlRoot, plugins ) {
   r.get( '/accounts/:userId', mandatoryAuthorisation, require( './accounts/UserProfile' ) )
 
   // modify an account's role  (needs to be admin)
-  r.put( '/accounts/:userId', mandatoryAuthorisation, require( './accounts/UserPutByParam' ) )
+  r.put( '/accounts/:userId', mandatoryAuthorisation, adminCheck, require( './accounts/UserPutAdmin' ) )
 
   // search profiles by email xxx
   r.post( '/accounts/search', mandatoryAuthorisation, require( './accounts/UserSearch' ) )
+
+  // TODOs:
+  // API call to send a new verification email
+  // API call to send a password reset email
 
   //
   // CLIENTS
@@ -62,6 +75,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // get a user's streams xxx
   r.get( '/streams', mandatoryAuthorisation, require( './streams/StreamGetAll' ) )
 
+  // get every stream on the server
+  r.get( '/streams/admin', mandatoryAuthorisation, adminCheck, require( './streams/StreamGetAdmin' ) )
+
   // get stream / perm check 'read' xxx
   r.get( '/streams/:streamId', optionalAuthorisation, require( './streams/StreamGet' ) )
 
@@ -77,6 +93,12 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // diff a stream against another / perm check 'read' / perm check 'read' xxx
   r.get( '/streams/:streamId/diff/:otherId', optionalAuthorisation, require( './streams/StreamDiff' ) )
 
+  // modified diff endpoint to follow delta specs from innovateuk grant
+  r.get( '/streams/:streamId/delta/:otherId', optionalAuthorisation, require( './streams/StreamDelta' ) )
+
+  // endpoint to apply a delta to a stream & create a new revison (clone)
+  r.post( '/streams/:streamId/delta', mandatoryAuthorisation, ( req, res ) => { res.send( 'Todo' ) } )
+
   // Get stream objects / perm check 'read' xxx
   r.get( '/streams/:streamId/objects', optionalAuthorisation, require( './streams/StreamObjectsGet' ) )
 
@@ -89,6 +111,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
 
   // Create an object or more!
   r.post( '/objects', mandatoryAuthorisation, require( './objects/ObjectPost' ) )
+
+  // Derive an object or more!
+  r.post( '/objects/derive', mandatoryAuthorisation, require( './objects/ObjectDerive' ) )
 
   // Get an object / perm check 'read' xxx
   r.get( '/objects/:objectId', optionalAuthorisation, require( './objects/ObjectGet' ) )
@@ -140,6 +165,9 @@ module.exports = function( app, express, urlRoot, plugins ) {
   // get user's projects xxx
   r.get( '/projects', mandatoryAuthorisation, require( './projects/ProjectGetAll' ) )
 
+  // get all the projects on the server
+  r.get( '/projects/admin', mandatoryAuthorisation, adminCheck, require( './projects/ProjectGetAdmin' ) )
+
   // get project by id xxx
   r.get( '/projects/:projectId', mandatoryAuthorisation, require( './projects/ProjectGet' ) )
 
@@ -179,6 +207,7 @@ module.exports = function( app, express, urlRoot, plugins ) {
 
   let grouped = { projects: [ ], clients: [ ], streams: [ ], accounts: [ ], comments: [ ], objects: [ ] }
   routes.forEach( r => {
+    // TESt
     if ( r.route.includes( 'projects' ) ) grouped.projects.push( r )
     if ( r.route.includes( 'clients' ) ) grouped.clients.push( r )
     if ( r.route.includes( 'comments' ) ) grouped.comments.push( r )
@@ -187,14 +216,28 @@ module.exports = function( app, express, urlRoot, plugins ) {
     if ( r.route.includes( 'objects' ) ) grouped.objects.push( r )
   } )
 
-  let serverDescription = {
-    serverName: process.env.SERVER_NAME,
-    version: '1.x.x',
-    api: grouped,
-    plugins: plugins
+  let tagVersion = null
+  try {
+    exec( 'git describe --tags', ( err, stdout ) => {
+      tagVersion = stdout.split( '-' )[ 0 ].replace( /(\r\n|\n|\r)/gm, "" )
+    } )
+  } catch ( err ) {
+    // POKEMON
+    tagVersion = '1.x.x'
   }
 
-  r.get( '/', ( req, res ) => res.json( serverDescription ) )
+  r.get( '/', ( req, res ) => {
+    let serverDescription = {
+      isSpeckleServer: true, // looks stupid, but is used for url validation by the clients
+      serverName: process.env.SERVER_NAME,
+      version: tagVersion || '1.x.x',
+      api: grouped,
+      plugins: plugins,
+      jnMask: process.env.JNMASK || "######-##"
+    }
+
+    return res.json( serverDescription )
+  } )
 
   // mount all these routes up
   app.use( urlRoot, r )

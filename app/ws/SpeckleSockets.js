@@ -14,9 +14,10 @@ redisPublisher.on( 'connect', ( ) => {
   winston.debug( `${process.pid} connected to redis.` )
 } )
 
+// start a redis subscriber in the radio tower
+radioTower.initRedis( )
+
 module.exports = function( wss ) {
-  // start a redis subscriber in the radio tower
-  radioTower.initRedis( )
 
   wss.on( 'connection', function( ws, req ) {
     winston.debug( chalk.blue( `Ws connection request in PID ${process.pid}` ) )
@@ -24,7 +25,7 @@ module.exports = function( wss ) {
     let location = url.parse( req.url, true )
     if ( !location.query.client_id ) {
       winston.debug( chalk.red( `No client_id present, refusing.` ) )
-      ws.send( 'You must provide a client_id.' )
+      ws.send( 'You must provide a client_id. You can generate an anonymous temporary one by sending an anonymous request to POST /clients (see https://speckleworks.github.io/SpeckleSpecs/#clientcreate).' )
       ws.close( )
     }
     let token = location.query.access_token

@@ -1,5 +1,5 @@
 const mongoose = require( 'mongoose' )
-const DataTypes = require( './SpeckleDataTypesEnum' )
+// const DataTypes = require( './SpeckleDataTypesEnum' )
 
 var speckleObjectSchema = mongoose.Schema( {
   // ownership & permissions
@@ -14,7 +14,7 @@ var speckleObjectSchema = mongoose.Schema( {
   // Object Type
   type: {
     type: String,
-    enum: DataTypes,
+    // enum: DataTypes, // removed strongly typed "type" in preparation for the upcoming speckle kits.
     required: true,
     index: true
   },

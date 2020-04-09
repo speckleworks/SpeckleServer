@@ -1,92 +1,38 @@
 # Speckle Server
-[![DOI](https://zenodo.org/badge/74043433.svg)](https://zenodo.org/badge/latestdoi/74043433) [![Build status](https://ci.appveyor.com/api/projects/status/xo9uun3wdo5x8538?svg=true)](https://ci.appveyor.com/project/SpeckleWorks/speckleserver)
+[![DOI](https://zenodo.org/badge/74043433.svg)](https://zenodo.org/badge/latestdoi/74043433) [![Build status](https://ci.appveyor.com/api/projects/status/xo9uun3wdo5x8538?svg=true)](https://ci.appveyor.com/project/SpeckleWorks/speckleserver) ![Discourse status](https://img.shields.io/discourse/https/discourse.speckle.works/status.svg) ![GitHub](https://img.shields.io/github/license/speckleworks/speckleserver.svg) ![Twitter Follow](https://img.shields.io/twitter/follow/speckle_works.svg) 
 
 
-This is the Speckle Server, which coordinates communications between the various SpeckleClients.
-
-
-Speckle Server provides :
-- a basic accounts system
-- stream coordination
-- design data collation and retrieval
-- live update events
-- a basic querying mechanism
-
-## 5 Minute Docker Install ™️ (with Digital Ocean)
-
-Head over to [Digital Ocean](https://www.digitalocean.com/) and create an account. Subsequently, create a new droplet (vm) via "One Click Apps" and select "Docker". Finally, `ssh` into your new virtual machine.
-
-Execute the following commands:
-
-    $ mkdir speckle && cd speckle
-    $ curl https://raw.githubusercontent.com/speckleworks/SpeckleServer/master/docker-compose.yml -o docker-compose.yml
-    $ docker-compose up
-
-⚠️ *Imporant security notice*: Finally, make sure  you  create a digital ocean cloud firewall rule (and apply it to your droplet) to allow port 3000, or whatever port you're using. See discussion: https://github.com/speckleworks/SpeckleServer/issues/90#issuecomment-400011794
-
-![screenshot](https://user-images.githubusercontent.com/7696515/41862603-4972fcc0-789c-11e8-8a79-268280376a1a.png)
-
-Note: You're not restricted to digital ocean. Any machine with docker should be ok.
-
-## Deploying to Heroku
-
-    $ heroku create --stack cedar
-    $ heroku addons:create mongolab:sandbox
-    $ heroku addons:create heroku-redis:hobby-dev
-    $ git push heroku master
-    $ heroku open
-
-## Deploying on Debian-based OSes (Ubuntu etc)
-
-1) Install mongodb, redis servers and npm: 
-
-       $ sudo apt-get install mongodb redis npm
-
-2) If you don't want both the redis and mongo servers running all the time (For ex. if you are just testing), disable both startup scripts (If you wish to leave both running automatically, skip to step 4):
-
-       $ sudo systemctl disable mongodb
-       $ sudo systemctl disable redis-server`
-
-3) And stop both mongo and redis processes that were started automatically by apt-get: 
-
-       $ sudo systemctl stop mongodb
-       $ sudo systemctl stop redis-server
-
-4) Clone SpeckleServer and run npm to install the needed nodejs packages: 
-
-       $ git clone https://github.com/speckleworks/SpeckleServer.git
-       $ cd SpeckleServer
-       $ npm install
-
-5) Follow the instructions in `.env-base` file to configure your server.
-    
-6) Start mongo (create a folder somewhere to store the db): 
-
-       $ mongodb --dbpath /path/to/some/folder
-    
-7) Start redis in another terminal: 
-
-       $ redis-server
- 
-8) Check that both mongo and redis are running OK and that you can connect to them with these two clients:
-
-       $ mongo
-       $ redis-cli
-    
-9) Start Speckle in a third terminal: 
-
-       $ node server.js
+This is the Speckle Server, which coordinates communications between the various bits of the Speckle ecosystem.
 
 ## API
-[API docs are here](https://speckleworks.github.io/SpeckleSpecs/) - they are a good overview of what you can do with the speckle server.
 
-## Current Limitations
+[API docs are here](https://speckleworks.github.io/SpeckleSpecs/) - they are a good overview of what you can do.
 
-- Because we rely on mongodb's wired tiger engine, objects larger than 16mb will cause trouble. Unfortunately, most of the defenses are on the client side. 
-- The api will refuse payloads larger than MAX_REQ, which defaults to 10mb.
+## Installation
 
-## Credits
-Developed by Dimitrie A. Stefanescu [@idid](http://twitter.com/idid) and Project Contributors.
+The Speckle Server is a nodejs (`v.8+`, `latest stable` preffered) app.
+
+- Dependencies: [mongodb](https://www.mongodb.com/download-center/community) and [redis](https://redis.io/). 
+- Clone this repo `git clone https://github.com/speckleworks/SpeckleServer.git`
+- Configuration: create a `.env` using `.env-base` as a template, and fill in the required information.
+- Run `npm install` and thereafter `npm run`.
+
+
+#### ⚠️ **Warning**: if these instructions seem confusing and you want to use speckle in production, please consult someone with more experience! Incorrect configuration can have **security and reliability implications**. 
+
+> Community supported instructions by on how to set up a development server (thanks @arendvw!) can be found in [this discourse thread](https://discourse.speckle.works/t/speckle-server-debian-9-installation-notes-for-development-machines/344). Feel free to contribute your own experiences there, or ask questions.
+
+#### 🍰 If you just want to try out speckle, at your own risk, you can use `https://hestia.speckle.works/api`.
+
+**Note**: hestia is hosted on Digital Ocean. If you want to signup to digital ocean and support the running costs of speckle, use [the following affiliate link](https://m.do.co/c/947a2b5d7dc1) to get $100 in credit. 
+
+To install a front-end plugin, such as the [admin ui](https://github.com/speckleworks/SpeckleAdmin), clone the respective repo in the `plugins` folder of the server.
+
+## Get In Touch
+
+If you have any questions, you can get in touch with the rest of the world-wide specklers via: 
+- [Discourse](https://discourse.speckle.works)
+- [Slack](https://slacker.speckle.works)
 
 ## License
 [MIT](https://github.com/speckleworks/SpeckleServer/blob/master/LICENSE)

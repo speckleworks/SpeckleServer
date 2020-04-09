@@ -29,7 +29,6 @@ module.exports = async ( req, res ) => {
 
       let pullWrite = otherCW.indexOf( req.params.userId ) === -1 && stream.canWrite.indexOf( req.params.userId ) > -1,
         pullRead = otherCR.indexOf( req.params.userId ) === -1 && stream.canRead.indexOf( req.params.userId ) > -1
-
       if ( pullWrite && pullRead )
         streamsToPullBothFrom.push( streamId )
       else if ( pullWrite )

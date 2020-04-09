@@ -1,7 +1,7 @@
 const winston = require( '../../config/logger' )
 const chalk = require( 'chalk' )
 const redis = require( 'redis' )
-
+const mongoose = require( 'mongoose' )
 // this is where we keep track on each process what clients are connected.
 module.exports = {
   clients: [ ],
@@ -11,11 +11,10 @@ module.exports = {
   add( ws ) {
     this.redisClient.get( ws.clientId, ( err, reply ) => {
       if ( reply !== null ) {
-        winston.debug( `duplicate client id found: ${ws.clientId}. Will not add.` )
-        ws.send( 'dupe key boss. try a new identity.' )
-        ws.clientId = 'dupe'
-        ws.close( )
-        return
+        let attemptedId = ws.clientId
+        ws.clientId = mongoose.Types.ObjectId( ).toString( )
+        ws.send( JSON.stringify( { message: 'Warning: this client is open in another file.', newId: ws.clientId } ) )
+        winston.debug( `duplicate client id found (${attemptedId}). Sent him a new one: ${ws.clientId}.` )
       }
       // add his identity to the redis datastore
       this.redisClient.set( ws.clientId, ws.clientId )
@@ -28,7 +27,9 @@ module.exports = {
       ws.pinger = setInterval( ws => {
         if ( !ws.alive ) {
           ws.missedPingsCount++
-          if ( ws.missedPingsCount > 5 ) { ws.send( 'Warning: you missed 5 mins of pings. After 10, you will be kicked!' ) }
+          if ( ws.missedPingsCount > 5 ) {
+            ws.send( 'Warning: you missed 5 mins of pings. After 10, you will be kicked!' )
+          }
           if ( ws.missedPingsCount > 10 ) {
             winston.error( chalk.red( 'Removing client socket after 10 mins of inactivity.' ) )
             ws.send( 'You missed 10 minutes of pings. Bye!' )
@@ -57,7 +58,7 @@ module.exports = {
     clearInterval( ws.pinger )
     // cut him out
     this.clients = this.clients.filter( c => c.clientId !== ws.clientId )
-    ws.close( )
+    ws.terminate( )
 
     this.redisClient.del( ws.clientId, ( ) => {} )
 

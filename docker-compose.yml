@@ -2,28 +2,37 @@ version: '3'
 services:
   # SPECKLE
   speckle:
-    image: speckle/speckleserver:latest
+    image: speckle/speckleserver:1.9.8
+    #image: speckle:latest # local dev
     ports:
       - '3000:3000'
     networks:
       - webnet
+    #restart: always
     depends_on:
       - redis
       - mongo
     environment:
-      # Change the variable underneath as it will help users differentiate
-      # between multiple accounts.
+      # Please see the example .env file provided for how to properly configure this.
+      # https://github.com/speckleworks/SpeckleServer/blob/master/.env-base
       - SERVER_NAME=Docker Speckle Server
-      # This is used in the encryption of the api access tokens.
-      # Please change it to something random!
-      - SESSION_SECRET=helloworld
-      - REQ_SIZE=16mb
-      - INDENT_RESPONSES=false
-      - MONGODB_URI=mongodb://mongo:27017/speckle_docker
-      - REDIS_URL=redis://redis:6379
-      - EXPOSE_EMAILS=false
+      - CANONICAL_URL=http://localhost:3000
+      - SESSION_SECRET=change_me
+      # optional
+      - MAX_PROC=1
       - PUBLIC_STREAMS=true
-      - PLUGIN_DIRS="./node_modules/@speckle,./plugins"
+      - PLUGIN_DIRS=./node_modules/@speckle,./plugins
+      - PORT=3000
+      - IP=0.0.0.0
+      - REQ_SIZE=10mb
+      - MONGODB_URI=mongodb://mongo:27017/speckle_v3
+      - REDIS_URL=redis://redis:6379
+      - INDENT_RESPONSES=false
+      - EXPOSE_EMAILS=true
+      - FIRST_USER_ADMIN=true
+      - PUBLIC_REGISTRATION=true
+      - USE_LOCAL=true
+      - REDIRECT_URLS=https://app.speckle.systems
     links:
       - redis
       - mongo

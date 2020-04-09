@@ -3,3 +3,22 @@ npm-debug.log
 # keep only the data folder
 data/*
 !data/.gitkeep
+.editorconfig
+.env-base
+.eslintignore
+.eslintrc.js
+.eslintrc.json
+.gitignore
+.gitmodules
+appveyor.yml
+deploy.sh
+docker-compose.yml
+*.md
+releaserc.json
+
+.nyc_output
+node_modules/
+logs/
+*.sublime-project
+*.sublime-workspace
+npm-debug.log

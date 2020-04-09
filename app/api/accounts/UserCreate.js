@@ -2,8 +2,14 @@ const winston = require( '../../../config/logger' )
 const jwt = require( 'jsonwebtoken' )
 
 const User = require( '../../../models/User' )
+// const SendEmailVerification = require( '../../../app/email/index' ).SendEmailVerification
 
-module.exports = function( req, res ) {
+module.exports = ( req, res ) => {
+
+  if ( process.env.PUBLIC_REGISTRATION === "false" ) {
+    return res.status( 401 ).send( { success: false, message: 'This is an invite only speckle server. Sorry!' } )
+  }
+
   winston.debug( 'register new user route' )
   if ( !req.body.email ) { res.status( 400 ); return res.send( { success: false, message: 'Do not fuck with us. Give us your email.' } ) }
   if ( !req.body.password ) { res.status( 400 ); return res.send( { success: false, message: 'Passwords are a necessary evil, fam.' } ) }

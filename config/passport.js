@@ -18,6 +18,9 @@ module.exports = function( passport ) {
         if ( !user ) {
           done( new Error( 'No user with these credentials found.' ), false )
         } else
+        if ( user.archived )
+          done( new Error( 'This user has been archived.' ), null )
+        else
         done( null, user )
       } )
       .catch( err => {
