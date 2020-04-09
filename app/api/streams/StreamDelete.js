@@ -14,8 +14,7 @@ module.exports = ( req, res ) => {
     .then( stream => PermissionCheck( req.user, 'delete', stream ) )
     .then( stream => {
       myStream = stream
-      DataStream.remove( { streamId: { $in: [ ...myStream.children, req.params.streamId ] } } )
-      return stream.remove( )
+      return DataStream.deleteMany( { streamId: { $in: [ ...myStream.children, req.params.streamId ] } } )
     } )
     .then( ( ) => {
       return res.send( { success: true, message: `Stream ${req.params.streamId} and its children have been deleted.`, deletedStreams: [ ...myStream.children, req.params.streamId ] } )

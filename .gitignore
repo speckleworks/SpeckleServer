@@ -4,6 +4,7 @@ logs/
 *.sublime-project
 *.sublime-workspace
 npm-debug.log
+.nyc_output
 
 # keep only the data folder
 data/*
@@ -14,4 +15,5 @@ tree_out.txt
 #don't track our super secret speckle stuff™ file
 .env
 
+.nyc_output
 terraform/.terraform

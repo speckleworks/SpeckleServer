@@ -15,3 +15,10 @@ deploy.sh
 docker-compose.yml
 *.md
 releaserc.json
+
+.nyc_output
+node_modules/
+logs/
+*.sublime-project
+*.sublime-workspace
+npm-debug.log

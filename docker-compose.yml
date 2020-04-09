@@ -2,38 +2,34 @@ version: '3'
 services:
   # SPECKLE
   speckle:
-    image: speckle/speckleserver:latest
-    #image: speckle:latest # local dev
+    build: .
     ports:
-      - '80:80'
-    networks:
-      - webnet
+      - '3000:3000'
+    #restart: always
     depends_on:
       - redis
       - mongo
     environment:
       # Please see the example .env file provided for how to properly configure this.
       # https://github.com/speckleworks/SpeckleServer/blob/master/.env-base
-      - SERVER_NAME="Docker Speckle Server"
-      - CANONICAL_URL="http://localhost:3000"
-      - SESSION_SECRET="Change Me"
+      - SERVER_NAME=Docker Speckle Server
+      - CANONICAL_URL=http://localhost:3000
+      - SESSION_SECRET=change_me
+      # optional
       - MAX_PROC=1
-      - CANONICAL_URL="http://localhost:3000"
       - PUBLIC_STREAMS=true
-      - PLUGIN_DIRS="./node_modules/@speckle,./plugins"
+      - PLUGIN_DIRS=./node_modules/@speckle,./plugins
       - PORT=3000
       - IP=0.0.0.0
-      - MAX_PROC=1
       - REQ_SIZE=10mb
-      - SESSION_SECRET=":D"
-      - MONGODB_URI="mongodb://localhost:27017/speckle_v3"
-      - REDIS_URL="redis://localhost:6379"
+      - MONGODB_URI=mongodb://mongo:27017/speckle_v3
+      - REDIS_URL=redis://redis:6379
       - INDENT_RESPONSES=false
       - EXPOSE_EMAILS=true
       - FIRST_USER_ADMIN=true
       - PUBLIC_REGISTRATION=true
       - USE_LOCAL=true
-      - REDIRECT_URLS="https://app.speckle.systems"
+      - REDIRECT_URLS=https://app.speckle.systems
     links:
       - redis
       - mongo
@@ -42,10 +38,6 @@ services:
     image: mongo:latest
     ports:
       - '27017:27017'
-    networks:
-      - webnet
-    volumes:
-      - ./data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=
       - MONGO_INITDB_ROOT_PASSWORD=
@@ -55,7 +47,3 @@ services:
     image: redis:alpine
     ports:
       - '6379:6379'
-    networks:
-      - webnet
-networks:
-  webnet:
