@@ -1,6 +1,6 @@
 name: build
 on:
- - pull_request
+  - pull_request
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,3 +17,4 @@ jobs:
           image: speckle
           folder: .
           dockerfile: Dockerfile
+          tag: latest
