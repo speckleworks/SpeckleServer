@@ -16,3 +16,4 @@ tree_out.txt
 .env
 
 .nyc_output
+terraform/.terraform

@@ -1,29 +1,26 @@
 # SpeckleAdmin
-A simple admin app for [speckle](https://speckle.works).
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e8575dfa-6bb4-4c96-866f-49eebc7370cc/deploy-status)](https://app.netlify.com/sites/speckleapp/deploys)
 
-![image](https://user-images.githubusercontent.com/7696515/50599992-5be4bf80-0eb8-11e9-8b01-7698b407c7ac.png)
+A simple front-end admin application for speckle. Demo: check it out live [on the test server](https://hestia.speckle.works)!
 
-If you have an account on the speckle test server (hestia), check it out live [here](https://hestia.speckle.works).
+![SpeckleAdmin](https://user-images.githubusercontent.com/7696515/57015016-79c5f500-6c0a-11e9-9bfe-7af41e6ffd4f.png)
 
 ## Fresh installation for a speckle server deployment
-Depending on your version, you should have in your server install location a `plugins` dir. If you don't, do update your server first and come back!
 
 1. `cd ~/${your speckle server install location}/plugins`
 2. `git clone https://github.com/speckleworks/SpeckleAdmin.git`
-3. Restart your server, and navigate to its root address - TADA!
-4. Profit!
+3. Restart your server, and navigate to its root address - done!
 
 If you have previously installed the SpeckleAdmin frontend plugin, you should be able to just
 1. `git fetch`
 2. `git pull`
+3. Profit!
 
 ## Development notes
 
-To start a development server: `npm run dev`
+To start a development server: `npm run dev`  
 To build for production: `npm run build`
-
-Please note: we use a custom build of the vuematerial library that fixes [this issue](https://github.com/vuematerial/vue-material/issues/1977). As soon as this lands on npm, we'll upgrade and you won't need to custom build it yourself. 
 
 ## License
 MIT
