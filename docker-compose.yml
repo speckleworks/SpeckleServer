@@ -2,12 +2,9 @@ version: '3'
 services:
   # SPECKLE
   speckle:
-    image: speckle/speckleserver:1.9.8
-    #image: speckle:latest # local dev
+    build: .
     ports:
-      - '80:80'
-    networks:
-      - webnet
+      - '3000:3000'
     #restart: always
     depends_on:
       - redis
@@ -41,10 +38,6 @@ services:
     image: mongo:latest
     ports:
       - '27017:27017'
-    networks:
-      - webnet
-    volumes:
-      - ./data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=
       - MONGO_INITDB_ROOT_PASSWORD=
@@ -54,7 +47,3 @@ services:
     image: redis:alpine
     ports:
       - '6379:6379'
-    networks:
-      - webnet
-networks:
-  webnet:
