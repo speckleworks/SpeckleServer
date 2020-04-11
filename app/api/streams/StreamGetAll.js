@@ -29,7 +29,7 @@ module.exports = ( req, res ) => {
     { owner: req.user._id },
     { 'canWrite': mongoose.Types.ObjectId( req.user._id ) },
     { 'canRead': mongoose.Types.ObjectId( req.user._id ) },
-    { 'private': false }
+    // { 'private': false }
   ]
 
   DataStream.find( finalCriteria, query.options.fields, { sort: query.options.sort, skip: query.options.skip, limit: query.options.limit } )
