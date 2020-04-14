@@ -1,11 +1,11 @@
 const winston = require( '../../../config/logger' )
-const _ = require( 'lodash' )
+//const _ = require( 'lodash' )
 const DataStream = require( '../../../models/DataStream' )
 const Client = require( '../../../models/UserAppClient' )
 const PermissionCheck = require( '../middleware/PermissionCheck' )
 
 module.exports = ( req, res ) => {
-  console.log(req.params)
+  //console.log( req.params )
   if ( !req.params.streamId || !req.params.otherId ) {
     res.status( 400 )
     return res.send( { success: false, message: 'No stream id provided.' } )
@@ -27,19 +27,19 @@ module.exports = ( req, res ) => {
 
       first = streams.find( s => s.streamId === req.params.streamId )
       second = streams.find( s => s.streamId === req.params.otherId )
-      
-      
+
+
       // check if user can read first stream
-      
+
       return PermissionCheck( req.user, 'read', first )
     } )
     .then( ( ) => {
-      
+
       // check if user can read second stream
       return PermissionCheck( req.user, 'read', second )
     } )
     .then( ( ) => {
-      
+
        //console.log(Client.find( { streamId: first.streamId } ))
        return Client.find( { streamId: first.streamId } ).populate( 'owner', 'name surname email company' ) // uncomment if u need these
     } )
@@ -47,9 +47,9 @@ module.exports = ( req, res ) => {
       firstClients = clFirst
       //console.log(firstClients)
       return Client.find( { streamId: second.streamId } ).populate( 'owner', 'name surname email company' ) // uncomment if u need these
-    })
+    } )
     .then( clSecond => {
-      
+
       secondClients = clSecond
 
       let objects = { common: null, inA: null, inB: null }
@@ -59,29 +59,29 @@ module.exports = ( req, res ) => {
       objects.inA = first.objects.filter( id => !second.objects.includes( id ) )
       objects.inB = second.objects.filter( id => !first.objects.includes( id ) )
       let firstSenderClient = firstClients.filter( cl => cl.role === 'Sender' )[0] // returns an arr, take first elem
-      
+
       let secondSenderClient = secondClients.filter( cl => cl.role === 'Sender' )[0] // returns an arr, take first elem
-      
+
       if ( firstSenderClient == undefined && secondSenderClient == undefined ) {
         res.status( 400 )
         return res.send( {
           success: true,
           message: "Clients from Stream A and Stream B are undefined",
-          revision_datetime: new Date().toLocaleString("en"),
+          revisionDatetime: new Date().toLocaleString( "en" ),
           author: "undefined",
           delta: {
-            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
+            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
           },
-          revision_A: {
-            id: req.params.streamId, 
-            updatedAt: "undefined", 
+          revisionA: {
+            id: req.params.streamId,
+            updatedAt: "undefined",
             sender: "undefined"
           },
-          revision_B: {
-            id: req.params.otherId, 
-            updatedAt: "undefined", 
+          revisionB: {
+            id: req.params.otherId,
+            updatedAt: "undefined",
             sender: "undefined"
           }
         } )
@@ -92,21 +92,21 @@ module.exports = ( req, res ) => {
         return res.send( {
           success: true,
           message: "Clients from Stream A are undefined",
-          revision_datetime: new Date().toLocaleString("en"),
+          revisionDatetime: new Date().toLocaleString( "en" ),
           author: "undefined",
           delta: {
-            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
+            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
           },
-          revision_A: {
-            id: req.params.streamId, 
-            updatedAt: "undefined", 
+          revisionA: {
+            id: req.params.streamId,
+            updatedAt: "undefined",
             sender: "undefined"
           },
-          revision_B: {
-            id: req.params.otherId, 
-            updatedAt: secondSenderClient.updatedAt.toLocaleString("en"), 
+          revisionB: {
+            id: req.params.otherId,
+            updatedAt: secondSenderClient.updatedAt.toLocaleString( "en" ),
             sender: secondSenderClient.documentType
           }
         } )
@@ -117,21 +117,21 @@ module.exports = ( req, res ) => {
         return res.send( {
           success: true,
           message: "Clients from Stream B are undefined",
-          revision_datetime: new Date().toLocaleString("en"),
+          revisionDatetime: new Date().toLocaleString( "en" ),
           author: firstSenderClient.owner,
           delta: {
-            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
+            created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
           },
-          revision_A: {
-            id: req.params.streamId, 
-            updatedAt: firstSenderClient.updatedAt.toLocaleString("en"), 
+          revisionA: {
+            id: req.params.streamId,
+            updatedAt: firstSenderClient.updatedAt.toLocaleString( "en" ),
             sender: firstSenderClient.documentType
           },
-          revision_B: {
-            id: req.params.otherId, 
-            updatedAt: "undefined", 
+          revisionB: {
+            id: req.params.otherId,
+            updatedAt: "undefined",
             sender: "undefined"
           }
         } )
@@ -141,21 +141,21 @@ module.exports = ( req, res ) => {
 
       res.send( {
         success: true,
-        revision_datetime: new Date().toLocaleString("en"),
+        revisionDatetime: new Date().toLocaleString( "en" ),
         author: firstSenderClient.owner,
         delta: {
-          created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id }} ),
-          deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id }} ),
-          common: objects.common.map( id =>  { return { type: "Placeholder", _id: id }} )
+          created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
+          deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
+          common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
         },
-        revision_A: {
-          id: req.params.streamId, 
-          updatedAt: firstSenderClient.updatedAt.toLocaleString("en"), 
+        revisionA: {
+          id: req.params.streamId,
+          updatedAt: firstSenderClient.updatedAt.toLocaleString( "en" ),
           sender: firstSenderClient.documentType
         },
-        revision_B: {
-          id: req.params.otherId, 
-          updatedAt: secondSenderClient.updatedAt.toLocaleString("en"), 
+        revisionB: {
+          id: req.params.otherId,
+          updatedAt: secondSenderClient.updatedAt.toLocaleString( "en" ),
           sender: secondSenderClient.documentType
         }
       } )

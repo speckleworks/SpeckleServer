@@ -83,7 +83,7 @@ module.exports = function ( app, express, urlRoot, plugins ) {
 
   // update a stream / perm check 'write' xxx
   r.put( '/streams/:streamId', mandatoryAuthorisation, require( './streams/StreamPut' ) )
-    
+
   // *update a stream using a Delta / perm check 'write' xxx
   r.post( '/streams/:streamId/delta', mandatoryAuthorisation, require( './streams/StreamApplyDelta' ) )
 

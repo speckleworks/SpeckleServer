@@ -7,7 +7,7 @@ const BulkObjectSave = require( '../middleware/BulkObjectSave' )
 module.exports = ( req, res ) => {
   if ( !req.body.objects ) req.body.objects = [ ]
 
-  BulkObjectSave( req.body.objects, req.user ) 
+  BulkObjectSave( req.body.objects, req.user )
     .then( objects => {
       let stream = new DataStream( req.body )
       stream.owner = req.user._id
