@@ -1,16 +1,8 @@
 const shortId = require( 'shortid' )
 const mongoose = require( 'mongoose' )
 
-//const BulkObjectSave = require( '../middleware/BulkObjectSave' )
+const BulkObjectSave = require( '../middleware/BulkObjectSave' )
 const DataStream = require( '../../../models/DataStream' )
-
-function removeAllElements( array, elem ) {
-  var index = array.indexOf( elem );
-  while ( index > -1 ) {
-    array.splice( index, 1 );
-    index = array.indexOf( elem );
-  }
-}
 
 module.exports = async ( req, res ) => {
 
@@ -54,45 +46,30 @@ module.exports = async ( req, res ) => {
       throw new Error( "Mismatched revision/streamId." )
     } else {
 
-      // objects do be added to the stream
-      let objsToAdd = delta.delta.created
-
-      for ( let i = 0; i < objsToAdd.length; i++ ) {
-        let objToAdd = objsToAdd[i]
-        // adds object to the stream's objects field
-        if ( stream.objects.indexOf( objToAdd._id ) === -1 ) { // check if object does NOT exist in the stream
-          //console.log( "This object needs to be created." )
-          stream.objects.push( objToAdd )
-          await stream.save()
-        } else {
-          // BAD DELTA CHECK
-
-          throw new Error( "Bad delta. Some delta.created objects are existing in the original stream" )
+      let objsToAdd = delta.delta.created // objects do be added to the stream
+      if ( objsToAdd ) {
+        let common = stream.objects.filter( obj => objsToAdd.map( e => e._id ).indexOf( obj._id.toString() ) !== -1 )
+        if ( common.length != 0 )
+        {
+          // Check objects in stream. If there exist objects that have the same id of the `delta.created`, the delta is bad.
+          throw new Error( "Bad delta. Some `delta.delta.created` objects are existing in the original stream." )
         }
+        let objs = await BulkObjectSave( objsToAdd, req.user )
+        stream.objects = stream.objects.concat( objs.map( o => o._id ) )
       }
 
-      // objects to be deleted from the stream
-      let objsToDelete = delta.delta.deleted
-      for ( let i = 0; i < objsToDelete.length; i++ ) {
-        let objToDelete = objsToDelete[i]
-        // removes object from the stream's objects field
-        if ( stream.objects.indexOf( objToDelete._id ) !== -1 ) { // check if object exists in the stream
-          //console.log( "This object needs to be removed." )
-          removeAllElements( stream.objects, objToDelete._id )
-          await stream.save()
-        } else {
-          // BAD DELTA CHECK
-          throw new Error( "Bad delta. Some delta.deleted objects are not exsiting in the original stream." )
+      let objsToDelete = delta.delta.deleted // objects to be deleted from the stream
+      if ( objsToDelete ) {
+        let common = objsToDelete.filter( obj => stream.objects.map( e => e._id ).indexOf( obj._id.toString() ) !== -1 )
+        if ( common.length != objsToDelete.length ) {
+          // Check objects in stream. If any of the `delta.delta.deleted` objects are not in the orignal stream, the delta is bad.
+          throw new Error( "Bad delta. Some `delta.delta.deleted` objects are not existing in the original stream." )
         }
+        stream.objects = stream.objects.filter( obj => objsToDelete.map( e => e._id ).indexOf( obj._id.toString() ) === -1 )
       }
-
-      //console.log( stream )
       await stream.save()
-      // common objects - leave it as it is
-      // let commonObjs = delta.common
-      res.send( { success: true, message: "applied delta" } )
+      res.send( { success: true, message: "Applied Delta Δ" } )
     }
-
 
   } catch ( err ) {
     //console.log( err )

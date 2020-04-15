@@ -34,19 +34,15 @@ module.exports = ( req, res ) => {
       return PermissionCheck( req.user, 'read', first )
     } )
     .then( ( ) => {
-
       // check if user can read second stream
       return PermissionCheck( req.user, 'read', second )
     } )
     .then( ( ) => {
-
-       //console.log(Client.find( { streamId: first.streamId } ))
-       return Client.find( { streamId: first.streamId } ).populate( 'owner', 'name surname email company' ) // uncomment if u need these
+       return Client.find( { streamId: first.streamId } ).populate( 'owner', 'name surname email company' )
     } )
     .then( clFirst => {
       firstClients = clFirst
-      //console.log(firstClients)
-      return Client.find( { streamId: second.streamId } ).populate( 'owner', 'name surname email company' ) // uncomment if u need these
+      return Client.find( { streamId: second.streamId } ).populate( 'owner', 'name surname email company' )
     } )
     .then( clSecond => {
 
@@ -136,8 +132,6 @@ module.exports = ( req, res ) => {
           }
         } )
       }
-
-
 
       res.send( {
         success: true,
