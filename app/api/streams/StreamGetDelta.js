@@ -68,18 +68,20 @@ module.exports = ( req, res ) => {
           delta: {
             created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
             deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
-            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            revisionA: {
+              id: req.params.streamId.toString(),
+              updatedAt: "undefined",
+              sender: "undefined"
+            },
+            revisionB: {
+              id: req.params.otherId.toString(),
+              updatedAt: "undefined",
+              sender: "undefined"
+            },
+            timestamp: new Date().toLocaleString( "en" ),
           },
-          revisionA: {
-            id: req.params.streamId,
-            updatedAt: "undefined",
-            sender: "undefined"
-          },
-          revisionB: {
-            id: req.params.otherId,
-            updatedAt: "undefined",
-            sender: "undefined"
-          }
+
         } )
       }
 
@@ -93,18 +95,20 @@ module.exports = ( req, res ) => {
           delta: {
             created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
             deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
-            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            revisionA: {
+              id: req.params.streamId.toString(),
+              updatedAt: "undefined",
+              sender: "undefined"
+            },
+            revisionB: {
+              id: req.params.otherId.toString(),
+              updatedAt: secondSenderClient.updatedAt.toLocaleString( "en" ),
+              sender: secondSenderClient.documentType.toString()
+            },
+            timestamp: new Date().toLocaleString( "en" ),
           },
-          revisionA: {
-            id: req.params.streamId,
-            updatedAt: "undefined",
-            sender: "undefined"
-          },
-          revisionB: {
-            id: req.params.otherId,
-            updatedAt: secondSenderClient.updatedAt.toLocaleString( "en" ),
-            sender: secondSenderClient.documentType
-          }
+
         } )
       }
 
@@ -118,18 +122,20 @@ module.exports = ( req, res ) => {
           delta: {
             created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
             deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
-            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
+            common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } ),
+            revisionA: {
+              id: req.params.streamId.toString(),
+              updatedAt: firstSenderClient.updatedAt.toLocaleString( "en" ),
+              sender: firstSenderClient.documentType.toString()
+            },
+            revisionB: {
+              id: req.params.otherId.toString(),
+              updatedAt: "undefined",
+              sender: "undefined"
+            },
+            timestamp: new Date().toLocaleString( "en" ),
           },
-          revisionA: {
-            id: req.params.streamId,
-            updatedAt: firstSenderClient.updatedAt.toLocaleString( "en" ),
-            sender: firstSenderClient.documentType
-          },
-          revisionB: {
-            id: req.params.otherId,
-            updatedAt: "undefined",
-            sender: "undefined"
-          }
+
         } )
       }
 
@@ -140,18 +146,20 @@ module.exports = ( req, res ) => {
         delta: {
           created: objects.inB.map( id =>  { return { type: "Placeholder", _id: id } } ),
           deleted: objects.inA.map( id =>  { return { type: "Placeholder", _id: id } } ),
-          common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } )
+          common: objects.common.map( id =>  { return { type: "Placeholder", _id: id } } ),
+          revisionA: {
+            id: req.params.streamId.toString(),
+            updatedAt: firstSenderClient.updatedAt.toLocaleString( "en" ),
+            sender: firstSenderClient.documentType.toString()
+          },
+          revisionB: {
+            id: req.params.otherId.toString(),
+            updatedAt: secondSenderClient.updatedAt.toLocaleString( "en" ),
+            sender: secondSenderClient.documentType.toString()
+          },
+          timestamp: new Date().toLocaleString( "en" ),
         },
-        revisionA: {
-          id: req.params.streamId,
-          updatedAt: firstSenderClient.updatedAt.toLocaleString( "en" ),
-          sender: firstSenderClient.documentType
-        },
-        revisionB: {
-          id: req.params.otherId,
-          updatedAt: secondSenderClient.updatedAt.toLocaleString( "en" ),
-          sender: secondSenderClient.documentType
-        }
+
       } )
 
     } )
