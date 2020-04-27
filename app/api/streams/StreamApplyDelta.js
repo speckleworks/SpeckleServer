@@ -39,31 +39,30 @@ module.exports = async ( req, res ) => {
     // APPLY DELTA on the original stream
 
     let delta = req.body
-    //console.log( delta.revisionA )
 
     //checks if delta can be applied. We have to make sure that the streamId of original stream should be the same as revision_A id.
     if ( delta.revisionA.id != stream.streamId ) {
       throw new Error( "Mismatched revision/streamId." )
     } else {
 
-      let objsToAdd = delta.delta.created // objects do be added to the stream
+      let objsToAdd = delta.created // objects do be added to the stream
       if ( objsToAdd ) {
         let common = stream.objects.filter( obj => objsToAdd.map( e => e._id ).indexOf( obj._id.toString() ) !== -1 )
         if ( common.length != 0 )
         {
           // Check objects in stream. If there exist objects that have the same id of the `delta.created`, the delta is bad.
-          throw new Error( "Bad delta. Some `delta.delta.created` objects are existing in the original stream." )
+          throw new Error( "Bad delta. Some `delta.created` objects are existing in the original stream." )
         }
         let objs = await BulkObjectSave( objsToAdd, req.user )
         stream.objects = stream.objects.concat( objs.map( o => o._id ) )
       }
 
-      let objsToDelete = delta.delta.deleted // objects to be deleted from the stream
+      let objsToDelete = delta.deleted // objects to be deleted from the stream
       if ( objsToDelete ) {
         let common = objsToDelete.filter( obj => stream.objects.map( e => e._id ).indexOf( obj._id.toString() ) !== -1 )
         if ( common.length != objsToDelete.length ) {
-          // Check objects in stream. If any of the `delta.delta.deleted` objects are not in the orignal stream, the delta is bad.
-          throw new Error( "Bad delta. Some `delta.delta.deleted` objects are not existing in the original stream." )
+          // Check objects in stream. If any of the `delta.deleted` objects are not in the orignal stream, the delta is bad.
+          throw new Error( "Bad delta. Some `delta.deleted` objects are not existing in the original stream." )
         }
         stream.objects = stream.objects.filter( obj => objsToDelete.map( e => e._id ).indexOf( obj._id.toString() ) === -1 )
       }
