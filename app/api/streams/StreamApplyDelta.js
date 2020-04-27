@@ -1,6 +1,6 @@
 const shortId = require( 'shortid' )
 const mongoose = require( 'mongoose' )
-
+const uuid = require( 'uuid/v4' )
 const BulkObjectSave = require( '../middleware/BulkObjectSave' )
 const DataStream = require( '../../../models/DataStream' )
 
@@ -66,6 +66,17 @@ module.exports = async ( req, res ) => {
         }
         stream.objects = stream.objects.filter( obj => objsToDelete.map( e => e._id ).indexOf( obj._id.toString() ) === -1 )
       }
+
+      stream.layers = [ {
+          name: "Diffed Objects",
+          guid: uuid(),
+          orderIndex: 0,
+          startIndex: 0,
+          objectCount: stream.objects.length,
+          topology: `0;0-${stream.objects.length} `,
+          properties: { color: { a: 1, hex: 'Black' } }
+        } ]
+
       await stream.save()
       res.send( { success: true, message: "Applied Delta Δ" } )
     }
