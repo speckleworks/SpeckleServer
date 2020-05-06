@@ -68,7 +68,7 @@ module.exports = async ( req, res ) => {
       }
 
       stream.layers = [ {
-          name: "Diffed Objects",
+          name: "Flattened Layer Structure",
           guid: uuid(),
           orderIndex: 0,
           startIndex: 0,
