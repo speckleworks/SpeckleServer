@@ -1,0 +1,50 @@
+{
+  "name": "Heroku Speckle Server",
+  "description": "This is the Speckle Server, which coordinates communications between the various bits of the Speckle ecosystem.",
+  "keywords": [ "speckle", "aec" ],
+  "website": "https://speckle.works",
+  "repository": "https://github.com/speckleworks/SpeckleServer",
+  "logo": "https://github.com/speckleworks/speckle-website/raw/master/assets/logo.png",
+  "env": {
+    "SESSION_SECRET": {
+      "description": "This is used in the encryption of the api access tokens.",
+      "generator": "secret"
+    },
+    "MAX_PROC": {
+      "description": "The maximum amount of service workers to start.",
+      "value": "4"
+    },
+    "SERVER_NAME": {
+      "description": "The server name is important, as it will help users differentiate between multiple accounts.",
+      "value": "Heroku Speckle Server"
+    },
+    "CANONICAL_URL": {
+      "description": "The url address where this server exists. It's recommended to set this to https://APP-NAME.herokuapp.com (using the value set for 'App name' above).",
+      "value": "https://CHANGE-ME.herokuapp.com"
+    },
+    "PLUGIN_DIRS": {
+      "description": "Dirs to scan for speckle plugins (comma separated). There's no need to change this.",
+      "value": "./node_modules/@speckle,./plugins"
+    },
+    "FIRST_USER_ADMIN": {
+      "description": "The first user to register gets a server admin role.",
+      "value": "true"
+    },
+    "PUBLIC_REGISTRATION": {
+      "description": "Set to false to disable register routes.",
+      "value": "true"
+    },
+    "USE_LOCAL": {
+      "description": "Local is the default auth strategy for speckle (email + password).",
+      "value": "true"
+    },
+    "REDIRECT_URLS": {
+      "description": "Add here any other places that you trust this server to redirect to once authentication is done.",
+      "value": "https://app.speckle.systems"
+    }
+  },
+  "addons": [
+    "heroku-redis",
+    "mongolab"
+  ]
+}
