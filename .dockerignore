@@ -15,6 +15,7 @@ deploy.sh
 docker-compose.yml
 *.md
 releaserc.json
+.git
 
 .nyc_output
 node_modules/
