@@ -1,6 +1,5 @@
 const passport = require( 'passport' )
 const adminCheck = require( './middleware/AdminCheck' )
-const { exec } = require( 'child_process' )
 
 module.exports = function ( app, express, urlRoot, plugins ) {
 
