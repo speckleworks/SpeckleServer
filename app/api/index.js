@@ -1,6 +1,5 @@
 const passport = require( 'passport' )
 const adminCheck = require( './middleware/AdminCheck' )
-const { exec } = require( 'child_process' )
 
 module.exports = function ( app, express, urlRoot, plugins ) {
 
@@ -216,15 +215,7 @@ module.exports = function ( app, express, urlRoot, plugins ) {
     if ( r.route.includes( 'objects' ) ) grouped.objects.push( r )
   } )
 
-  let tagVersion = null
-  try {
-    exec( 'git describe --tags', ( err, stdout ) => {
-      tagVersion = stdout.split( '-' )[ 0 ].replace( /(\r\n|\n|\r)/gm, "" )
-    } )
-  } catch ( err ) {
-    // POKEMON
-    tagVersion = '1.x.x'
-  }
+  let tagVersion = process.env.SPECKLE_API_VERSION || '1.x.x'
 
   r.get( '/', ( req, res ) => {
     let serverDescription = {
