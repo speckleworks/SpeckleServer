@@ -1,4 +1,4 @@
-# Speckle Server
+# Speckle Server v1
 [![DOI](https://zenodo.org/badge/74043433.svg)](https://zenodo.org/badge/latestdoi/74043433) [![Build status](https://ci.appveyor.com/api/projects/status/xo9uun3wdo5x8538?svg=true)](https://ci.appveyor.com/project/SpeckleWorks/speckleserver) ![Discourse status](https://img.shields.io/discourse/https/discourse.speckle.works/status.svg) ![GitHub](https://img.shields.io/github/license/speckleworks/speckleserver.svg) ![Twitter Follow](https://img.shields.io/twitter/follow/speckle_works.svg) 
 
 
