@@ -4,6 +4,17 @@
 
 This is the Speckle Server, which coordinates communications between the various bits of the Speckle ecosystem.
 
+
+
+
+⚠️ **IMPORTANT** ⚠️
+
+Speckle 2.0 is in the works, 👉 [check it out here](https://github.com/specklesystems)!
+Speckle 1.0 is currently in LTS (lifetime support), read more about the announcemnt [here](https://speckle.systems/blog/speckle2-vision-and-faq) and [here](https://speckle.systems/blog/insider-speckle2).
+
+
+
+
 ## API
 
 [API docs are here](https://speckleworks.github.io/SpeckleSpecs/) - they are a good overview of what you can do.
