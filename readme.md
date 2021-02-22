@@ -5,12 +5,10 @@
 This is the Speckle Server, which coordinates communications between the various bits of the Speckle ecosystem.
 
 
+## ⚠️ IMPORTANT ⚠️
 
-
-⚠️ **IMPORTANT** ⚠️
-
-Speckle 2.0 is in the works, 👉 [check it out here](https://github.com/specklesystems)!
-Speckle 1.0 is currently in LTS (lifetime support), read more about the announcemnt [here](https://speckle.systems/blog/speckle2-vision-and-faq) and [here](https://speckle.systems/blog/insider-speckle2).
+Speckle v1 has reached EOL and is no longer mainatined. Check out our brand new 👉 [Speckle v2](https://github.com/specklesystems)!
+Read more about the announcemnt [here](https://speckle.systems/blog/speckle2-vision-and-faq) and check out or new [website](https://speckle.systems).
 
 
 
