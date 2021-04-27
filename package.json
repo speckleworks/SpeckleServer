@@ -42,7 +42,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "query-to-mongo": "^0.7.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "shortid": "^2.2.15",
     "uuid": "^3.4.0",
     "winston": "^3.2.1",
